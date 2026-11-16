@@ -1,0 +1,12 @@
+[package]
+name = "oziro-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+oziro-protocol = { path = "../../crates/oziro-protocol" }
+
+[lints]
+workspace = true

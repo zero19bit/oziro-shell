@@ -1,0 +1,31 @@
+{
+  "name": "oziro-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend/shell-ui",
+    "frontend/packages/protocol"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @oziro/shell-ui",
+    "build": "npm run build --workspace @oziro/shell-ui",
+    "typecheck": "npm run typecheck --workspace @oziro/shell-ui",
+    "test": "npm run test --workspace @oziro/shell-ui",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md,html,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md,html,yml,yaml}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.0",
+    "eslint": "^9.30.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "typescript-eslint": "^8.35.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

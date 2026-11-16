@@ -1,0 +1,77 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    Inter, "SF Pro Display", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --oz-color-canvas: #101714;
+  --oz-color-surface: rgb(23 33 29 / 82%);
+  --oz-color-surface-strong: #1b2822;
+  --oz-color-border: rgb(205 232 216 / 12%);
+  --oz-color-text: #edf5ef;
+  --oz-color-muted: #9aa99f;
+  --oz-color-subtle: #68786e;
+  --oz-color-accent: #a7e0bd;
+  --oz-color-accent-strong: #c2f0d2;
+  --oz-color-warning: #e9c58b;
+
+  --oz-radius-sm: 10px;
+  --oz-radius-md: 16px;
+  --oz-radius-lg: 22px;
+  --oz-radius-pill: 999px;
+
+  --oz-space-1: 4px;
+  --oz-space-2: 8px;
+  --oz-space-3: 12px;
+  --oz-space-4: 16px;
+  --oz-space-5: 24px;
+  --oz-space-6: 32px;
+  --oz-space-7: 48px;
+
+  --oz-shadow-panel: 0 18px 60px rgb(0 0 0 / 22%);
+  --oz-blur-panel: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--oz-color-canvas);
+  color: var(--oz-color-text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--oz-color-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
