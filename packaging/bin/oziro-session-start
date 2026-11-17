@@ -20,17 +20,17 @@ variables=(
 )
 
 present=()
-for variable in "\${variables[@]}"; do
+for variable in "${variables[@]}"; do
   if printenv "$variable" >/dev/null 2>&1; then
     present+=("$variable")
   fi
 done
 
-if ((\${#present[@]} > 0)); then
-  systemctl --user import-environment "\${present[@]}"
+if (( ${#present[@]} > 0 )); then
+  systemctl --user import-environment "${present[@]}"
 
   if command -v dbus-update-activation-environment >/dev/null 2>&1; then
-    dbus-update-activation-environment --systemd "\${present[@]}" || true
+    dbus-update-activation-environment --systemd "${present[@]}" || true
   fi
 fi
 

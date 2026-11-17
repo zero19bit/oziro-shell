@@ -44,11 +44,11 @@ The native host:
 ## Session recovery
 
 The repository now includes a user-level systemd service with bounded
-\`Restart=on-failure\` recovery. \`oziro-session-start\` imports the active Wayland
+`Restart=on-failure` recovery. `oziro-session-start` imports the active Wayland
 and compositor environment before starting the service.
 
 - KDE Plasma receives an XDG autostart entry.
-- Hyprland users can opt in with \`exec-once = oziro-session-start\`.
+- Hyprland users can opt in with `exec-once = oziro-session-start`.
 - Oziro does not rewrite any existing desktop configuration.
 - The service runs as the logged-in user, never as root.
 
@@ -61,7 +61,7 @@ See [Arch installation and session recovery](docs/installation/arch.md) and
 - Rust stable toolchain and Cargo 1.85+
 - GTK4, WebKitGTK 6.0, GTK4 Layer Shell, libpulse, and D-Bus development
   libraries for native builds
-- Arch Linux packages are listed in \`PKGBUILD\`
+- Arch Linux packages are listed in `PKGBUILD`
 
 ## Test on Arch Linux without installing
 
