@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Oziro Desktop
+Comment=Start the Oziro Wayland desktop shell
+Exec=/usr/bin/oziro-session-start
+TryExec=/usr/bin/oziro-session-start
+Terminal=false
+OnlyShowIn=KDE;
+X-KDE-autostart-phase=2

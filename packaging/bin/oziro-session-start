@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ -z "$(printenv WAYLAND_DISPLAY 2>/dev/null || true)" ]]; then
+  echo "Oziro must be started from an active Wayland session." >&2
+  exit 1
+fi
+
+variables=(
+  WAYLAND_DISPLAY
+  XDG_RUNTIME_DIR
+  DBUS_SESSION_BUS_ADDRESS
+  DISPLAY
+  XDG_SESSION_TYPE
+  XDG_CURRENT_DESKTOP
+  XDG_SESSION_DESKTOP
+  HYPRLAND_INSTANCE_SIGNATURE
+  SWAYSOCK
+  KWIN_DBUS_SERVICE_NAME
+)
+
+present=()
+for variable in "${variables[@]}"; do
+  if printenv "$variable" >/dev/null 2>&1; then
+    present+=("$variable")
+  fi
+done
+
+if (( ${#present[@]} > 0 )); then
+  systemctl --user import-environment "${present[@]}"
+
+  if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+    dbus-update-activation-environment --systemd "${present[@]}" || true
+  fi
+fi
+
+exec systemctl --user start --no-block oziro-shell.service

@@ -1,0 +1,19 @@
+[Unit]
+Description=Oziro Wayland Desktop Shell
+Documentation=https://github.com/zero19bit/oziro-shell
+After=graphical-session.target
+PartOf=graphical-session.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/oziro-shell-host
+Environment=OZIRO_FRONTEND_DIR=/usr/share/oziro/shell-ui
+Restart=on-failure
+RestartSec=3s
+TimeoutStopSec=10s
+KillMode=mixed
+
+# Deliberately started by the session launcher after importing Wayland and
+# compositor environment variables. Do not enable it from default.target.

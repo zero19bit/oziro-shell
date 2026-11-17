@@ -1,7 +1,8 @@
 //! Local HTTP server for the built frontend bundle and opaque icon tokens.
 //!
 //! The server binds to loopback only, serves files strictly below the build
-//! directory, and resolves only tokens minted by the icon registry.
+//! directory, and resolves only tokens minted by the icon registry. Packaged
+//! builds may set OZIRO_FRONTEND_DIR to the installed frontend asset directory.
 
 use oziro_services::icons::IconRegistry;
 use std::fs;
@@ -10,8 +11,17 @@ use std::sync::Arc;
 use std::thread;
 use tiny_http::{Header, Method, Response, Server, StatusCode};
 
+fn frontend_entrypoint_from(override_dir: Option<PathBuf>) -> PathBuf {
+    let root = override_dir.unwrap_or_else(|| {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../frontend/shell-ui/dist")
+    });
+
+    root.join("index.html")
+}
+
 pub fn frontend_entrypoint() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../frontend/shell-ui/dist/index.html")
+    let override_dir = std::env::var_os("OZIRO_FRONTEND_DIR").map(PathBuf::from);
+    frontend_entrypoint_from(override_dir)
 }
 
 fn frontend_root() -> Result<PathBuf, String> {
@@ -175,7 +185,15 @@ mod tests {
 
     #[test]
     fn frontend_entrypoint_targets_the_shell_ui_dist() {
-        assert!(frontend_entrypoint().ends_with("frontend/shell-ui/dist/index.html"));
+        assert!(frontend_entrypoint_from(None).ends_with("frontend/shell-ui/dist/index.html"));
+    }
+
+    #[test]
+    fn packaged_frontend_directory_can_be_overridden() {
+        assert_eq!(
+            frontend_entrypoint_from(Some(PathBuf::from("/usr/share/oziro/shell-ui"))),
+            PathBuf::from("/usr/share/oziro/shell-ui/index.html")
+        );
     }
 
     #[test]

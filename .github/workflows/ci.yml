@@ -1,0 +1,81 @@
+name: Oziro CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Frontend checks
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript
+        run: npm run typecheck
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Packaging scripts
+        run: bash scripts/verify-packaging.sh
+
+  rust:
+    name: Rust and native Linux checks
+    runs-on: ubuntu-24.04
+    container:
+      image: archlinux:latest
+    steps:
+      - name: Install Arch Linux build dependencies
+        shell: bash
+        run: |
+          pacman -Syu --noconfirm --needed
+          pacman -S --noconfirm --needed \
+            git rust pkgconf \
+            gtk4 webkitgtk-6.0 gtk4-layer-shell libpulse
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rust formatting
+        shell: bash
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        shell: bash
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Rust tests
+        shell: bash
+        run: cargo test --workspace
+
+      - name: Workspace check
+        shell: bash
+        run: cargo check --workspace
+
+      - name: Build native shell release binary
+        shell: bash
+        run: cargo build --release -p oziro-shell-host
