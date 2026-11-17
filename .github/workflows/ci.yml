@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - "codex/**"
   pull_request:
     branches:
       - main
@@ -55,7 +54,7 @@ jobs:
         run: |
           pacman -Syu --noconfirm --needed
           pacman -S --noconfirm --needed \
-            git rust pkgconf \
+            base-devel git rust pkgconf \
             gtk4 webkitgtk-6.0 gtk4-layer-shell libpulse
 
       - name: Checkout
@@ -76,3 +75,11 @@ jobs:
       - name: Workspace check
         shell: bash
         run: cargo check --workspace
+
+      - name: Validate Arch package metadata
+        shell: bash
+        run: makepkg --printsrcinfo > /tmp/oziro.SRCINFO
+
+      - name: Build native shell release binary
+        shell: bash
+        run: cargo build --release -p oziro-shell-host
