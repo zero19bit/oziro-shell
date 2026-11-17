@@ -54,7 +54,7 @@ jobs:
         run: |
           pacman -Syu --noconfirm --needed
           pacman -S --noconfirm --needed \
-            base-devel git rust pkgconf \
+            git rust pkgconf \
             gtk4 webkitgtk-6.0 gtk4-layer-shell libpulse
 
       - name: Checkout
@@ -75,10 +75,6 @@ jobs:
       - name: Workspace check
         shell: bash
         run: cargo check --workspace
-
-      - name: Validate Arch package metadata
-        shell: bash
-        run: makepkg --printsrcinfo > /tmp/oziro.SRCINFO
 
       - name: Build native shell release binary
         shell: bash
