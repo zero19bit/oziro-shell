@@ -1,0 +1,81 @@
+/* Notification center surface ------------------------------------------------- */
+
+.notifications-root {
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.notifications-card {
+  width: min(380px, 100%);
+  max-height: 100%;
+}
+
+.notifications-status {
+  color: var(--oz-subtle);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+}
+
+.notifications-list {
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 6px;
+  align-content: start;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0 2px 0 0;
+}
+
+.notification-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--oz-border);
+  border-radius: var(--oz-radius-sm);
+  background: var(--oz-surface);
+}
+
+.notification-row[data-urgency='critical'] {
+  border-color: var(--oz-accent-border);
+  background: var(--oz-accent-soft);
+}
+
+.notification-copy {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 2px;
+}
+
+.notification-app {
+  margin-bottom: 2px;
+}
+
+.notification-summary {
+  color: var(--oz-text);
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+.notification-body {
+  overflow: hidden;
+  color: var(--oz-muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.notification-time {
+  color: var(--oz-subtle);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.notifications-empty {
+  padding: 8px 0;
+}

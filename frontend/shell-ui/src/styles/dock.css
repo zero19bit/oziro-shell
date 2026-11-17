@@ -1,0 +1,179 @@
+/* Dock surface ------------------------------------------------------------ */
+
+.dock-root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.dock-root.is-left {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.dock-root.is-right {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.dock-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 24px);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.dock-card.is-vertical .dock-items {
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.dock-items {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.dock-slot {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.dock-slot + .dock-slot {
+  margin-left: 4px;
+}
+
+.dock-card.is-vertical .dock-slot + .dock-slot {
+  margin-left: 0;
+  margin-top: 4px;
+}
+
+.dock-item {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+
+  border: 1px solid transparent;
+  border-radius: 15px;
+
+  background: transparent;
+
+  transition:
+    transform 160ms cubic-bezier(0.2, 0.9, 0.3, 1.4),
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.dock-item:hover {
+  border-color: var(--oz-border);
+  background: var(--oz-surface);
+  transform: translateY(-4px) scale(1.06);
+}
+
+.dock-card.is-vertical .dock-item:hover {
+  transform: translateX(0) scale(1.06);
+}
+
+.dock-card.is-right .dock-item:hover {
+  transform: translateX(-4px) scale(1.06);
+}
+
+.dock-launcher {
+  color: var(--oz-accent);
+}
+
+.dock-dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--oz-accent);
+  box-shadow: 0 0 8px rgba(180, 160, 255, 0.6);
+  transform: translateX(-50%);
+}
+
+.dock-card.is-vertical .dock-dot {
+  top: 50%;
+  right: 3px;
+  bottom: auto;
+  left: auto;
+  transform: translateY(-50%);
+}
+
+.dock-divider {
+  align-self: center;
+  width: 1px;
+  height: 60%;
+  margin: 0 5px;
+  background: var(--oz-border);
+}
+
+.dock-card.is-vertical .dock-divider {
+  width: 60%;
+  height: 1px;
+  margin: 5px 0;
+}
+
+.dock-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  padding: 4px 10px;
+  border: 1px solid var(--oz-border);
+  border-radius: 8px;
+  background: var(--oz-glass-strong);
+  box-shadow: var(--oz-shadow-soft);
+  color: var(--oz-text);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%) translateY(3px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  pointer-events: none;
+}
+
+.dock-tooltip.is-vertical {
+  bottom: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(50%) translateX(3px);
+}
+
+.dock-card.is-right .dock-tooltip.is-vertical {
+  left: auto;
+  right: calc(100% + 10px);
+  transform: translateY(50%) translateX(-3px);
+}
+
+.dock-item:hover .dock-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dock-item:hover .dock-tooltip.is-vertical {
+  transform: translateY(50%) translateX(0);
+}
+
+.dock-card.is-right .dock-item:hover .dock-tooltip.is-vertical {
+  transform: translateY(50%) translateX(0);
+}
+
+.dock-error {
+  padding: 2px 6px 0;
+  color: var(--oz-danger);
+  font-size: 10px;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

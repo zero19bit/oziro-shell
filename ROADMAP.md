@@ -6,52 +6,52 @@
 - [x] Define a versioned frontend/core protocol shape
 - [x] Isolate preview and native adapters
 - [x] Add basic tests, lint, formatting, and documentation
-- [ ] Verify on the owner's Arch machine
-- [ ] Generate and review the initial npm lockfile
+- [x] Verify on the owner's Arch machine
+- [x] Generate and review the initial npm lockfile
 
 ## Phase 1 — Native Runtime Proof of Concept
 
-- [ ] Confirm GTK4 / WebKitGTK / GTK4 Layer Shell build dependencies
-- [ ] Build a minimal Rust GTK host
-- [ ] Render the React UI inside WebKitGTK
-- [ ] Create one real Wayland layer surface
-- [ ] Validate startup, shutdown, and clean failure behavior
-- [ ] Implement a narrow typed bridge
+- [x] Confirm GTK4 / WebKitGTK / GTK4 Layer Shell build dependencies
+- [x] Build a minimal Rust GTK host
+- [x] Render the React UI inside WebKitGTK
+- [x] Create one real Wayland layer surface
+- [x] Validate startup, shutdown, and clean failure behavior
+- [x] Implement a narrow typed bridge
 
 ## Phase 2 — Compositor Adapter
 
-- [ ] Define compositor capabilities and normalized events
-- [ ] Implement Hyprland IPC adapter
-- [ ] Add reconnect and timeout behavior
-- [ ] Test workspaces, active window, monitors, and focus operations
-- [ ] Keep unsupported operations explicit
+- [x] Define compositor capabilities and normalized events
+- [x] Implement Hyprland IPC adapter
+- [x] Add reconnect and timeout behavior
+- [x] Test workspaces, active window, monitors, and focus operations
+- [x] Keep unsupported operations explicit
 
 ## Phase 3 — Shell MVP
 
-- [ ] Top Panel
-- [ ] Dock
-- [ ] Application Launcher
-- [ ] Settings foundation
-- [ ] Theme tokens and light/dark themes
-- [ ] Low-effects mode
+- [x] Top Panel
+- [x] Dock
+- [x] Application Launcher
+- [x] Settings foundation
+- [x] Theme tokens and light/dark themes
+- [x] Low-effects mode
 
 ## Phase 4 — System Services
 
-- [ ] D-Bus service boundary
-- [ ] Audio via PipeWire / WirePlumber
-- [ ] NetworkManager integration
-- [ ] Bluetooth via BlueZ
-- [ ] Power via UPower
-- [ ] Notification integration
+- [x] D-Bus service boundary
+- [x] Audio via PipeWire / WirePlumber
+- [x] NetworkManager integration
+- [x] Bluetooth via BlueZ
+- [x] Power via UPower
+- [x] Notification integration
 
 ## Phase 5 — Reliability and Expansion
 
-- [ ] Overview
-- [ ] Notification Center
-- [ ] Quick Settings
-- [ ] Multi-monitor behavior
+- [x] Overview
+- [x] Notification Center
+- [x] Quick Settings
+- [x] Multi-monitor behavior
 - [ ] Session recovery
-- [ ] Performance and security review
+- [x] Performance and security review
 - [ ] Arch packaging and upgrade strategy
 
 A checkbox is completed only after implementation and verification, not merely because code compiles.

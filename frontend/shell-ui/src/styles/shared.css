@@ -1,0 +1,334 @@
+/* Shared popup chrome ---------------------------------------------------- */
+
+.popup-root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+}
+
+.popup-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 12px;
+  min-height: 0;
+  padding: 16px;
+  overflow: hidden;
+  border-radius: var(--oz-radius-lg);
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.popup-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.popup-badge {
+  min-width: 20px;
+  padding: 2px 7px;
+  border: 1px solid var(--oz-accent-border);
+  border-radius: 999px;
+  background: var(--oz-accent-soft);
+  color: var(--oz-accent);
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Labels & status -------------------------------------------------------- */
+
+.oz-label {
+  color: var(--oz-subtle);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.oz-status-line {
+  color: var(--oz-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.oz-unavailable-note {
+  color: var(--oz-subtle);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.oz-error-note {
+  color: var(--oz-danger);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* Icon button ------------------------------------------------------------- */
+
+.oz-icon-button {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
+
+  border: 1px solid var(--oz-border);
+  border-radius: 9px;
+
+  background: var(--oz-surface);
+
+  color: var(--oz-muted);
+
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.oz-icon-button:hover {
+  background: var(--oz-surface-strong);
+  color: var(--oz-text);
+}
+
+/* App icons ---------------------------------------------------------------- */
+
+.app-icon {
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.app-icon-fallback {
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--oz-accent-border);
+  border-radius: 9px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(173, 148, 255, 0.32),
+    rgba(103, 85, 172, 0.18)
+  );
+
+  color: var(--oz-accent);
+  font-weight: 750;
+  line-height: 1;
+  user-select: none;
+}
+
+/* Controls ------------------------------------------------------------------ */
+
+.oz-segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--oz-border);
+  border-radius: 10px;
+  background: var(--oz-surface);
+}
+
+.oz-segmented[data-disabled] {
+  opacity: 0.5;
+}
+
+.oz-segmented-option {
+  padding: 3px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--oz-muted);
+  font-size: 11px;
+  font-weight: 620;
+  white-space: nowrap;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.oz-segmented-option:hover:not(:disabled) {
+  color: var(--oz-text);
+}
+
+.oz-segmented-option.is-active {
+  background: var(--oz-accent-soft);
+  color: var(--oz-accent);
+}
+
+.oz-toggle {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 1px solid var(--oz-border);
+  border-radius: 999px;
+  background: var(--oz-surface);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.oz-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--oz-muted);
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.oz-toggle.is-on {
+  border-color: var(--oz-accent-border);
+  background: var(--oz-accent-soft);
+}
+
+.oz-toggle.is-on .oz-toggle-knob {
+  transform: translateX(14px);
+  background: var(--oz-accent);
+}
+
+.oz-toggle:disabled {
+  opacity: 0.45;
+}
+
+.oz-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-width: 90px;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+}
+
+.oz-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--oz-accent) var(--oz-range-fill, 50%),
+    var(--oz-surface-strong) var(--oz-range-fill, 50%)
+  );
+}
+
+.oz-range::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--oz-accent-border);
+  border-radius: 50%;
+  background: var(--oz-accent);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+
+.oz-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--oz-surface-strong);
+}
+
+.oz-range::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--oz-accent);
+}
+
+.oz-range::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--oz-accent-border);
+  border-radius: 50%;
+  background: var(--oz-accent);
+}
+
+.oz-range:disabled {
+  opacity: 0.45;
+}
+
+.tile-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tile-copy {
+  color: var(--oz-muted);
+  font-size: 11.5px;
+}
+
+.tile-value {
+  color: var(--oz-text);
+  font-size: 11.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.battery-bar {
+  display: block;
+  width: 100%;
+  max-width: 130px;
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid var(--oz-border);
+  border-radius: 999px;
+  background: var(--oz-surface);
+}
+
+.battery-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--oz-status);
+  transition: width 220ms ease;
+}
+
+.battery-bar.is-low span {
+  background: var(--oz-warning);
+}
+
+.battery-bar.is-critical span {
+  background: var(--oz-danger);
+}
+
+/* Scrollbars ----------------------------------------------------------------- */
+
+.popup-scroll,
+.launcher-grid,
+.notifications-list,
+.settings-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--oz-border-strong) transparent;
+}
+
+.popup-scroll::-webkit-scrollbar,
+.launcher-grid::-webkit-scrollbar,
+.notifications-list::-webkit-scrollbar,
+.settings-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.popup-scroll::-webkit-scrollbar-thumb,
+.launcher-grid::-webkit-scrollbar-thumb,
+.notifications-list::-webkit-scrollbar-thumb,
+.settings-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--oz-border-strong);
+  background-clip: content-box;
+}

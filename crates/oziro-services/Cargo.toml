@@ -1,0 +1,18 @@
+[package]
+name = "oziro-services"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+oziro-protocol = { path = "../oziro-protocol" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+zbus = "5"
+libpulse-binding = { version = "2.28", features = ["pa_v15"] }
+freedesktop-icons = "0.4"
+freedesktop-desktop-entry = "0.8"
+
+[lints]
+workspace = true

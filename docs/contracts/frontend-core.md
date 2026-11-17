@@ -4,72 +4,138 @@
 
 ## Boundary
 
-React communicates only through the `DesktopAdapter` interface. Components must not access D-Bus, Hyprland sockets, filesystem configuration, or shell commands directly.
+React communicates only through the `DesktopAdapter` interface (`frontend/shell-ui/src/lib/desktop-adapter.ts`). Components must not access D-Bus, compositor sockets, the filesystem, or shell commands directly.
 
-The browser preview uses `PreviewDesktopAdapter`. The native host will inject a narrow `window.oziroBridge` API after the host is implemented.
+Two implementations exist:
 
-## Runtime info
+- `NativeDesktopAdapter` — inside the GTK host, over the WebKit script message handler `oziro`.
+- `PreviewDesktopAdapter` — browser preview; never reports live state, only explicit unavailability with reasons.
 
-```ts
-interface RuntimeInfo {
-  protocolVersion: 1;
-  appName: string;
-  appVersion: string;
-  integration:
-    | { state: "not-connected"; reason: string }
-    | { state: "connected"; adapter: string };
-}
-```
+## Transport
 
-## Request envelope
+| Direction | Mechanism |
+| --- | --- |
+| Request | `window.webkit.messageHandlers.oziro.postMessage(JSON.stringify(envelope))` |
+| Response | `window.__oziroResolve(requestId, json)` evaluated by the host |
+| Event | `window.__oziroEvent(json)` evaluated by the host |
+
+Request envelope:
 
 ```json
 {
   "protocolVersion": 1,
   "requestId": "opaque-request-id",
-  "method": "runtime.getInfo"
+  "method": "apps.search",
+  "params": { "query": "files" }
 }
 ```
 
-## Success response
+Success / error responses:
+
+```json
+{ "protocolVersion": 1, "requestId": "id", "ok": true, "result": {} }
+```
 
 ```json
 {
   "protocolVersion": 1,
-  "requestId": "opaque-request-id",
-  "ok": true,
-  "result": {
-    "protocolVersion": 1,
-    "appName": "Oziro Core",
-    "appVersion": "0.1.0",
-    "integration": {
-      "state": "not-connected",
-      "reason": "adapter not initialized"
-    }
-  }
-}
-```
-
-## Error response
-
-```json
-{
-  "protocolVersion": 1,
-  "requestId": "opaque-request-id",
+  "requestId": "id",
   "ok": false,
-  "error": {
-    "code": "SERVICE_UNAVAILABLE",
-    "message": "The requested service is unavailable.",
-    "retryable": true
-  }
+  "error": { "code": "SERVICE_UNAVAILABLE", "message": "…", "retryable": true }
 }
 ```
+
+Event envelope:
+
+```json
+{ "protocolVersion": 1, "event": "compositor.workspaces", "payload": {} }
+```
+
+## Error codes
+
+- `UNSUPPORTED_PROTOCOL` — wrong `protocolVersion`.
+- `UNKNOWN_METHOD` — method outside the allow-list.
+- `INVALID_PARAMS` — validation failed at the Rust boundary.
+- `COMPOSITOR_UNAVAILABLE` (retryable) — no compositor adapter.
+- `SERVICE_UNAVAILABLE` (retryable) — backing service absent/disconnected.
+- `SERVICE_FAILED` — operation failed on the host.
+- `LAUNCH_FAILED` — application launch failed.
+- `NOTIFICATION_UNAVAILABLE` — notification daemon interaction failed.
+- `SETTINGS_IO_FAILED` — settings persistence failure.
+- `INTERNAL` — unexpected host error.
+
+## Methods
+
+| Method | Params | Result |
+| --- | --- | --- |
+| `runtime.getInfo` | – | `RuntimeInfo` |
+| `apps.list` | – | `{ apps: AppEntry[] }` |
+| `apps.search` | `{ query: string }` | `{ apps: AppEntry[] }` |
+| `apps.launch` | `{ desktopId: string }` | `{}` |
+| `apps.getFavorites` | – | `{ favorites: string[] }` |
+| `apps.setFavorites` | `{ favorites: string[] }` | `{ favorites: string[] }` |
+| `workspaces.list` | – | `WorkspacesResult` |
+| `workspaces.activate` | `{ id: string }` | `{}` |
+| `windows.list` | – | `WindowsResult` |
+| `windows.activate` | `{ id: string }` | `{}` |
+| `system.audio.get` | – | `AudioState` |
+| `system.audio.setVolume` | `{ volume: number 0–100 }` | `AudioState` |
+| `system.audio.setMuted` | `{ muted: boolean }` | `AudioState` |
+| `system.network.get` | – | `NetworkState` |
+| `system.network.setWifiEnabled` | `{ enabled: boolean }` | `NetworkState` |
+| `system.network.setNetworkingEnabled` | `{ enabled: boolean }` | `NetworkState` |
+| `system.bluetooth.get` | – | `BluetoothState` |
+| `system.bluetooth.setPowered` | `{ powered: boolean }` | `BluetoothState` |
+| `system.battery.get` | – | `BatteryState` |
+| `system.brightness.get` | – | `BrightnessState` |
+| `system.brightness.set` | `{ percent: number 0–100 }` | `BrightnessState` |
+| `system.power.get` | – | `PowerState` |
+| `settings.get` | – | `Settings` |
+| `settings.update` | `{ patch: Partial<Settings> }` | `Settings` |
+| `notifications.list` | – | `NotificationsResult` |
+| `notifications.getStatus` | – | `NotificationStatus` |
+| `notifications.dismiss` | `{ id: string }` | `{}` |
+| `ui.openPopup` | `{ surface: PopupSurface }` | `{}` — shows the surface; hides it when already visible (toggle) |
+| `ui.closePopup` | `{ surface: PopupSurface }` | `{}` |
+| `ui.resizeSurface` | `{ width: number, height: number }` | `{}` |
+
+Domain types are defined once in `frontend/packages/protocol/src/index.ts` and mirrored by serde types in `crates/oziro-protocol`.
+
+## Events
+
+| Event | Payload |
+| --- | --- |
+| `compositor.workspaces` | `WorkspacesResult` |
+| `compositor.windows` | `WindowsResult` |
+| `system.audio` | `AudioState` |
+| `system.network` | `NetworkState` |
+| `system.bluetooth` | `BluetoothState` |
+| `system.battery` | `BatteryState` |
+| `settings.changed` | `Settings` |
+| `notifications.changed` | `NotificationsResult` |
+
+## Icon endpoint
+
+`GET /oziro-icon/<iconToken>` — same-origin HTTP endpoint of the host. `iconToken` values are opaque, generated by Rust; they never encode or accept filesystem paths. Use `null` icon tokens to render a glyph fallback.
+
+## Surfaces
+
+Each GTK layer-shell surface loads the same bundle with `?surface=<name>`:
+
+| Surface | Geometry | Notes |
+| --- | --- | --- |
+| `panel` | full width, top | fixed height from settings |
+| `dock` | bottom/left/right | width reported via `ui.resizeSurface` |
+| `launcher` | top-left popup | Esc closes (`ui.closePopup`) |
+| `control` | top-right popup | |
+| `settings` | top-right popup | host allows only one right-side popup at a time |
+| `notifications` | bottom-right popup | |
+| `overview` | full screen | explicit user action; Esc closes |
 
 ## Rules
 
 - Reject unsupported protocol versions.
 - Validate method names and payloads in Rust.
 - Use allow-listed methods; never expose arbitrary command execution.
-- Return structured errors.
+- Return structured errors; a disconnected service is a normal state.
 - Do not send secrets or unnecessary hardware identifiers to the UI.
-- The transport (WebKit message handler, local socket, or another mechanism) remains undecided until the native host proof-of-concept.

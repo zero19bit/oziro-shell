@@ -11,7 +11,7 @@ describe('PreviewDesktopAdapter', () => {
     expect(info.integration.state).toBe('not-connected');
 
     if (info.integration.state === 'not-connected') {
-      expect(info.integration.reason).toContain('Native system integration is not connected');
+      expect(info.integration.reason).toContain('no native host connection');
     }
   });
 });

@@ -1,0 +1,48 @@
+/* Control center surface ---------------------------------------------------- */
+
+.control-root {
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.control-card {
+  width: min(320px, 100%);
+  height: fit-content;
+  max-height: 100%;
+}
+
+.control-tiles {
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 8px;
+  align-content: start;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.control-tile {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--oz-border);
+  border-radius: var(--oz-radius-sm);
+  background: var(--oz-surface);
+}
+
+.control-tile-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.control-tile-glyph {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--oz-border);
+  border-radius: 7px;
+  background: var(--oz-surface);
+  color: var(--oz-accent);
+}

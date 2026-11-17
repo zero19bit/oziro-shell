@@ -32,4 +32,7 @@ cargo clippy --workspace --all-targets -- -D warnings
 echo "== Rust: tests =="
 cargo test --workspace
 
-echo "Oziro foundation verification completed."
+echo "== Rust: release check =="
+cargo check --workspace
+
+echo "Oziro native shell verification completed."
