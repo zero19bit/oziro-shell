@@ -13,17 +13,17 @@ starts.
 
 ## Decision
 
-Use a user-level systemd service with bounded \`Restart=on-failure\` recovery.
-Start it through \`oziro-session-start\`, which imports the active session
+Use a user-level systemd service with bounded `Restart=on-failure` recovery.
+Start it through `oziro-session-start`, which imports the active session
 environment before asking the user manager to start the service.
 
-The unit is deliberately not enabled from \`default.target\`; this avoids
+The unit is deliberately not enabled from `default.target`; this avoids
 starting a Wayland shell before a graphical session exists. KDE receives an
-XDG autostart entry. Hyprland users opt in with one \`exec-once\` line. Oziro
+XDG autostart entry. Hyprland users opt in with one `exec-once` line. Oziro
 never edits either desktop's configuration automatically.
 
 The installed frontend directory is supplied through
-\`OZIRO_FRONTEND_DIR\`, while development builds retain the repository-relative
+`OZIRO_FRONTEND_DIR`, while development builds retain the repository-relative
 frontend path.
 
 ## Consequences

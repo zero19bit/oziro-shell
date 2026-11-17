@@ -22,14 +22,13 @@ build() {
 
   npm ci
   npm run build
-  cargo build --release -p oziro-shell-host -p oziro-core
+  cargo build --release -p oziro-shell-host
 }
 
 package() {
   cd "$srcdir/oziro-shell"
 
   install -Dm755 target/release/oziro-shell-host "$pkgdir/usr/bin/oziro-shell-host"
-  install -Dm755 target/release/oziro-core "$pkgdir/usr/bin/oziro-core"
 
   install -d "$pkgdir/usr/share/oziro/shell-ui"
   cp -a frontend/shell-ui/dist/. "$pkgdir/usr/share/oziro/shell-ui/"

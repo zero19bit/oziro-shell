@@ -62,7 +62,7 @@ fn resolve_frontend_file(root: &Path, request_url: &str) -> Option<PathBuf> {
     Some(canonical)
 }
 
-/// Extracts an icon token from \`/oziro-icon/<token>\`. Tokens are minted by
+/// Extracts an icon token from `/oziro-icon/<token>`. Tokens are minted by
 /// Rust and restricted to an opaque, path-free alphabet.
 fn icon_token_from_url(request_url: &str) -> Option<&str> {
     let path = request_url.split('?').next()?;
@@ -131,7 +131,7 @@ fn file_response(path: &Path) -> Response<std::io::Cursor<Vec<u8>>> {
 }
 
 /// Starts the loopback server and returns the base URL, including the trailing
-/// slash. \`?surface=\` is appended by the window builder.
+/// slash. `?surface=` is appended by the window builder.
 pub fn start_frontend_server(icons: Arc<IconRegistry>) -> Result<String, String> {
     let root = frontend_root()?;
 

@@ -63,6 +63,36 @@ See [Arch installation and session recovery](docs/installation/arch.md) and
   libraries for native builds
 - Arch Linux packages are listed in \`PKGBUILD\`
 
+## Test on Arch Linux without installing
+
+The current development branch can be tested without installing a package or
+changing KDE/Hyprland configuration. Run this from an active Wayland session:
+
+~~~bash
+git clone --branch codex/production-readiness --single-branch https://github.com/zero19bit/oziro-shell.git
+cd oziro-shell
+bash scripts/test-on-arch.sh
+~~~
+
+The script checks dependencies, installs the locked npm workspace dependencies,
+runs frontend and Rust checks, builds the native host, and launches Oziro.
+Use `--check-only` to build and test without opening desktop surfaces:
+
+~~~bash
+bash scripts/test-on-arch.sh --check-only
+~~~
+
+If native build dependencies are missing, install them with:
+
+~~~bash
+sudo pacman -S --needed base-devel git nodejs npm rust pkgconf gtk4 webkitgtk-6.0 gtk4-layer-shell libpulse
+~~~
+
+Oziro runs as your normal desktop user. It does not install a service, replace
+your desktop, or edit your compositor configuration. While testing, its panel
+and dock appear over the current desktop; press Ctrl+C in the terminal to stop it.
+The test log is saved under `~/.local/state/oziro/`.
+
 ## Development quick start
 
 ~~~bash

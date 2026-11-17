@@ -67,15 +67,15 @@ The repository is the source of truth for current code and build status.
 
 - Arch Linux is the initial packaging target.
 - Wayland is the initial display protocol.
-- Compositor-specific behavior stays behind the \`Compositor\` trait.
+- Compositor-specific behavior stays behind the `Compositor` trait.
 - The frontend never accesses hardware directly.
 - Rust provides system integration.
 - Oziro runs as the logged-in user, never as root.
 - Existing desktop configurations are not edited automatically.
 - A user-level systemd service provides bounded crash recovery.
-- Packaged frontend assets are selected through \`OZIRO_FRONTEND_DIR\`.
+- Packaged frontend assets are selected through `OZIRO_FRONTEND_DIR`.
 
-See \`docs/architecture/decisions/0002-session-supervision.md\`.
+See `docs/architecture/decisions/0002-session-supervision.md`.
 
 ## 8. Implementation Status
 
