@@ -226,8 +226,7 @@ impl SurfaceManager {
         panel.set_anchor(Edge::Left, true);
         panel.set_anchor(Edge::Right, true);
         panel.set_exclusive_zone(height);
-        panel.set_size_request(-1, height);
-        panel.set_default_size(-1, height);
+        panel.set_default_size(1, height);
     }
 
     fn apply_popup_geometry(&self) {
@@ -240,7 +239,6 @@ impl SurfaceManager {
             window.set_anchor(Edge::Left, true);
             window.set_margin(Edge::Top, top);
             window.set_margin(Edge::Left, POPUP_SIDE_MARGIN);
-            window.set_size_request(LAUNCHER_SIZE.0, LAUNCHER_SIZE.1);
             window.set_default_size(LAUNCHER_SIZE.0, LAUNCHER_SIZE.1);
         }
 
@@ -254,7 +252,6 @@ impl SurfaceManager {
                 window.set_anchor(Edge::Right, true);
                 window.set_margin(Edge::Top, top);
                 window.set_margin(Edge::Right, POPUP_SIDE_MARGIN);
-                window.set_size_request(size.0, size.1);
                 window.set_default_size(size.0, size.1);
             }
         }
@@ -266,7 +263,6 @@ impl SurfaceManager {
             window.set_anchor(Edge::Right, true);
             window.set_margin(Edge::Bottom, POPUP_BOTTOM_MARGIN);
             window.set_margin(Edge::Right, POPUP_SIDE_MARGIN);
-            window.set_size_request(NOTIFICATIONS_SIZE.0, NOTIFICATIONS_SIZE.1);
             window.set_default_size(NOTIFICATIONS_SIZE.0, NOTIFICATIONS_SIZE.1);
         }
 
@@ -309,7 +305,7 @@ impl SurfaceManager {
             }
         }
 
-        dock.set_size_request(width, height);
+        dock.set_default_size(width, height);
         dock.set_default_size(width, height);
     }
 
@@ -383,7 +379,9 @@ impl SurfaceManager {
             Err(_) => return,
         };
 
-        self.evaluate_all(&format!("window.__oziroEvent({payload});"));
+        self.evaluate_all(&format!(
+            "if (window.__oziroEvent) {{ window.__oziroEvent({payload}); }}"
+        ));
     }
 
     pub fn resolve(&self, request_id: &str, response_json: &str) {
@@ -393,7 +391,9 @@ impl SurfaceManager {
             return;
         };
 
-        self.evaluate_all(&format!("window.__oziroResolve({id}, {payload});"));
+        self.evaluate_all(&format!(
+            "if (window.__oziroResolve) {{ window.__oziroResolve({id}, {payload}); }}"
+        ));
     }
 
     fn evaluate_all(&self, script: &str) {
