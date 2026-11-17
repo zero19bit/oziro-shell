@@ -44,14 +44,19 @@
 - [x] Power via UPower
 - [x] Notification integration
 
-## Phase 5 — Reliability and Expansion
+## Phase 5 — Reliability and Distribution
 
-- [x] Overview
-- [x] Notification Center
-- [x] Quick Settings
-- [x] Multi-monitor behavior
-- [ ] Session recovery
-- [x] Performance and security review
-- [ ] Arch packaging and upgrade strategy
+- [x] Add a user-level systemd unit for bounded crash recovery
+- [x] Import Wayland and compositor environment before service startup
+- [x] Support packaged frontend assets through \`OZIRO_FRONTEND_DIR\`
+- [x] Add an Arch PKGBUILD and KDE/Hyprland startup instructions
+- [x] Add frontend and Arch-native CI workflows
+- [ ] Verify clean Arch install, upgrade, uninstall, and rollback
+- [ ] Verify recovery behavior in a real Hyprland and KDE session
+- [ ] Complete multi-monitor and session lifecycle smoke tests
 
-A checkbox is completed only after implementation and verification, not merely because code compiles.
+## Release gate
+
+A phase is not release-ready until its implementation passes automated
+verification and a clean-machine manual smoke test. A checkbox is complete
+only after implementation and verification, not merely because code exists.
