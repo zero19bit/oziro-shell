@@ -1,4 +1,4 @@
-# Oziro V2 — Foundation 0.9 (experimental)
+# Oziro V2 — Foundation 0.9.1 (experimental)
 Native Arch / Hyprland and Niri shell, independent of the legacy Rust/React host. Not a production release.
 
 ## Test on a real Wayland session
@@ -44,3 +44,6 @@ Controls → Energy opens the on-demand policy page. Adaptive (default) retains 
 
 ## Foundation 0.9
 Open Widgets on the panel (or Controls > Open Widgets). Four built-in read-only cards: clock, battery/power, audio and system memory (used = total minus available). Memory is a one-shot /proc/meminfo snapshot on dashboard open or explicit refresh; no new resident worker. Manage enables/disables cards; a strict version-1 JSON manifest can add up to four custom cards using only existing read-only types. ID must start user- and use lowercase letters/digits/hyphens; title max 48 chars; no extra keys, arbitrary QML, JS, commands, files or network access. Manifest max 512 chars. Remove deletes just the chosen custom card. Preferences persist widget choices, compatible with prior version-1 data. Run self-test verifies 16 registry cases, passed in JS development runtime; QML runtime pending. Dashboard is on demand and is not a desktop widget host or general plugin sandbox. 0.8.1 user confirmed self-test and charger transitions; power savings and full regression not yet verified. See TEST-0081.md.
+
+## Foundation 0.9.1
+User-reported QML startup failure in WidgetRegistry.js: nine unsupported object-spread expressions in the registry self-test. Replaced the entire registry's modern syntax with simple ES5-style functions, indexed loops and explicit object construction. All 16 registry logic cases passed in the development JS runtime and no spread tokens remain in this file. QML runtime verification is still required. Widget manifest schema, saved preferences, security restrictions and the UI remain unchanged. No system or compositor settings changed.
