@@ -15,11 +15,11 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     color: "transparent"
-    property var entries: {
+    readonly property var catalog: DesktopEntries.applications.values.filter(a => !a.noDisplay && !a.runInTerminal)
+        .sort((a,b) => a.name.localeCompare(b.name))
+    readonly property var entries: {
         const query = search.text.trim().toLowerCase()
-        return DesktopEntries.applications.values.filter(a => !a.noDisplay && !a.runInTerminal &&
-            (!query || (a.name + " " + a.genericName + " " + a.keywords.join(" ")).toLowerCase().includes(query)))
-            .sort((a,b) => a.name.localeCompare(b.name))
+        return !query ? catalog : catalog.filter(a => (a.name + " " + a.genericName + " " + a.keywords.join(" ")).toLowerCase().includes(query))
     }
     function launch(entry) {
         if (!entry) return
@@ -72,7 +72,7 @@ PanelWindow {
                     onClicked: win.launch(modelData)
                     background: Rectangle { radius: 9; color: app.highlighted || app.hovered ? win.prefs.outline : "transparent" }
                     contentItem: RowLayout {
-                        Image { Layout.preferredWidth: 30; Layout.preferredHeight: 30; source: Quickshell.iconPath(app.modelData.icon, "application-x-executable"); sourceSize.width: 32; sourceSize.height: 32 }
+                        Image { Layout.preferredWidth: 30; Layout.preferredHeight: 30; source: Quickshell.iconPath(app.modelData.icon, "application-x-executable"); sourceSize.width: 32; sourceSize.height: 32; cache: false }
                         Text { text: app.modelData.name; color: win.prefs.foreground; font.pixelSize: 15; elide: Text.ElideRight; Layout.fillWidth: true }
                     }
                 }

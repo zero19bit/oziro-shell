@@ -14,7 +14,7 @@ command -v quickshell >/dev/null || { echo "Install quickshell from Arch Extra f
 umask 077
 mkdir -p -- "$(dirname -- "$dest")"
 mkdir -- "$dest"
-for f in shell.qml Chip.qml TopBar.qml Launcher.qml ControlCenter.qml doctor.sh benchmark.sh; do
+for f in shell.qml Chip.qml PanelChip.qml Preferences.qml NiriBackend.qml TopBar.qml Launcher.qml ControlCenter.qml doctor.sh benchmark.sh measure.sh; do
   install -m 600 -- "$src/$f" "$dest/$f"
 done
 printf 'Installed experimental user copy: %s\nRun: quickshell -p %q\n' "$dest" "$dest"

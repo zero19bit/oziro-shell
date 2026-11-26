@@ -39,7 +39,7 @@ PanelWindow {
             anchors.fill: parent
             anchors.margins: 8
             spacing: 8
-            Chip { prefs: bar.prefs; label: "OZIRO"; selected: true; onActivated: bar.openLauncher() }
+            PanelChip { prefs: bar.prefs; label: "OZIRO"; enabled: !bar.prefs.panelOnly; selected: true; onActivated: bar.openLauncher() }
             Flickable {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Math.max(40, bar.width * 0.38)
@@ -53,7 +53,7 @@ PanelWindow {
                     spacing: 4
                     Repeater {
                         model: bar.niriBackend.enabled ? 0 : Hyprland.workspaces
-                        Chip {
+                        PanelChip {
                             required property var modelData
                             prefs: bar.prefs
                             visible: bar.monitor !== null && modelData.monitor === bar.monitor
@@ -64,7 +64,7 @@ PanelWindow {
                     }
                     Repeater {
                         model: bar.niriWorkspaces
-                        Chip {
+                        PanelChip {
                             required property var modelData
                             prefs: bar.prefs
                             label: modelData.name || String(modelData.idx)
@@ -89,13 +89,13 @@ PanelWindow {
                 color: bar.prefs.foreground
                 font.pixelSize: 12
             }
-            Chip {
+            PanelChip {
                 prefs: bar.prefs
                 enabled: Pipewire.ready && bar.sink !== null && bar.sink.audio !== null
                 label: !enabled ? "No audio" : bar.sink.audio.muted ? "Muted" : "Vol " + Math.round(bar.sink.audio.volume * 100) + "%"
                 onActivated: { if (enabled) bar.sink.audio.muted = !bar.sink.audio.muted }
             }
-            Chip { prefs: bar.prefs; label: bar.prefs.eco ? "Eco · Controls" : "Controls"; onActivated: bar.openControls() }
+            PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; label: bar.prefs.eco ? "Eco · Controls" : "Controls"; onActivated: bar.openControls() }
         }
     }
 }

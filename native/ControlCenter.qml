@@ -80,7 +80,8 @@ PanelWindow {
                             Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: win.prefs.layoutMode === modelData; onActivated: win.prefs.layoutMode = modelData }
                         }
                     }
-                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Session preferences only. Eco changes shell effects, not CPU or hardware power limits."; color: win.prefs.muted; font.pixelSize: 11 }
+                    Text { Layout.fillWidth: true; text: win.prefs.settingsStatus; color: win.prefs.muted; font.pixelSize: 12 }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Eco changes shell effects, not CPU or hardware power limits."; color: win.prefs.muted; font.pixelSize: 11 }
                 }
             }
         }
