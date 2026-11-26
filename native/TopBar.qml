@@ -12,6 +12,7 @@ PanelWindow {
     required property string clockText
     signal openLauncher()
     signal openControls()
+    signal openNotifications()
     readonly property var monitor: !niriBackend.enabled && screen ? Hyprland.monitorFor(screen) : null
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var battery: {
@@ -99,6 +100,12 @@ PanelWindow {
                 enabled: Pipewire.ready && bar.sink !== null && bar.sink.audio !== null
                 label: !enabled ? "No audio" : bar.sink.audio.muted ? "Muted" : "Vol " + Math.round(bar.sink.audio.volume * 100) + "%"
                 onActivated: { if (enabled) bar.sink.audio.muted = !bar.sink.audio.muted }
+            }
+            PanelChip {
+                prefs: bar.prefs
+                enabled: !bar.prefs.panelOnly
+                label: bar.prefs.notificationBackend ? "Alerts " + bar.prefs.notificationCount : "Alerts"
+                onActivated: bar.openNotifications()
             }
             PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; label: bar.prefs.eco ? "Eco · Controls" : "Controls"; onActivated: bar.openControls() }
         }

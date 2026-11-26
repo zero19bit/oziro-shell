@@ -1,0 +1,3 @@
+# Foundation 0.5 — user-reported Niri runtime
+13/14 checks passed: controls open, Wi-Fi state/toggle, Bluetooth state/toggle, brightness, audio, battery, refresh, dock, launcher, settings persistence, clean exit. System power profile change unconfirmed, not failed. No new power daemon should be installed until current provider is identified. No new PSS or battery benchmark. 
+0.6: normal session must leave existing daemon intact; isolated test must deliver two notifications, show count, toast, dismiss, clear, DND, and exit without disrupting Ryoku. Verify old functions separately in normal session. No production readiness claim.

@@ -1,4 +1,4 @@
-# Oziro V2 — Foundation 0.5 (experimental)
+# Oziro V2 — Foundation 0.6 (experimental)
 Native Arch / Hyprland and Niri shell, independent of the legacy Rust/React host. Not a production release.
 
 ## Test on a real Wayland session
@@ -16,7 +16,7 @@ QML targets documented Quickshell 0.3.2 APIs, but still requires actual Arch/Hyp
 
 ## Scope
 Implemented in source: per-screen panel, real workspace activation, clock, default audio mute/volume, battery status, on-demand launcher, control center, five provisional palettes, three panel placements, battery-aware reduced shell effects, user-copy installer and measurement helper. No always-on AI, sync or animated wallpaper.
-Not yet implemented: dock auto-hide, Hyprland running-window tracking, full notifications, Wi-Fi scanning and connection, Bluetooth pairing, tray, advanced power policy, graphical setup, plugin isolation, widgets, lock screen, update mechanism, CI runtime tests or OS image. See VISION.md.
+Not yet implemented: dock auto-hide, Hyprland running-window tracking, notification actions and disk history, Wi-Fi scanning and connection, Bluetooth pairing, tray, advanced power policy, graphical setup, plugin isolation, widgets, lock screen, update mechanism, CI runtime tests or OS image. See VISION.md.
 
 ## Foundation 0.2 changes
 Niri backend uses a single event stream socket with reconnect on disconnect and a separate bounded action connection. The panel chooses Niri when NIRI_SOCKET is set; battery selection falls back to a present physical laptop battery. Both changes passed the user-reported Niri test (see TEST-002.md). No compositor files are modified.
@@ -29,3 +29,6 @@ Enable Dock in Controls; off by default to keep the panel baseline comparable. P
 
 ## Foundation 0.5
 Control Center adds Wi-Fi radio and Bluetooth adapter toggles, backlight steps with a 5% floor, battery state and optional system power profiles. The bounded helper runs only when the popup opens, after an explicit action, or on Refresh. No periodic polling, no password handling, no sudo, no auto-install. Requires optional NetworkManager/nmcli, BlueZ/bluetoothctl, brightnessctl and powerprofilesctl respectively. Existing power managers are not reconfigured. Turning off Wi-Fi or Bluetooth can disconnect devices; test only when safe. System controls show unavailable when services are absent. External changes require Refresh. Wi-Fi network selection and Bluetooth pairing are not included. Test runtime and actual hardware permissions on Arch. The helper can be checked independently with `bash native/system-controls.sh status` (read-only).
+
+## Foundation 0.6
+Normal launch leaves the current notification service alone. Alerts reports external/disabled state, not fake history. To test real freedesktop notifications without taking Ryoku's bus name, stop the normal Oziro instance and run `bash native/notification-test.sh`. It creates a private D-Bus session, launches Oziro, waits for the notification owner and sends two test messages. Ctrl+C exits. Requires dbus-run-session, busctl and notify-send (libnotify); ordinary desktop applications still notify Ryoku. Some session-bus integrations may be unavailable inside the isolated test. This is not a replacement procedure for an existing notification daemon. Direct opt-in with OZIRO_NOTIFICATIONS=1 is for a standalone session only, after verifying no other daemon owns the name. No automatic takeover or service shutdown. Notification center has bounded session-only retention, plain-text rendering, clear/dismiss, count, timed latest-message toast and session-only DND. No action buttons, disk history, per-notification timeout fidelity or production lock-screen privacy integration yet. Do not use the experimental daemon for important notifications. Runtime not verified. See TEST-005.md.

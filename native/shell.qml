@@ -27,6 +27,15 @@ ShellRoot {
     readonly property color selectedText: theme === "light" ? "#ffffff" : "#111827"
     readonly property color muted: theme === "light" ? "#536173" : "#a8b4c4"
     readonly property color outline: theme === "light" ? "#cbd5e1" : "#364253"
+    readonly property bool notificationRequested: Quickshell.env("OZIRO_NOTIFICATIONS") === "1" && !panelOnly
+    property bool quietNotifications: false
+    readonly property var notificationBackend: notificationLoader.item
+    readonly property int notificationCount: notificationBackend ? notificationBackend.count : 0
+    Loader {
+        id: notificationLoader
+        active: shell.notificationRequested
+        source: active ? Qt.resolvedUrl("NotificationBackend.qml") : ""
+    }
     NiriBackend { id: niri }
     SystemClock { id: clock; precision: SystemClock.Minutes }
     PwObjectTracker { objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : [] }
@@ -40,7 +49,7 @@ ShellRoot {
                 if (shell.panelOnly) return;
                 if (popup === name) { closePopup(); return; }
                 popup = name;
-                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -54,8 +63,19 @@ ShellRoot {
                 clockText: Qt.formatDateTime(clock.date, "ddd, MMM d  ·  HH:mm")
                 onOpenLauncher: output.toggle("launcher")
                 onOpenControls: output.toggle("controls")
+                onOpenNotifications: output.toggle("notifications")
             }
             Loader { id: popupLoader }
+            Loader {
+                active: shell.notificationBackend !== null && !shell.quietNotifications
+                    && Quickshell.screens[0] === output.modelData
+                source: active ? Qt.resolvedUrl("NotificationToast.qml") : ""
+                onLoaded: {
+                    item.screen = output.modelData;
+                    item.prefs = shell;
+                    item.backend = shell.notificationBackend;
+                }
+            }
             Loader {
                 id: dockLoader
                 active: shell.dockEnabled && !shell.panelOnly
