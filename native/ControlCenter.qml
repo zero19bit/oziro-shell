@@ -11,6 +11,7 @@ PanelWindow {
     required property var prefs
     signal dismiss()
     signal openSettings()
+    signal openEnergy()
     SystemControls { id: sys }
     readonly property var battery: {
         const aggregate = UPower.displayDevice;
@@ -127,12 +128,16 @@ PanelWindow {
                         }
                     }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "System profiles are separate from Oziro rendering. Unsupported services are disabled."; color: win.prefs.muted; font.pixelSize: 11 }
-                    Text { text: "Energy / shell effects"; color: win.prefs.accent; font.bold: true }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Text { text: "Energy / shell effects"; color: win.prefs.accent; font.bold: true; Layout.fillWidth: true }
+                        Chip { prefs: win.prefs; label: "Energy"; onActivated: win.openEnergy() }
+                    }
                     RowLayout {
                         Chip { prefs: win.prefs; label: "Reduce effects"; selected: win.prefs.reduceEffects; onActivated: win.prefs.reduceEffects = !win.prefs.reduceEffects }
-                        Chip { prefs: win.prefs; label: "Auto on battery"; selected: win.prefs.autoEco; onActivated: win.prefs.autoEco = !win.prefs.autoEco }
+                        Chip { prefs: win.prefs; label: "Auto on battery"; enabled: win.prefs.energyMode === "adaptive"; selected: win.prefs.autoEco; onActivated: win.prefs.autoEco = !win.prefs.autoEco }
                     }
-                    Text { text: win.prefs.eco ? "Eco rendering active" : "Standard rendering active"; color: win.prefs.muted }
+                    Text { text: (win.prefs.eco ? "Eco rendering · " : "Standard rendering · ") + win.prefs.energyReason; color: win.prefs.muted }
                     Text { text: "Appearance"; color: win.prefs.accent; font.bold: true }
                     Flow {
                         Layout.fillWidth: true
@@ -154,7 +159,7 @@ PanelWindow {
                     Text { text: "Dock"; color: win.prefs.accent; font.bold: true }
                     Chip {
                         prefs: win.prefs
-                        label: win.prefs.dockEnabled ? "Dock enabled" : "Enable dock"
+                        label: win.prefs.dockSuspended ? "Dock paused by Energy" : win.prefs.dockEnabled ? "Dock enabled" : "Enable dock"
                         selected: win.prefs.dockEnabled
                         onActivated: win.prefs.dockEnabled = !win.prefs.dockEnabled
                     }

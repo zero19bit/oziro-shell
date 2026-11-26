@@ -11,6 +11,13 @@ ShellRoot {
     property alias layoutMode: settings.layoutMode
     property alias reduceEffects: settings.reduceEffects
     property alias autoEco: settings.autoEco
+    property alias energyMode: settings.energyMode
+    property alias suspendDockOnBattery: settings.suspendDockOnBattery
+    EnergyEngine { id: energy; prefs: shell }
+    readonly property bool dockSuspended: energy.dockSuspended
+    readonly property bool onBattery: energy.onBattery
+    readonly property int batteryPercent: energy.percentage
+    readonly property string energyReason: energy.reason
     property alias dockEnabled: settings.dockEnabled
     property alias pinnedApps: settings.pinnedApps
     property alias customAccent: settings.customAccent
@@ -30,7 +37,7 @@ ShellRoot {
     }
     readonly property string settingsStatus: settings.status
     readonly property bool panelOnly: Quickshell.env("OZIRO_PANEL_ONLY") === "1"
-    readonly property bool eco: reduceEffects || (autoEco && UPower.onBattery)
+    readonly property bool eco: energy.eco
     readonly property color surfaceColor: theme === "light" ? "#f3f5f9" : theme === "material" ? "#25243a" : theme === "cyber" ? "#141127" : theme === "glass" && !eco ? "#e61a202b" : "#1a202b"
     readonly property color foreground: theme === "light" ? "#202939" : "#edf2fa"
     readonly property color accent: customAccent !== "" ? customAccent : theme === "light" ? "#285b9b" : theme === "material" ? "#bcb0ff" : theme === "cyber" ? "#7df9ff" : "#93d9e9"
@@ -60,7 +67,7 @@ ShellRoot {
                 if (shell.panelOnly) return;
                 if (popup === name) { closePopup(); return; }
                 popup = name;
-                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -89,7 +96,7 @@ ShellRoot {
             }
             Loader {
                 id: dockLoader
-                active: shell.dockEnabled && !shell.panelOnly
+                active: shell.dockEnabled && !shell.panelOnly && !shell.dockSuspended
                 sourceComponent: Component {
                     Dock {
                         screen: output.modelData
@@ -104,6 +111,7 @@ ShellRoot {
                 ignoreUnknownSignals: true
                 function onDismiss() { Qt.callLater(output.closePopup); }
                 function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
+                function onOpenEnergy() { Qt.callLater(() => output.toggle("energy")); }
             }
         }
     }

@@ -8,6 +8,8 @@ Scope {
     property string layoutMode: "floating"
     property bool reduceEffects: false
     property bool autoEco: true
+    property string energyMode: "adaptive"
+    property bool suspendDockOnBattery: false
     property bool dockEnabled: false
     property var pinnedApps: []
     property string customAccent: ""
@@ -50,6 +52,8 @@ Scope {
                 panelHeight = boundedInt(data.panelHeight, 48, 44, 68);
                 dockIconSize = boundedInt(data.dockIconSize, 46, 36, 64);
                 if (typeof data.clock24Hour === "boolean") clock24Hour = data.clock24Hour;
+                if (["adaptive","balanced","eco"].includes(data.energyMode)) energyMode = data.energyMode;
+                if (typeof data.suspendDockOnBattery === "boolean") suspendDockOnBattery = data.suspendDockOnBattery;
                 status = "Settings loaded";
             } catch (error) {
                 writable = false;
@@ -64,6 +68,7 @@ Scope {
         file.setText(JSON.stringify({
             version: 1, theme: theme, layoutMode: layoutMode,
             reduceEffects: reduceEffects, autoEco: autoEco,
+            energyMode: energyMode, suspendDockOnBattery: suspendDockOnBattery,
             dockEnabled: dockEnabled, pinnedApps: pinnedApps,
             customAccent: customAccent, panelHeight: panelHeight,
             dockIconSize: dockIconSize, clock24Hour: clock24Hour
@@ -73,6 +78,8 @@ Scope {
     onLayoutModeChanged: save()
     onReduceEffectsChanged: save()
     onAutoEcoChanged: save()
+    onEnergyModeChanged: save()
+    onSuspendDockOnBatteryChanged: save()
     onDockEnabledChanged: save()
     onPinnedAppsChanged: save()
     onCustomAccentChanged: save()
