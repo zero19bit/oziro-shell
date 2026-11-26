@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Quickshell
 
 AbstractButton {
     id: btn
@@ -19,7 +20,7 @@ AbstractButton {
     Timer { id: tipDelay; interval: 650; repeat: false; onTriggered: btn.tipReady = btn.wantsTip }
     Loader {
         active: btn.tipReady && btn.wantsTip
-        sourceComponent: OziroTooltip { prefs: btn.prefs; targetItem: btn; label: btn.label; above: btn.prefs.layoutMode === "bottom" }
+        sourceComponent: OziroTooltip { prefs: btn.prefs; targetItem: btn; hostWindow: btn.QsWindow.window; label: btn.label; above: btn.prefs.layoutMode === "bottom"; hostEdgeMargin: btn.prefs.layoutMode === "floating" ? 6 : 0 }
     }
     background: Rectangle {
         radius: 5

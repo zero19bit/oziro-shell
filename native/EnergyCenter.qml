@@ -15,8 +15,8 @@ ShellPopup {
         report = "";
         probe.running = true;
     }
-    implicitWidth: Math.min(500, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 500)
-    implicitHeight: Math.min(650, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-160) : 650)
+    menuWidth: Math.min(500, screen ? Math.max(1,screen.width-24) : 500)
+    menuHeight: Math.min(650, screen ? Math.max(1,screen.height-160) : 650)
     Process {
         id: probe
         command: ["bash", Quickshell.shellPath("energy-status.sh")]
@@ -27,7 +27,7 @@ ShellPopup {
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight
         radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 12

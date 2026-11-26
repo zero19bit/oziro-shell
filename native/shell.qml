@@ -131,6 +131,7 @@ ShellRoot {
     readonly property bool notificationRequested: Quickshell.env("OZIRO_NOTIFICATIONS") === "1" && !panelOnly
     property bool quietNotifications: false
     property int openMenuCount: 0
+    property var activeMenuOutput: null
     readonly property var notificationBackend: notificationLoader.item
     readonly property int notificationCount: notificationBackend ? notificationBackend.count : 0
     Loader {
@@ -150,17 +151,24 @@ ShellRoot {
             property int popupEpoch: 0
             property bool transientOpen: popup !== "" && popup !== "settings"
             onTransientOpenChanged: shell.openMenuCount = Math.max(0,shell.openMenuCount+(transientOpen ? 1 : -1))
-            Component.onDestruction: { if (transientOpen) shell.openMenuCount = Math.max(0,shell.openMenuCount-1); }
+            Component.onDestruction: { if (transientOpen) shell.openMenuCount = Math.max(0,shell.openMenuCount-1); if (shell.activeMenuOutput === output) shell.activeMenuOutput = null; }
             function toggle(name) {
                 if (shell.panelOnly || (popupLoader.item && popupLoader.item.dismissBlocked === true)) return;
                 if (popup === name) { closePopup(); return; }
+                if (name !== "settings" && shell.activeMenuOutput && shell.activeMenuOutput !== output) {
+                    shell.activeMenuOutput.closePopup();
+                    if (shell.activeMenuOutput) return;
+                }
+                if (shell.activeMenuOutput === output) shell.activeMenuOutput = null;
+                if (name !== "settings") shell.activeMenuOutput = output;
                 popupEpoch++;
                 popup = name;
                 popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
-                                      name === "settings" ? {screen: output.modelData, prefs: shell} : {popupParent: topBar, prefs: shell});
+                                      {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
                 if (popupLoader.item && popupLoader.item.dismissBlocked === true) return;
+                if (shell.activeMenuOutput === output) shell.activeMenuOutput = null;
                 popupEpoch++;
                 popup = "";
                 popupLoader.source = "";
@@ -184,7 +192,16 @@ ShellRoot {
                 onOpenPower: output.toggle("power")
                 onOpenSettings: output.toggle("settings")
             }
-            Loader { id: popupLoader }
+            Loader {
+                id: popupLoader
+                onStatusChanged: {
+                    if (status === Loader.Error) {
+                        console.warn("Oziro menu load failed:", output.popup);
+                        const epoch=output.popupEpoch;
+                        Qt.callLater(() => { if (output.popupEpoch===epoch) output.closePopup(); });
+                    }
+                }
+            }
             Loader {
                 active: shell.notificationBackend !== null && !shell.quietNotifications
                     && Quickshell.screens[0] === output.modelData

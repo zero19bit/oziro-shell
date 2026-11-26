@@ -16,12 +16,12 @@ ShellPopup {
     SystemControls { id: sys }
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
-    implicitWidth: Math.min(500, popupParent && popupParent.screen ? Math.max(1, popupParent.screen.width - 24) : 500)
-    implicitHeight: Math.min(660, popupParent && popupParent.screen ? Math.max(1, popupParent.screen.height - win.prefs.popupMargin - 36) : 660)
+    menuWidth: Math.min(500, screen ? Math.max(1, screen.width - 24) : 500)
+    menuHeight: Math.min(660, screen ? Math.max(1, screen.height - win.prefs.popupMargin - 36) : 660)
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight
         color: win.prefs.popupColor
         border.color: win.prefs.outline
         radius: 20

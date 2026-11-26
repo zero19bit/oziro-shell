@@ -30,3 +30,5 @@ This is a compact historical index; detailed implementation and observed tests l
 0.9.19: targeted hardening of session, installer, hardware/power helpers, settings and IPC. Pure JS 78/78; runtime pending.
 
 0.9.20: shared native PopupWindow with outside-dismiss and Escape fallback; themed passive tooltips; floating Settings excluded. No global input listener. Niri runtime verification pending; first outside click may be consumed by compositor. Power action process kept alive until completion. See Quickshell 0.3.2 PopupWindow API.
+
+0.9.21: user reports 0.9.20 failed both tooltip and dismissal checks. Replace native grabbed PopupWindow with on-demand transparent Layer Shell menu surface (same content, outside click consumed), passive separately positioned tooltip surface, loader error recovery and one transient menu at a time. Settings remains independent. No runtime result yet; exact original failure not established without log.

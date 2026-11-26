@@ -8,12 +8,12 @@ ShellPopup {
     id: win
     signal openAppearance()
     property string message: ""
-    implicitWidth: Math.min(510, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 510)
-    implicitHeight: Math.min(650, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-win.prefs.popupMargin-36) : 650)
+    menuWidth: Math.min(510, screen ? Math.max(1,screen.width-24) : 510)
+    menuHeight: Math.min(650, screen ? Math.max(1,screen.height-win.prefs.popupMargin-36) : 650)
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 10
             RowLayout {

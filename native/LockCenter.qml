@@ -18,8 +18,8 @@ ShellPopup {
         report = "";
         probe.running = true;
     }
-    implicitWidth: Math.min(480, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 480)
-    implicitHeight: Math.min(520, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-win.prefs.popupMargin-36) : 520)
+    menuWidth: Math.min(480, screen ? Math.max(1,screen.width-24) : 480)
+    menuHeight: Math.min(520, screen ? Math.max(1,screen.height-win.prefs.popupMargin-36) : 520)
     Process {
         id: probe
         command: ["bash",Quickshell.shellPath("lock-session.sh"),"--check"]
@@ -30,7 +30,7 @@ ShellPopup {
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 12
             RowLayout {

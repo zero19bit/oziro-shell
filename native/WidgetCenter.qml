@@ -42,12 +42,12 @@ ShellPopup {
         if (type === "audio") return "Default audio output";
         return "Used / total · manual snapshot";
     }
-    implicitWidth: Math.min(540, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 540)
-    implicitHeight: Math.min(650, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-160) : 650)
+    menuWidth: Math.min(540, screen ? Math.max(1,screen.width-24) : 540)
+    menuHeight: Math.min(650, screen ? Math.max(1,screen.height-160) : 650)
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 12
             RowLayout {

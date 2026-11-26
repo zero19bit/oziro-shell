@@ -32,8 +32,8 @@ ShellPopup {
     function permitted(name) { return allowed && !probe.running && (name==="logout" ? logoutStatus==="yes" : name==="reboot" ? restartStatus==="yes" : name==="poweroff" && shutdownStatus==="yes"); }
     function hint(status) { return status==="yes" ? "" : status==="challenge" ? "Authentication needed" : status==="unknown" ? "…" : "Unavailable"; }
     alignment: "left"
-    implicitWidth: Math.min(350, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-20) : 350)
-    implicitHeight: Math.min(pending!=="" || report!=="" ? 440 : 330, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-win.prefs.popupMargin-20) : 440)
+    menuWidth: Math.min(350, screen ? Math.max(1,screen.width-20) : 350)
+    menuHeight: Math.min(pending!=="" || report!=="" ? 440 : 330, screen ? Math.max(1,screen.height-win.prefs.popupMargin-20) : 440)
     Process {
         id: probe
         command: ["bash",Quickshell.shellPath("power-action.sh"),"--check"]
@@ -54,7 +54,7 @@ ShellPopup {
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent; radius: 10; color: win.prefs.popupColor; border.color: win.prefs.outline
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight; radius: 10; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 10; spacing: 3
             RowLayout {

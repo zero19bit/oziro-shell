@@ -8,12 +8,12 @@ ShellPopup {
     id: win
     signal openWallpaper()
     signal openSettings()
-    implicitWidth: Math.min(540, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 540)
-    implicitHeight: Math.min(760, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-win.prefs.popupMargin-36) : 760)
+    menuWidth: Math.min(540, screen ? Math.max(1,screen.width-24) : 540)
+    menuHeight: Math.min(760, screen ? Math.max(1,screen.height-win.prefs.popupMargin-36) : 760)
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight
         radius: 20
         color: win.prefs.popupColor
         border.color: win.prefs.outline

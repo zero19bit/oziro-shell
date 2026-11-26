@@ -31,7 +31,7 @@ FocusScope {
     Timer { id: tipDelay; interval: 450; repeat: false; onTriggered: icon.tipReady = icon.wantsTip }
     Loader {
         active: icon.tipReady && icon.wantsTip
-        sourceComponent: OziroTooltip { prefs: icon.prefs; targetItem: icon; label: icon.title; above: !icon.inverted }
+        sourceComponent: OziroTooltip { prefs: icon.prefs; targetItem: icon; hostWindow: icon.QsWindow.window; label: icon.title; above: !icon.inverted; hostEdgeMargin: 8 }
     }
     Rectangle {
         anchors.fill: parent; radius: 10

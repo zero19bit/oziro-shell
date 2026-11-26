@@ -10,8 +10,8 @@ ShellPopup {
     signal openPower()
     signal openControls()
     alignment: "center"
-    implicitWidth: Math.min(620, popupParent && popupParent.screen ? popupParent.screen.width - 24 : 620)
-    implicitHeight: Math.min(480, popupParent && popupParent.screen ? popupParent.screen.height - 140 : 480)
+    menuWidth: Math.min(620, screen ? screen.width - 24 : 620)
+    menuHeight: Math.min(480, screen ? screen.height - 140 : 480)
     readonly property var catalog: DesktopEntries.applications.values.filter(a => !a.noDisplay && !a.runInTerminal)
         .sort((a,b) => a.name.localeCompare(b.name))
     readonly property var entries: {
@@ -26,7 +26,7 @@ ShellPopup {
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight
         color: win.prefs.popupColor
         border.color: win.prefs.outline
         radius: 12

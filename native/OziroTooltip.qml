@@ -1,24 +1,40 @@
 import QtQuick
 import Quickshell
+import Quickshell.Wayland
 
-PopupWindow {
+// Independent non-interactive layer surface. Coordinates use the actual host window,
+// not a Qt Controls tooltip confined to a 32px bar.
+PanelWindow {
     id: tip
     required property var prefs
     required property Item targetItem
+    required property var hostWindow
     required property string label
     property bool above: false
-    grabFocus: false
-    visible: true
-    color: "transparent"
+    property int hostEdgeMargin: 0
+    readonly property real centerX: {
+        if (!hostWindow || !screen) return 0;
+        const transform = hostWindow.windowTransform;
+        const p=hostWindow.mapFromItem(targetItem,targetItem.width/2,0);
+        return (screen.width-hostWindow.width)/2+p.x;
+    }
+    screen: hostWindow ? hostWindow.screen : null
+    visible: hostWindow !== null && hostWindow !== undefined && screen !== null
+    anchors { top: !tip.above; bottom: tip.above; left: true }
+    margins {
+        left: Math.round(Math.max(4, Math.min(tip.centerX-tip.implicitWidth/2, (tip.screen ? tip.screen.width : 300)-tip.implicitWidth-4)))
+        top: !tip.above && tip.hostWindow ? tip.hostWindow.height+tip.hostEdgeMargin+5 : 0
+        bottom: tip.above && tip.hostWindow ? tip.hostWindow.height+tip.hostEdgeMargin+5 : 0
+    }
+    exclusionMode: ExclusionMode.Ignore
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    WlrLayershell.namespace: "oziro-tooltip"
     mask: Region {}
+    color: "transparent"
     implicitWidth: Math.min(260, Math.ceil(metrics.advanceWidth)+20)
     implicitHeight: 28
     TextMetrics { id: metrics; text: tip.label; font.pixelSize: 12 }
-    anchor.item: targetItem
-    anchor.rect.x: Math.round((targetItem.width-implicitWidth)/2)
-    anchor.rect.y: above ? -8 : targetItem.height+6
-    anchor.gravity: (above ? Edges.Top : Edges.Bottom) | Edges.Right
-    anchor.adjustment: PopupAdjustment.Slide | PopupAdjustment.FlipY
     Rectangle {
         anchors.fill: parent
         radius: 6

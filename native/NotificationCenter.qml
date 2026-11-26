@@ -7,12 +7,12 @@ import Quickshell.Wayland
 ShellPopup {
     id: win
     readonly property var backend: prefs.notificationBackend
-    implicitWidth: Math.min(430, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 430)
-    implicitHeight: Math.min(550, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-140) : 550)
+    menuWidth: Math.min(430, screen ? Math.max(1,screen.width-24) : 430)
+    menuHeight: Math.min(550, screen ? Math.max(1,screen.height-140) : 550)
     Rectangle {
         focus: true
         Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
-        anchors.fill: parent
+        x: win.bodyX; y: win.bodyY; width: win.bodyWidth; height: win.bodyHeight
         radius: 20
         color: win.prefs.popupColor
         border.color: win.prefs.outline
