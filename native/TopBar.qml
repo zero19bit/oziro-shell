@@ -27,7 +27,12 @@ PanelWindow {
         ? niriBackend.workspaces.filter(w => w.output === screen.name).sort((a,b) => a.idx-b.idx)
         : []
     anchors { top: bar.prefs.layoutMode !== "bottom"; bottom: bar.prefs.layoutMode === "bottom"; left: true; right: true }
-    margins { top: bar.prefs.layoutMode === "floating" ? 8 : 0; left: bar.prefs.layoutMode === "floating" ? 12 : 0; right: left }
+    readonly property int sideMargin: prefs.layoutMode === "floating" ? 12 : 0
+    margins {
+        top: bar.prefs.layoutMode === "floating" ? 8 : 0
+        left: bar.sideMargin
+        right: bar.sideMargin
+    }
     implicitHeight: 48
     color: "transparent"
     Rectangle {
