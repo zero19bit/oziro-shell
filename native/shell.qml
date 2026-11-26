@@ -13,6 +13,16 @@ ShellRoot {
     property alias autoEco: settings.autoEco
     property alias dockEnabled: settings.dockEnabled
     property alias pinnedApps: settings.pinnedApps
+    property alias customAccent: settings.customAccent
+    property alias panelHeight: settings.panelHeight
+    property alias dockIconSize: settings.dockIconSize
+    property alias clock24Hour: settings.clock24Hour
+    function resetAppearance() { settings.resetAppearance(); }
+    function setAccent(value) {
+        if (value === "" || /^#[0-9a-fA-F]{6}$/.test(value)) customAccent = value.toLowerCase();
+    }
+    readonly property int popupMargin: panelHeight + 14
+    function linearChannel(c) { return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
     function togglePin(id) {
         if (typeof id !== "string" || !id.length || id.length > 256) return;
         if (pinnedApps.includes(id)) pinnedApps = pinnedApps.filter(value => value !== id);
@@ -23,8 +33,9 @@ ShellRoot {
     readonly property bool eco: reduceEffects || (autoEco && UPower.onBattery)
     readonly property color surfaceColor: theme === "light" ? "#f3f5f9" : theme === "material" ? "#25243a" : theme === "cyber" ? "#141127" : theme === "glass" && !eco ? "#e61a202b" : "#1a202b"
     readonly property color foreground: theme === "light" ? "#202939" : "#edf2fa"
-    readonly property color accent: theme === "light" ? "#285b9b" : theme === "material" ? "#bcb0ff" : theme === "cyber" ? "#7df9ff" : "#93d9e9"
-    readonly property color selectedText: theme === "light" ? "#ffffff" : "#111827"
+    readonly property color accent: customAccent !== "" ? customAccent : theme === "light" ? "#285b9b" : theme === "material" ? "#bcb0ff" : theme === "cyber" ? "#7df9ff" : "#93d9e9"
+    readonly property real accentLuminance: 0.2126 * linearChannel(accent.r) + 0.7152 * linearChannel(accent.g) + 0.0722 * linearChannel(accent.b)
+    readonly property color selectedText: accentLuminance > 0.179 ? "#000000" : "#ffffff"
     readonly property color muted: theme === "light" ? "#536173" : "#a8b4c4"
     readonly property color outline: theme === "light" ? "#cbd5e1" : "#364253"
     readonly property bool notificationRequested: Quickshell.env("OZIRO_NOTIFICATIONS") === "1" && !panelOnly
@@ -49,7 +60,7 @@ ShellRoot {
                 if (shell.panelOnly) return;
                 if (popup === name) { closePopup(); return; }
                 popup = name;
-                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -60,7 +71,7 @@ ShellRoot {
                 screen: output.modelData
                 prefs: shell
                 niriBackend: niri
-                clockText: Qt.formatDateTime(clock.date, "ddd, MMM d  ·  HH:mm")
+                clockText: Qt.formatDateTime(clock.date, shell.clock24Hour ? "ddd, MMM d  ·  HH:mm" : "ddd, MMM d  ·  h:mm AP")
                 onOpenLauncher: output.toggle("launcher")
                 onOpenControls: output.toggle("controls")
                 onOpenNotifications: output.toggle("notifications")
@@ -90,7 +101,9 @@ ShellRoot {
             }
             Connections {
                 target: popupLoader.item
+                ignoreUnknownSignals: true
                 function onDismiss() { Qt.callLater(output.closePopup); }
+                function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
             }
         }
     }

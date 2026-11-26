@@ -10,7 +10,7 @@ PanelWindow {
     signal dismiss()
     readonly property var backend: prefs.notificationBackend
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
-    margins { top: 62; bottom: 62; right: 12 }
+    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
     implicitWidth: Math.min(430, screen ? Math.max(1,screen.width-24) : 430)
     implicitHeight: Math.min(550, screen ? Math.max(1,screen.height-140) : 550)
     exclusionMode: ExclusionMode.Ignore

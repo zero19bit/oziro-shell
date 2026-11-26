@@ -10,6 +10,7 @@ PanelWindow {
     id: win
     required property var prefs
     signal dismiss()
+    signal openSettings()
     SystemControls { id: sys }
     readonly property var battery: {
         const aggregate = UPower.displayDevice;
@@ -21,7 +22,7 @@ PanelWindow {
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
-    margins { top: 62; bottom: 62; right: 12 }
+    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
     implicitWidth: Math.min(470, screen ? Math.max(1, screen.width - 24) : 470)
     implicitHeight: Math.min(650, screen ? Math.max(1, screen.height - 140) : 650)
     exclusionMode: ExclusionMode.Ignore
@@ -38,6 +39,7 @@ PanelWindow {
             spacing: 10
             RowLayout {
                 Text { text: "Control Center"; color: win.prefs.foreground; font.pixelSize: 20; font.bold: true; Layout.fillWidth: true }
+                Chip { prefs: win.prefs; label: "Settings"; onActivated: win.openSettings() }
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }
             ScrollView {

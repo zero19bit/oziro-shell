@@ -22,7 +22,7 @@ PanelWindow {
     anchors { top: dock.prefs.layoutMode === "bottom"; bottom: dock.prefs.layoutMode !== "bottom" }
     margins { top: 8; bottom: 8 }
     implicitWidth: Math.min(screen ? Math.max(80,screen.width-32) : 640, items.implicitWidth + 20)
-    implicitHeight: 62
+    implicitHeight: dock.prefs.dockIconSize + 16
     color: "transparent"
     Rectangle {
         anchors.fill: parent

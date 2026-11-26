@@ -9,7 +9,7 @@ PanelWindow {
     required property var prefs
     signal dismiss()
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom" }
-    margins { top: 62; bottom: 62 }
+    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin }
     implicitWidth: Math.min(620, screen ? screen.width - 24 : 620)
     implicitHeight: Math.min(480, screen ? screen.height - 140 : 480)
     exclusionMode: ExclusionMode.Ignore

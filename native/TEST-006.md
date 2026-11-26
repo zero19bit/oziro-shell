@@ -1,0 +1,3 @@
+# Foundation 0.6 — user-reported Niri test
+All 10 reported checks passed: launch, toast, notification center, two sample messages, count, dismiss, clear, DND, theme, clean exit. Tests were conducted with the private-bus notification test procedure; real desktop takeover and external history are not validated. Foundation 0.5 power profile remains unconfirmed. No new performance benchmark.
+0.7 acceptance: normal launch; open Controls > Settings; test five palettes, accent preset and custom valid hex, invalid hex disabled, panel/dock sizing, layouts, clock format, reset preserving pins, restart persistence, prior features and clean exit. Test notifications separately using the private bus. No production release claim.

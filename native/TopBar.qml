@@ -34,7 +34,7 @@ PanelWindow {
         left: bar.sideMargin
         right: bar.sideMargin
     }
-    implicitHeight: 48
+    implicitHeight: bar.prefs.panelHeight
     color: "transparent"
     Rectangle {
         anchors.fill: parent

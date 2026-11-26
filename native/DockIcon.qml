@@ -9,7 +9,7 @@ Item {
     property bool running: false
     property bool selected: false
     signal activated()
-    width: 46; height: 46
+    width: icon.prefs.dockIconSize; height: icon.prefs.dockIconSize
     Accessible.role: Accessible.Button
     Accessible.name: title
     Accessible.onPressAction: activated()
@@ -21,9 +21,9 @@ Item {
     }
     Image {
         anchors.centerIn: parent
-        width: 30; height: 30
+        width: Math.round(icon.width * 0.65); height: width
         source: Quickshell.iconPath(icon.iconName || "application-x-executable","application-x-executable")
-        sourceSize.width: 32; sourceSize.height: 32
+        sourceSize.width: width; sourceSize.height: height
         fillMode: Image.PreserveAspectFit
     }
     Rectangle {

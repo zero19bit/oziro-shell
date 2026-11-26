@@ -10,6 +10,25 @@ Scope {
     property bool autoEco: true
     property bool dockEnabled: false
     property var pinnedApps: []
+    property string customAccent: ""
+    property int panelHeight: 48
+    property int dockIconSize: 46
+    property bool clock24Hour: true
+    property bool resettingAppearance: false
+    function resetAppearance() {
+        resettingAppearance = true;
+        theme = "glass";
+        customAccent = "";
+        panelHeight = 48;
+        dockIconSize = 46;
+        layoutMode = "floating";
+        clock24Hour = true;
+        resettingAppearance = false;
+        save();
+    }
+    function boundedInt(value, fallback, min, max) {
+        return typeof value === "number" && Number.isFinite(value) ? Math.max(min, Math.min(max, Math.round(value))) : fallback;
+    }
     property bool initialized: false
     property bool writable: true
     property string status: "Loading settings"
@@ -27,6 +46,10 @@ Scope {
                 if (typeof data.dockEnabled === "boolean") dockEnabled = data.dockEnabled;
                 if (Array.isArray(data.pinnedApps)) pinnedApps = [...new Set(data.pinnedApps.filter(id =>
                     typeof id === "string" && id.length > 0 && id.length <= 256))].slice(0,12);
+                if (typeof data.customAccent === "string" && /^#[0-9a-fA-F]{6}$/.test(data.customAccent)) customAccent = data.customAccent;
+                panelHeight = boundedInt(data.panelHeight, 48, 44, 68);
+                dockIconSize = boundedInt(data.dockIconSize, 46, 36, 64);
+                if (typeof data.clock24Hour === "boolean") clock24Hour = data.clock24Hour;
                 status = "Settings loaded";
             } catch (error) {
                 writable = false;
@@ -37,11 +60,13 @@ Scope {
         initialized = true;
     }
     function save() {
-        if (!initialized || !writable) return;
+        if (!initialized || !writable || resettingAppearance) return;
         file.setText(JSON.stringify({
             version: 1, theme: theme, layoutMode: layoutMode,
             reduceEffects: reduceEffects, autoEco: autoEco,
-            dockEnabled: dockEnabled, pinnedApps: pinnedApps
+            dockEnabled: dockEnabled, pinnedApps: pinnedApps,
+            customAccent: customAccent, panelHeight: panelHeight,
+            dockIconSize: dockIconSize, clock24Hour: clock24Hour
         }, null, 2) + "\n");
     }
     onThemeChanged: save()
@@ -50,6 +75,10 @@ Scope {
     onAutoEcoChanged: save()
     onDockEnabledChanged: save()
     onPinnedAppsChanged: save()
+    onCustomAccentChanged: save()
+    onPanelHeightChanged: save()
+    onDockIconSizeChanged: save()
+    onClock24HourChanged: save()
     FileView {
         id: file
         path: prefs.settingsPath
