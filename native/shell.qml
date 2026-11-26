@@ -131,7 +131,7 @@ ShellRoot {
                 if (shell.panelOnly) return;
                 if (popup === name) { closePopup(); return; }
                 popup = name;
-                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -185,6 +185,8 @@ ShellRoot {
                 function onOpenEnergy() { Qt.callLater(() => output.toggle("energy")); }
                 function onOpenWidgets() { Qt.callLater(() => output.toggle("widgets")); }
                 function onOpenWallpaper() { Qt.callLater(() => output.toggle("wallpaper")); }
+                function onOpenTray() { Qt.callLater(() => output.toggle("tray")); }
+                function onOpenControls() { Qt.callLater(() => output.toggle("controls")); }
             }
         }
     }

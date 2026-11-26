@@ -12,6 +12,7 @@ PanelWindow {
     signal openSettings()
     signal openEnergy()
     signal openWidgets()
+    signal openTray()
     SystemControls { id: sys }
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
@@ -164,6 +165,7 @@ PanelWindow {
                 Chip { prefs: win.prefs; label: "Settings"; onActivated: win.openSettings() }
                 Chip { prefs: win.prefs; label: "Energy"; onActivated: win.openEnergy() }
                 Chip { prefs: win.prefs; label: "Widgets"; onActivated: win.openWidgets() }
+                Chip { prefs: win.prefs; label: "Tray"; onActivated: win.openTray() }
             }
         }
     }

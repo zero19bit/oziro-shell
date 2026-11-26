@@ -6,3 +6,5 @@
 - Independence: isolated standalone session, notification ownership, system tray, lock screen, safe exit/recovery and installer/uninstall; no replacement of Ryoku until tested.
 - Design: first panel/dock visual pass in 0.9.4; validate all five themes, contrast, narrow displays, keyboard focus and visual regression. Popup visual pass in 0.9.5; validate slider controls, scrolling, light/dark themes and performance. Further polish remains open.
 - Release only after documented acceptance. 0.9.5 is stabilization, not 1.0 RC or a distribution.
+
+- Wallpaper 0.9.8: user confirms Compatibility visibility. Image loading, persistence, both-monitor visual behavior, and resource costs remain open. 0.9.9 tray: verify registration/coexistence and app-provided menu/activation with a real StatusNotifier item; no legacy XEmbed support.
