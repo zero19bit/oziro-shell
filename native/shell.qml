@@ -44,14 +44,14 @@ ShellRoot {
     function wallpaperPathValid(path) { return WallpaperPolicy.fileUrl(path) !== ""; }
     function wallpaperSelfTest() { return WallpaperPolicy.selfTest(); }
     function updateWallpaper(key,value) {
-        const next = {enabled:wallpaper.enabled,mode:wallpaper.mode,color:wallpaper.color,path:wallpaper.path,fit:wallpaper.fit};
-        if (!["enabled","mode","color","path","fit"].includes(key)) return;
+        const next = {enabled:wallpaper.enabled,mode:wallpaper.mode,color:wallpaper.color,path:wallpaper.path,fit:wallpaper.fit,layer:wallpaper.layer};
+        if (!["enabled","mode","color","path","fit","layer"].includes(key)) return;
         next[key] = value;
         settings.setWallpaper(next);
     }
     function useWallpaperImage(path) {
         if (!wallpaperPathValid(path)) return false;
-        settings.setWallpaper({enabled:wallpaper.enabled,mode:"image",color:wallpaper.color,path:path,fit:wallpaper.fit});
+        settings.setWallpaper({enabled:wallpaper.enabled,mode:"image",color:wallpaper.color,path:path,fit:wallpaper.fit,layer:wallpaper.layer});
         return true;
     }
     readonly property var widgetExtensions: settings.widgetExtensions

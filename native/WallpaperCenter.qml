@@ -42,6 +42,13 @@ PanelWindow {
                         onActivated: win.prefs.updateWallpaper("enabled",!win.prefs.wallpaper.enabled)
                     }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Optional layer. Existing wallpaper services are not stopped; other background layers may cover Oziro. Disable to return to the existing desktop."; color: win.prefs.muted; font.pixelSize: 11 }
+                    SectionLabel { prefs: win.prefs; label: "LAYER COMPATIBILITY" }
+                    Flow {
+                        Layout.fillWidth: true; spacing: 6
+                        Chip { prefs: win.prefs; label: "Background"; selected: win.prefs.wallpaper.layer === "background"; onActivated: win.prefs.updateWallpaper("layer","background") }
+                        Chip { prefs: win.prefs; label: "Compatibility (Bottom)"; selected: win.prefs.wallpaper.layer === "bottom"; onActivated: win.prefs.updateWallpaper("layer","bottom") }
+                    }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "If another shell covers the background, try Compatibility on an empty workspace. This can cover other desktop widgets, but does not stop their services. Switch back or disable wallpaper to undo."; color: win.prefs.muted; font.pixelSize: 11 }
                     SectionLabel { prefs: win.prefs; label: "PREVIEW" }
                     Rectangle {
                         Layout.fillWidth: true; Layout.preferredHeight: 155

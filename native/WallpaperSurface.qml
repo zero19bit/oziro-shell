@@ -7,7 +7,8 @@ PanelWindow {
     required property var prefs
     anchors { top: true; bottom: true; left: true; right: true }
     exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: WlrLayer.Background
+    WlrLayershell.layer: win.prefs.wallpaper.layer === "bottom" ? WlrLayer.Bottom : WlrLayer.Background
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     WlrLayershell.namespace: "oziro-wallpaper"
     mask: Region {}
     color: win.prefs.wallpaper.color
