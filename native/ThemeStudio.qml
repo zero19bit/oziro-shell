@@ -18,7 +18,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 20
-        color: win.prefs.surfaceColor
+        color: win.prefs.popupColor
         border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent
@@ -36,14 +36,15 @@ PanelWindow {
                 ColumnLayout {
                     width: scroll.availableWidth
                     spacing: 12
-                    Text { text: "LIVE PREVIEW"; font.bold: true; color: win.prefs.accent }
+                    SectionLabel { prefs: win.prefs; label: "LIVE PREVIEW" }
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 114
                         radius: 14
-                        color: win.prefs.outline
+                        color: win.prefs.cardColor
+                        border.color: win.prefs.outline
                         Rectangle {
-                            anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
+                            anchors { left: parent.left; right: parent.right; top: win.prefs.layoutMode === "bottom" ? undefined : parent.top; bottom: win.prefs.layoutMode === "bottom" ? parent.bottom : undefined; margins: 10 }
                             height: win.prefs.panelHeight * 0.65
                             radius: win.prefs.layoutMode === "floating" ? 10 : 0
                             color: win.prefs.surfaceColor
@@ -56,7 +57,8 @@ PanelWindow {
                             }
                         }
                         Row {
-                            anchors { horizontalCenter: parent.horizontalCenter; bottom: parent.bottom; bottomMargin: 10 }
+                            anchors { horizontalCenter: parent.horizontalCenter; bottom: win.prefs.layoutMode === "bottom" ? undefined : parent.bottom; top: win.prefs.layoutMode === "bottom" ? parent.top : undefined; margins: 10 }
+                            visible: win.prefs.dockEnabled && !win.prefs.dockSuspended
                             spacing: 5
                             Repeater {
                                 model: 4
@@ -68,7 +70,7 @@ PanelWindow {
                             }
                         }
                     }
-                    Text { text: "Design preset"; color: win.prefs.foreground; font.bold: true }
+                    SectionLabel { prefs: win.prefs; label: "DESIGN PRESET" }
                     Flow {
                         Layout.fillWidth: true; spacing: 7
                         Repeater {
@@ -108,13 +110,13 @@ PanelWindow {
                             placeholderText: "#RRGGBB"
                             text: win.prefs.customAccent
                             color: win.prefs.foreground
-                            background: Rectangle { color: win.prefs.surfaceColor; radius: 8; border.color: win.prefs.outline }
+                            background: Rectangle { color: win.prefs.cardColor; radius: 8; border.color: win.prefs.outline }
                             onAccepted: { if (/^#[0-9a-fA-F]{6}$/.test(text)) win.prefs.setAccent(text); }
                         }
                         Chip { prefs: win.prefs; label: "Apply"; enabled: /^#[0-9a-fA-F]{6}$/.test(hex.text); onActivated: win.prefs.setAccent(hex.text) }
                         Chip { prefs: win.prefs; label: "Default"; onActivated: { win.prefs.setAccent(""); hex.text = ""; } }
                     }
-                    Text { text: "Panel placement"; color: win.prefs.foreground; font.bold: true }
+                    SectionLabel { prefs: win.prefs; label: "PANEL PLACEMENT" }
                     Flow {
                         Layout.fillWidth: true; spacing: 6
                         Repeater {
@@ -123,7 +125,8 @@ PanelWindow {
                         }
                     }
                     Text { text: "Panel height · " + Math.round(panelSize.value) + " px"; color: win.prefs.foreground }
-                    Slider {
+                    AccentSlider {
+                        prefs: win.prefs
                         id: panelSize
                         Layout.fillWidth: true
                         from: 44; to: 68; stepSize: 2
@@ -133,7 +136,8 @@ PanelWindow {
                         Keys.onRightPressed: { win.prefs.panelHeight = Math.min(68, win.prefs.panelHeight+2); }
                     }
                     Text { text: "Dock size · " + Math.round(dockSize.value) + " px"; color: win.prefs.foreground }
-                    Slider {
+                    AccentSlider {
+                        prefs: win.prefs
                         id: dockSize
                         Layout.fillWidth: true
                         from: 36; to: 64; stepSize: 2

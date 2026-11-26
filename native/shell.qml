@@ -83,6 +83,10 @@ ShellRoot {
     readonly property bool panelOnly: Quickshell.env("OZIRO_PANEL_ONLY") === "1"
     readonly property bool eco: energyPolicy.eco
     readonly property color surfaceColor: theme === "light" ? "#f3f5f9" : theme === "material" ? "#25243a" : theme === "cyber" ? "#141127" : theme === "glass" && !eco ? "#e61a202b" : "#1a202b"
+    // Opaque content surfaces keep text legible over busy applications.
+    readonly property color popupColor: Qt.rgba(surfaceColor.r,surfaceColor.g,surfaceColor.b,1)
+    readonly property color cardColor: Qt.tint(popupColor, theme === "light" ? "#08000000" : "#0dffffff")
+    readonly property color hoverColor: Qt.tint(popupColor, theme === "light" ? "#10000000" : "#18ffffff")
     readonly property color foreground: theme === "light" ? "#202939" : "#edf2fa"
     readonly property color accent: customAccent !== "" ? customAccent : theme === "light" ? "#285b9b" : theme === "material" ? "#bcb0ff" : theme === "cyber" ? "#7df9ff" : "#93d9e9"
     readonly property real accentLuminance: 0.2126 * linearChannel(accent.r) + 0.7152 * linearChannel(accent.g) + 0.0722 * linearChannel(accent.b)

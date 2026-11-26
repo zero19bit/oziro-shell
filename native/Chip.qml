@@ -13,7 +13,7 @@ AbstractButton {
     Accessible.name: label
     background: Rectangle {
         radius: chip.prefs.theme === "minimal" ? 4 : 10
-        color: chip.selected ? chip.prefs.accent : chip.hovered || chip.activeFocus ? chip.prefs.outline : "transparent"
+        color: chip.selected ? chip.prefs.accent : chip.hovered || chip.activeFocus ? chip.prefs.hoverColor : "transparent"
         border.color: chip.selected || chip.activeFocus ? chip.prefs.accent : chip.prefs.outline
         border.width: chip.activeFocus ? 2 : 1
         Behavior on color { enabled: !chip.prefs.eco; ColorAnimation { duration: 120 } }

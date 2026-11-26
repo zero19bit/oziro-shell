@@ -19,7 +19,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 20
-        color: win.prefs.surfaceColor
+        color: win.prefs.popupColor
         border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent

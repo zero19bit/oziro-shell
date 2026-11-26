@@ -56,3 +56,6 @@ Niri window model ignores identical snapshots, no-op focus and duplicate window 
 
 ## Foundation 0.9.4 — visual refinement I
 User-reported 0.9.3 settled warm and idle results reached the current main-process targets (TEST-0093.md). The first visual pass refines panel hierarchy, workspace indicators, battery gauge, spacing and keyboard focus feedback for chips and dock icons. No new dependencies, shaders, persistent workers, or preference schema changes. Existing panel/dock placement and theme settings remain supported by the existing bindings. Visual and performance regression checks are pending. This is not the final Oziro design or 1.0 release.
+
+## Foundation 0.9.5 — visual refinement II
+Based on five user screenshots of 0.9.4, retain the accent and theme settings; opaque popup surfaces improve legibility, shared AccentSlider and SectionLabel components unify the control/appearance UI, launcher rows and widget cards receive refined styling, and the schematic theme preview reflects bottom placement and dock visibility. No new worker, shader or dependency. Runtime and appearance regression pending; verify slider actions, scroll, theme changes, launcher and widgets. No compositor changes. 0.9.4 user reported all working; screenshots show the five surfaces and installed widget. The upper Ryoku bar is independent of Oziro.

@@ -17,14 +17,14 @@ PanelWindow {
     readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
     margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
-    implicitWidth: Math.min(470, screen ? Math.max(1, screen.width - 24) : 470)
-    implicitHeight: Math.min(650, screen ? Math.max(1, screen.height - 140) : 650)
+    implicitWidth: Math.min(510, screen ? Math.max(1, screen.width - 24) : 510)
+    implicitHeight: Math.min(740, screen ? Math.max(1, screen.height - 140) : 740)
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     color: "transparent"
     Rectangle {
         anchors.fill: parent
-        color: win.prefs.surfaceColor
+        color: win.prefs.popupColor
         border.color: win.prefs.outline
         radius: 20
         ColumnLayout {
@@ -37,12 +37,13 @@ PanelWindow {
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }
             ScrollView {
+                id: scroll
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 contentWidth: availableWidth
                 ColumnLayout {
-                    width: parent.width
-                    spacing: 10
+                    width: scroll.availableWidth
+                    spacing: 12
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: "SYSTEM"; color: win.prefs.accent; font.bold: true; Layout.fillWidth: true }
@@ -71,6 +72,7 @@ PanelWindow {
                         }
                     }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: sys.message; color: win.prefs.muted; font.pixelSize: 11 }
+                    SectionLabel { prefs: win.prefs; label: "DISPLAY & SOUND" }
                     Text { text: sys.brightness >= 0 ? "Display brightness · " + sys.brightness + "%" : "Brightness unavailable"; color: win.prefs.muted }
                     RowLayout {
                         Layout.fillWidth: true
@@ -82,10 +84,11 @@ PanelWindow {
                         }
                         Chip { prefs: win.prefs; label: "+10%"; enabled: !sys.busy && sys.brightness >= 0 && sys.brightness < 100; onActivated: sys.request("brightness", String(Math.min(100, sys.brightness + 10))) }
                     }
-                    Text { text: win.audioReady ? "Audio output" : "Audio unavailable"; color: win.prefs.muted }
+                    Text { text: win.audioReady ? "Audio output · " + Math.round(win.sink.audio.volume*100) + "%" : "Audio unavailable"; color: win.prefs.muted }
                     RowLayout {
                         Layout.fillWidth: true
-                        Slider {
+                        AccentSlider {
+                            prefs: win.prefs
                             Layout.fillWidth: true
                             enabled: win.audioReady
                             from: 0; to: 1
@@ -99,6 +102,7 @@ PanelWindow {
                             onActivated: { if (enabled) win.sink.audio.muted = !win.sink.audio.muted }
                         }
                     }
+                    SectionLabel { prefs: win.prefs; label: "POWER & BATTERY" }
                     Text {
                         Layout.fillWidth: true
                         text: win.prefs.batteryPercent >= 0 ? "Battery · " + win.prefs.batteryPercent + "% · " + win.prefs.powerLabel : "Battery unavailable · " + win.prefs.powerLabel
@@ -130,9 +134,9 @@ PanelWindow {
                         Chip { prefs: win.prefs; label: "Reduce effects"; selected: win.prefs.eco; onActivated: win.prefs.selectEnergyMode(win.prefs.eco ? "balanced" : "eco") }
                         Chip { prefs: win.prefs; label: "Auto on battery"; enabled: win.prefs.energyMode === "adaptive"; selected: win.prefs.autoEco; onActivated: win.prefs.autoEco = !win.prefs.autoEco }
                     }
-                    Text { text: (win.prefs.eco ? "Eco rendering · " : "Standard rendering · ") + win.prefs.energyReason; color: win.prefs.muted }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: (win.prefs.eco ? "Eco rendering · " : "Standard rendering · ") + win.prefs.energyReason; color: win.prefs.muted }
                     Chip { prefs: win.prefs; label: "Open Widgets"; onActivated: win.openWidgets() }
-                    Text { text: "Appearance"; color: win.prefs.accent; font.bold: true }
+                    SectionLabel { prefs: win.prefs; label: "APPEARANCE" }
                     Flow {
                         Layout.fillWidth: true
                         spacing: 6

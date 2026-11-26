@@ -52,7 +52,7 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     color: "transparent"
     Rectangle {
-        anchors.fill: parent; radius: 20; color: win.prefs.surfaceColor; border.color: win.prefs.outline
+        anchors.fill: parent; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 12
             RowLayout {
@@ -80,12 +80,12 @@ PanelWindow {
                             delegate: Rectangle {
                                 id: card
                                 required property var modelData
-                                Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: 108
-                                radius: 13; color: win.prefs.outline
+                                Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: 120
+                                radius: 14; color: win.prefs.cardColor; border.color: win.prefs.outline
                                 ColumnLayout {
-                                    anchors.fill: parent; anchors.margins: 12; spacing: 5
-                                    Text { Layout.fillWidth: true; text: card.modelData.title; textFormat: Text.PlainText; elide: Text.ElideRight; color: win.prefs.muted }
-                                    Text { Layout.fillWidth: true; text: win.valueFor(card.modelData.type); textFormat: Text.PlainText; elide: Text.ElideRight; font.pixelSize: card.modelData.type === "memory" ? 17 : 24; font.bold: true; color: win.prefs.foreground }
+                                    anchors.fill: parent; anchors.margins: 14; spacing: 5
+                                    Text { Layout.fillWidth: true; font.pixelSize: 12; font.weight: Font.DemiBold; text: card.modelData.title; textFormat: Text.PlainText; elide: Text.ElideRight; color: win.prefs.muted }
+                                    Text { Layout.fillWidth: true; text: win.valueFor(card.modelData.type); textFormat: Text.PlainText; elide: Text.ElideRight; font.pixelSize: card.modelData.type === "memory" ? 18 : 26; font.bold: true; color: win.prefs.foreground }
                                     Text { Layout.fillWidth: true; text: win.detailFor(card.modelData.type); textFormat: Text.PlainText; elide: Text.ElideRight; color: win.prefs.muted; font.pixelSize: 11 }
                                 }
                             }
@@ -110,7 +110,7 @@ PanelWindow {
                         visible: win.managing; Layout.fillWidth: true; Layout.preferredHeight: 110
                         wrapMode: TextEdit.Wrap; color: win.prefs.foreground
                         text: '{"version":1,"id":"user-power","title":"My battery","type":"battery"}'
-                        background: Rectangle { color: win.prefs.surfaceColor; border.color: win.prefs.outline; radius: 8 }
+                        background: Rectangle { color: win.prefs.cardColor; border.color: win.prefs.outline; radius: 8 }
                     }
                     Flow {
                         visible: win.managing; Layout.fillWidth: true; spacing: 6

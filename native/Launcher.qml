@@ -28,7 +28,7 @@ PanelWindow {
     }
     Rectangle {
         anchors.fill: parent
-        color: win.prefs.surfaceColor
+        color: win.prefs.popupColor
         border.color: win.prefs.outline
         radius: 20
         ColumnLayout {
@@ -36,17 +36,20 @@ PanelWindow {
             anchors.margins: 18
             spacing: 12
             RowLayout {
-                Text { text: "OZIRO / FIND"; color: win.prefs.accent; font.bold: true; Layout.fillWidth: true }
+                Text { text: "Applications"; color: win.prefs.accent; font.bold: true; Layout.fillWidth: true }
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }
             TextField {
                 id: search
                 Layout.fillWidth: true
-                placeholderText: "Search installed applications…"
+                placeholderText: "Search applications…"
+                implicitHeight: 44
+                leftPadding: 12
+                rightPadding: 12
                 selectByMouse: true
                 color: win.prefs.foreground
                 placeholderTextColor: win.prefs.muted
-                background: Rectangle { radius: 10; color: win.prefs.surfaceColor; border.color: win.prefs.accent }
+                background: Rectangle { radius: 12; color: win.prefs.cardColor; border.color: search.activeFocus ? win.prefs.accent : win.prefs.outline }
                 onTextChanged: results.currentIndex = 0
                 Keys.onEscapePressed: win.dismiss()
                 Keys.onDownPressed: results.incrementCurrentIndex()
@@ -68,13 +71,13 @@ PanelWindow {
                     required property var modelData
                     required property int index
                     width: results.width
-                    height: 48
+                    height: 52
                     highlighted: ListView.isCurrentItem
                     onClicked: win.launch(modelData)
-                    background: Rectangle { radius: 9; color: app.highlighted || app.hovered ? win.prefs.outline : "transparent" }
+                    background: Rectangle { radius: 11; color: app.highlighted || app.hovered ? win.prefs.hoverColor : "transparent"; border.width: app.highlighted ? 1 : 0; border.color: win.prefs.accent }
                     contentItem: RowLayout {
                         Image { Layout.preferredWidth: 30; Layout.preferredHeight: 30; source: Quickshell.iconPath(app.modelData.icon, "application-x-executable"); sourceSize.width: 32; sourceSize.height: 32; cache: false }
-                        Text { text: app.modelData.name; color: win.prefs.foreground; font.pixelSize: 15; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: app.modelData.name; textFormat: Text.PlainText; color: win.prefs.foreground; font.pixelSize: 15; elide: Text.ElideRight; Layout.fillWidth: true }
                         Chip {
                             prefs: win.prefs
                             label: win.prefs.pinnedApps.includes(app.modelData.id) ? "−" : "+"

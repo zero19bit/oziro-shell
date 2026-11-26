@@ -33,7 +33,7 @@ PanelWindow {
     Component.onCompleted: refresh()
     Rectangle {
         anchors.fill: parent
-        radius: 20; color: win.prefs.surfaceColor; border.color: win.prefs.outline
+        radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 12
             RowLayout {
