@@ -1,4 +1,4 @@
-# Feature status — 0.9.18
+# Feature status — 0.9.19
 
 Status labels: **Confirmed** = user reported or screenshot supports the stated behavior; **Partial** = implemented, some evidence or important gaps; **Implemented** = code exists, runtime unverified; **Planned** = not delivered. Historical evidence is not a guarantee for current HEAD.
 
@@ -23,3 +23,5 @@ Status labels: **Confirmed** = user reported or screenshot supports the stated b
 | AI, SDK, app/update manager, ISO | Planned | later milestones |
 
 Known platform: development host uses Niri, not Hyprland. Hyprland compatibility is not a current verified target. Main branch remains unchanged; active branch is oziro-v2-native-prototype.
+
+0.9.19 targeted hardening implemented; see [audit](AUDIT-00919.md). Runtime pending.

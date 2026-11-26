@@ -98,3 +98,6 @@ Original Oziro orbit/arrow mark, icon-led menu bar, four coordinated local SVG w
 
 ## Foundation 0.9.18 — dock motion and project handbook
 User explicitly approves the 0.9.17 visual direction and requests a Mac-inspired wave dock. Dock now has fixed hit targets, distance-based compact falloff, 38% maximum artwork scale, short lift animation, tooltips, active dots and original system icons. The shelf reserves its normal height only; transparent lift headroom is masked for input. Top and bottom placements supported in code; Eco or the persisted Settings > Desktop & Dock > Dock magnification switch disables wave motion. No polling, worker or blur dependency added. Pure DockMotion test passed 11/11 in a JS engine; real QML/Wayland behavior, overflow, masking and performance pending. Development remains in Ryoku nested preview. See [project handbook](../docs/native-v2/README.md).
+
+## Foundation 0.9.19 — targeted hardening
+See [audit record](../docs/native-v2/AUDIT-00919.md). Pure JS 78/78. Runtime checks pending. No appearance change or production security claim.

@@ -26,3 +26,5 @@
 - 0.9.17 user requests stronger top bar, logos, coordinated themes and wallpapers. Verify nested startup, artwork decoding, theme previews and switching, local image regression, menu access and both monitor widths. No actual visual acceptance or memory measurement yet.
 
 - 0.9.17 user explicitly likes visual direction; individual theme/monitor regression cases remain open. 0.9.18 DockMotion pure math 11/11 in JS engine (not QML runtime). Verify hover/click, neighbor wave, tooltip, reset on exit, overflow scrolling, fixed exclusion zone, click-through headroom, top/bottom placement, Eco/disabled behavior, persisted toggle and PSS/CPU. Handbook added; no release claim.
+
+- 0.9.19 targeted review and fixes; pure JS 78/78. Run audit-check and runtime regression; full security/dependency review and idle/suspend remain open.

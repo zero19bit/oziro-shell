@@ -26,3 +26,5 @@ This is a compact historical index; detailed implementation and observed tests l
 | 0.9.18 | Wave dock, tooltips, system icons, motion toggle, project handbook |
 
 0.9.18: pure motion math 11/11; real QML/Wayland validation pending. No production release.
+
+0.9.19: targeted hardening of session, installer, hardware/power helpers, settings and IPC. Pure JS 78/78; runtime pending.

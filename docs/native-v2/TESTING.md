@@ -26,3 +26,6 @@ Pure DockMotion.js selfTest: 11/11 in JS engine for distance symmetry, cutoff, d
 
 ## Release regression matrix
 Test real independent login and return to Ryoku, all theme packs and local image, workspace/focus/pins, notification/tray, sound/network/brightness, lock on all screens, denied power actions, manual logout/restart/shutdown with saved work, hotplug and long-session stability. Secure suspend only after implementation. Record build SHA, platform, steps, expected/actual, logs and result; mark skipped separately.
+
+## 0.9.19
+Run `bash native/audit-check.sh` as desktop user for non-destructive preview guard and Bash checks. See [audit](AUDIT-00919.md) for actual pure JS results and limitations.
