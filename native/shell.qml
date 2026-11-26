@@ -53,7 +53,6 @@ ShellRoot {
                 target: popupLoader.item
                 function onDismiss() { Qt.callLater(output.closePopup); }
             }
-            }
         }
     }
 }
