@@ -39,6 +39,7 @@ ShellRoot {
         suspendDockOnBattery = false;
     }
     property alias dockEnabled: settings.dockEnabled
+    property alias dockMagnification: settings.dockMagnification
     property alias pinnedApps: settings.pinnedApps
     readonly property var wallpaper: settings.wallpaper
     readonly property var identity: Identity.palette(theme)

@@ -13,6 +13,7 @@ Scope {
     property string energyMode: "adaptive"
     property bool suspendDockOnBattery: false
     property bool dockEnabled: false
+    property bool dockMagnification: true
     property var pinnedApps: []
     property var wallpaper: WallpaperPolicy.normalize(null)
     function setWallpaper(config) { wallpaper = WallpaperPolicy.normalize(config); save(); }
@@ -37,6 +38,7 @@ Scope {
         customAccent = "";
         panelHeight = 32;
         dockIconSize = 46;
+        dockMagnification = true;
         layoutMode = "top";
         clock24Hour = true;
         resettingAppearance = false;
@@ -73,6 +75,7 @@ Scope {
                 if (typeof data.reduceEffects === "boolean") reduceEffects = data.reduceEffects;
                 if (typeof data.autoEco === "boolean") autoEco = data.autoEco;
                 if (typeof data.dockEnabled === "boolean") dockEnabled = data.dockEnabled;
+                if (typeof data.dockMagnification === "boolean") dockMagnification = data.dockMagnification;
                 if (Array.isArray(data.pinnedApps)) pinnedApps = [...new Set(data.pinnedApps.filter(id =>
                     typeof id === "string" && id.length > 0 && id.length <= 256))].slice(0,12);
                 if (typeof data.customAccent === "string" && /^#[0-9a-fA-F]{6}$/.test(data.customAccent)) customAccent = data.customAccent;
@@ -104,7 +107,7 @@ Scope {
             version: 1, appearanceRevision: 2, theme: theme, layoutMode: layoutMode,
             reduceEffects: reduceEffects, autoEco: autoEco,
             energyMode: energyMode, suspendDockOnBattery: suspendDockOnBattery,
-            dockEnabled: dockEnabled, pinnedApps: pinnedApps,
+            dockEnabled: dockEnabled, dockMagnification: dockMagnification, pinnedApps: pinnedApps,
             customAccent: customAccent, panelHeight: panelHeight,
             dockIconSize: dockIconSize, clock24Hour: clock24Hour,
             widgetExtensions: widgetExtensions, enabledWidgets: enabledWidgets,
@@ -118,6 +121,7 @@ Scope {
     onEnergyModeChanged: save()
     onSuspendDockOnBatteryChanged: save()
     onDockEnabledChanged: save()
+    onDockMagnificationChanged: save()
     onPinnedAppsChanged: save()
     onCustomAccentChanged: save()
     onPanelHeightChanged: save()

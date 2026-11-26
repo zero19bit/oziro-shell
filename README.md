@@ -1,5 +1,7 @@
 # Oziro Desktop
 
+> **Native v2 development branch:** active prototype is `native/` (QML / Quickshell, Niri first), milestone 0.9.18. The older React/Rust implementation is described below for historical context and is not the active v2 runtime. Start with the [native v2 handbook](docs/native-v2/README.md) and [native runtime notes](native/README.md).
+
 Oziro is an independent Linux desktop environment, initially targeting Arch Linux, Wayland, and Hyprland.
 
 **Current milestone:** Phase 2 — Compositor Adapter  

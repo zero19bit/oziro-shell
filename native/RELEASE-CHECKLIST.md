@@ -24,3 +24,5 @@
 - 0.9.15 user confirms power works; precise action coverage not specified. User rejects visual change as insufficient. 0.9.16 new top-bar layout, icon dock and actual Settings window: verify QML load, window close/reopen, all links, settings persistence, panel/dock sizing, multimonitor and visual acceptance. No performance claim.
 
 - 0.9.17 user requests stronger top bar, logos, coordinated themes and wallpapers. Verify nested startup, artwork decoding, theme previews and switching, local image regression, menu access and both monitor widths. No actual visual acceptance or memory measurement yet.
+
+- 0.9.17 user explicitly likes visual direction; individual theme/monitor regression cases remain open. 0.9.18 DockMotion pure math 11/11 in JS engine (not QML runtime). Verify hover/click, neighbor wave, tooltip, reset on exit, overflow scrolling, fixed exclusion zone, click-through headroom, top/bottom placement, Eco/disabled behavior, persisted toggle and PSS/CPU. Handbook added; no release claim.

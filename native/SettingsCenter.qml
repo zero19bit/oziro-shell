@@ -41,7 +41,7 @@ FloatingWindow {
                     MenuRow { required property string modelData; Layout.fillWidth: true; prefs: win.prefs; label: modelData; selected: win.section===modelData; onActivated: win.section=modelData }
                 }
                 Item { Layout.fillHeight: true }
-                Text { text: "Oziro 0.9.17"; color: win.prefs.muted; font.pixelSize: 11 }
+                Text { text: "Oziro 0.9.18"; color: win.prefs.muted; font.pixelSize: 11 }
             }
         }
         Rectangle { Layout.fillHeight: true; Layout.preferredWidth: 1; color: win.prefs.outline }
@@ -89,6 +89,8 @@ FloatingWindow {
                     ColumnLayout {
                         visible: win.section==="Desktop & Dock"; Layout.fillWidth: true; spacing: 12
                         RowLayout { Layout.fillWidth: true; Text { Layout.fillWidth: true; text: "Show Dock"; color: win.prefs.foreground } Switch { checked: win.prefs.dockEnabled; onToggled: win.prefs.dockEnabled=checked } }
+                        RowLayout { Layout.fillWidth: true; Text { Layout.fillWidth: true; text: "Dock magnification"; color: win.prefs.foreground } Switch { checked: win.prefs.dockMagnification; onToggled: win.prefs.dockMagnification=checked } }
+                        Text { Layout.fillWidth: true; visible: win.prefs.eco; text: "Magnification is paused in Eco mode."; color: win.prefs.muted; font.pixelSize: 12 }
                         Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: win.prefs.outline }
                         RowLayout { Layout.fillWidth: true; Text { Layout.fillWidth: true; text: "24-hour clock"; color: win.prefs.foreground } Switch { checked: win.prefs.clock24Hour; onToggled: win.prefs.clock24Hour=checked } }
                         Text { text: "Menu bar position"; color: win.prefs.muted; font.pixelSize: 12 }
@@ -127,7 +129,7 @@ FloatingWindow {
                     ColumnLayout {
                         visible: win.section==="About"; Layout.fillWidth: true; spacing: 10
                         Text { text: "Oziro"; color: win.prefs.foreground; font.pixelSize: 32; font.weight: Font.DemiBold }
-                        Text { text: "Desktop Environment 0.9.17"; color: win.prefs.foreground; font.pixelSize: 16 }
+                        Text { text: "Desktop Environment 0.9.18"; color: win.prefs.foreground; font.pixelSize: 16 }
                         Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.loginSession ? "Independent experimental login" : win.prefs.nestedPreview ? "Development preview" : "Existing desktop session"; color: win.prefs.muted }
                         Text { text: "Wayland · Niri · Quickshell"; color: win.prefs.muted }
                     }
