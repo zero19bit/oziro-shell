@@ -18,3 +18,5 @@
 - 0.9.13: host evidence confirms SDDM wrapper delegates chosen command, Niri service has Ryoku bootstrap drop-in and key Ryoku services are target-bound. Experimental direct-Niri package prepared; installer check, actual login, terminal fallback, exit, original session return, service collisions, and removal still pending. No automatic locking/idle, portal/polkit or security-completeness claim.
 
 - User reports 0.9.13 login and original tests successful. 0.9.14 addresses power menu and settings hub; validate UI, explicit confirmations, logout, normal authorization and cancellation. Suspend/idle, full display/input settings, cohesive visual identity, portal/polkit and complete independent desktop services remain open.
+
+- 0.9.14 user reports Settings works; only Lock works in Power, test context not confirmed. 0.9.15 compact system menu and neutral glass styling; verify source disabled state and installed login capability probe, cancellation, logout, restart and shutdown separately. Challenge/denied is not bypassed. Visual acceptance pending.

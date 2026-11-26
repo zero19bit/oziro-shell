@@ -30,7 +30,7 @@ PanelWindow {
     color: "transparent"
     Rectangle {
         anchors.fill: parent
-        radius: bar.prefs.layoutMode === "floating" ? 15 : 0
+        radius: bar.prefs.layoutMode === "floating" ? 10 : 0
         color: bar.prefs.surfaceColor
         border.color: bar.prefs.outline
         RowLayout {
@@ -40,8 +40,8 @@ PanelWindow {
             anchors.topMargin: 6
             anchors.bottomMargin: 6
             spacing: 5
-            PanelChip { prefs: bar.prefs; label: "OZIRO"; kind: "brand"; enabled: !bar.prefs.panelOnly; selected: true; onActivated: bar.openLauncher() }
-            Rectangle { width: 1; height: 20; color: bar.prefs.outline; visible: bar.width >= 480 }
+            PanelChip { prefs: bar.prefs; label: "Oziro"; kind: "brand"; enabled: !bar.prefs.panelOnly; selected: false; onActivated: bar.openPower() }
+            PanelChip { prefs: bar.prefs; label: "Apps"; enabled: !bar.prefs.panelOnly; onActivated: bar.openLauncher() }
             Flickable {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Math.max(40, bar.width * 0.38)
@@ -132,7 +132,7 @@ PanelWindow {
             PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; visible: bar.width >= 800; label: "Widgets"; onActivated: bar.openWidgets() }
             Rectangle { width: 1; height: 20; color: bar.prefs.outline; visible: bar.width >= 480 }
             PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; label: bar.prefs.eco ? "Eco · Controls" : "Controls"; onActivated: bar.openControls() }
-            PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; label: "Power"; onActivated: bar.openPower() }
+
         }
     }
 }

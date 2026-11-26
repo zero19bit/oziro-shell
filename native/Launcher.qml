@@ -33,7 +33,7 @@ PanelWindow {
         anchors.fill: parent
         color: win.prefs.popupColor
         border.color: win.prefs.outline
-        radius: 20
+        radius: 12
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 18
@@ -41,8 +41,7 @@ PanelWindow {
             RowLayout {
                 ColumnLayout {
                     Layout.fillWidth: true; spacing: 2
-                    Text { text: "OZIRO"; color: win.prefs.accent; font.bold: true; font.pixelSize: 22 }
-                    Text { text: "Applications & system"; color: win.prefs.muted; font.pixelSize: 12 }
+                    Text { text: "Applications"; color: win.prefs.foreground; font.weight: Font.DemiBold; font.pixelSize: 18 }
                 }
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }

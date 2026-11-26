@@ -19,7 +19,7 @@ FocusScope {
         anchors.fill: parent
         radius: chip.prefs.theme === "minimal" ? 3 : chip.kind === "workspace" ? 8 : 10
         color: !chip.enabled ? "transparent" :
-            chip.kind === "brand" ? chip.prefs.accent :
+            chip.kind === "brand" ? (mouse.containsMouse || chip.activeFocus ? chip.prefs.hoverColor : "transparent") :
             chip.kind === "workspace" && chip.selected ? Qt.rgba(chip.prefs.accent.r,chip.prefs.accent.g,chip.prefs.accent.b,0.18) :
             mouse.pressed || mouse.containsMouse || chip.activeFocus ? chip.prefs.outline : "transparent"
         border.width: chip.activeFocus ? 2 : chip.kind === "brand" ? 0 : chip.selected || mouse.containsMouse ? 1 : 0
@@ -31,10 +31,10 @@ FocusScope {
         anchors.centerIn: parent
         text: chip.label
         textFormat: Text.PlainText
-        color: !chip.enabled ? chip.prefs.muted : chip.kind === "brand" ? chip.prefs.selectedText : chip.selected ? chip.prefs.accent : chip.prefs.foreground
+        color: !chip.enabled ? chip.prefs.muted : chip.selected ? chip.prefs.accent : chip.prefs.foreground
         font.pixelSize: 12
         font.weight: chip.kind === "brand" ? Font.Bold : chip.selected ? Font.DemiBold : Font.Medium
-        font.letterSpacing: chip.kind === "brand" ? 1.1 : 0
+        font.letterSpacing: 0
         opacity: chip.enabled ? 1 : 0.65
     }
     Rectangle {

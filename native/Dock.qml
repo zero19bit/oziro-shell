@@ -33,7 +33,7 @@ PanelWindow {
     color: "transparent"
     Rectangle {
         anchors.fill: parent
-        radius: dock.prefs.theme === "minimal" ? 6 : 19
+        radius: dock.prefs.theme === "minimal" ? 6 : 15
         color: dock.prefs.surfaceColor
         border.color: dock.prefs.outline
         Flickable {
@@ -45,7 +45,7 @@ PanelWindow {
             Row {
                 id: items
                 height: parent.height
-                spacing: 7
+                spacing: 6
                 PanelChip {
                     anchors.verticalCenter: parent.verticalCenter
                     prefs: dock.prefs
