@@ -29,7 +29,7 @@ FloatingWindow {
             Layout.preferredWidth: 208; Layout.fillHeight: true; color: win.prefs.cardColor
             ColumnLayout {
                 anchors.fill: parent; anchors.margins: 14; spacing: 5
-                Text { Layout.fillWidth: true; text: "System Settings"; color: win.prefs.foreground; font.pixelSize: 17; font.weight: Font.DemiBold; Layout.bottomMargin: 12 }
+                RowLayout { Image { source: Qt.resolvedUrl("oziro-mark.svg"); Layout.preferredWidth: 24; Layout.preferredHeight: 24; sourceSize.width: 32; sourceSize.height: 32 } Text { Layout.fillWidth: true; text: "System Settings"; color: win.prefs.foreground; font.pixelSize: 17; font.weight: Font.DemiBold; Layout.bottomMargin: 12 } }
                 Text { text: "Desktop"; color: win.prefs.muted; font.pixelSize: 11; Layout.topMargin: 6 }
                 Repeater {
                     model: ["Appearance","Desktop & Dock","Wallpaper"]
@@ -41,7 +41,7 @@ FloatingWindow {
                     MenuRow { required property string modelData; Layout.fillWidth: true; prefs: win.prefs; label: modelData; selected: win.section===modelData; onActivated: win.section=modelData }
                 }
                 Item { Layout.fillHeight: true }
-                Text { text: "Oziro 0.9.16"; color: win.prefs.muted; font.pixelSize: 11 }
+                Text { text: "Oziro 0.9.17"; color: win.prefs.muted; font.pixelSize: 11 }
             }
         }
         Rectangle { Layout.fillHeight: true; Layout.preferredWidth: 1; color: win.prefs.outline }
@@ -58,24 +58,25 @@ FloatingWindow {
                     width: scroll.availableWidth; spacing: 14
                     ColumnLayout {
                         visible: win.section==="Appearance"; Layout.fillWidth: true; spacing: 12
-                        Text { text: "Theme"; color: win.prefs.muted; font.pixelSize: 12 }
+                        Text { text: "Theme & matching wallpaper"; color: win.prefs.muted; font.pixelSize: 12 }
                         GridLayout {
-                            Layout.fillWidth: true; columns: width>=420?3:2; columnSpacing: 10; rowSpacing: 10
+                            Layout.fillWidth: true; columns: 2; columnSpacing: 10; rowSpacing: 10
                             Repeater {
-                                model: [{id:"glass",name:"Glass",bg:"#25272b",panel:"#41454c"},{id:"light",name:"Light",bg:"#e2e6ea",panel:"#ffffff"},{id:"minimal",name:"Minimal",bg:"#1a202b",panel:"#313b49"},{id:"material",name:"Material",bg:"#25243a",panel:"#4d4768"},{id:"cyber",name:"Cyber",bg:"#141127",panel:"#29404c"}]
+                                model: win.prefs.themeCatalog
                                 AbstractButton {
                                     id: tile
                                     required property var modelData
-                                    Layout.fillWidth: true; implicitHeight: 82
+                                    Layout.fillWidth: true; implicitHeight: 116
                                     Accessible.name: modelData.name
-                                    onClicked: win.prefs.theme=modelData.id
+                                    onClicked: win.prefs.useThemePack(modelData.id)
                                     background: Rectangle { radius: 7; color: "transparent"; border.width: win.prefs.theme===tile.modelData.id || tile.activeFocus ? 2 : 1; border.color: win.prefs.theme===tile.modelData.id || tile.activeFocus ? win.prefs.accent : win.prefs.outline }
                                     contentItem: ColumnLayout {
                                         spacing: 5
                                         Rectangle {
-                                            Layout.fillWidth: true; Layout.preferredHeight: 43; radius: 4; color: tile.modelData.bg
-                                            Rectangle { anchors.left: parent.left; anchors.right: parent.right; height: 6; color: tile.modelData.panel }
-                                            Rectangle { anchors.centerIn: parent; width: parent.width*0.55; height: 24; radius: 3; color: tile.modelData.panel }
+                                            Layout.fillWidth: true; Layout.preferredHeight: 76; radius: 4; color: tile.modelData.bg; clip: true
+                                            Image { anchors.fill: parent; source: win.prefs.themeWallpaper(tile.modelData.id); sourceSize.width: 320; sourceSize.height: 180; fillMode: Image.PreserveAspectCrop; asynchronous: true }
+                                            Rectangle { anchors.left: parent.left; anchors.right: parent.right; height: 6; color: tile.modelData.surface }
+                                            Rectangle { anchors.centerIn: parent; width: parent.width*0.55; height: 24; radius: 3; color: tile.modelData.surface }
                                         }
                                         Text { Layout.alignment: Qt.AlignHCenter; text: tile.modelData.name; color: win.prefs.foreground; font.pixelSize: 12 }
                                     }
@@ -126,7 +127,7 @@ FloatingWindow {
                     ColumnLayout {
                         visible: win.section==="About"; Layout.fillWidth: true; spacing: 10
                         Text { text: "Oziro"; color: win.prefs.foreground; font.pixelSize: 32; font.weight: Font.DemiBold }
-                        Text { text: "Desktop Environment 0.9.16"; color: win.prefs.foreground; font.pixelSize: 16 }
+                        Text { text: "Desktop Environment 0.9.17"; color: win.prefs.foreground; font.pixelSize: 16 }
                         Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.loginSession ? "Independent experimental login" : win.prefs.nestedPreview ? "Development preview" : "Existing desktop session"; color: win.prefs.muted }
                         Text { text: "Wayland · Niri · Quickshell"; color: win.prefs.muted }
                     }

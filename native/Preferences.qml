@@ -52,14 +52,16 @@ Scope {
     function load() {
         if (Quickshell.env("OZIRO_NESTED_PREVIEW") === "1") {
             dockEnabled = true;
-            wallpaper = WallpaperPolicy.normalize({enabled:true,color:"#18232f"});
+            theme = "material";
+            wallpaper = WallpaperPolicy.normalize({enabled:true,mode:"builtin",preset:"auto",color:"#111c30"});
             status = "Temporary preview settings";
             initialized = true;
             return;
         }
         if (Quickshell.env("OZIRO_LOGIN_SESSION") === "1") {
             dockEnabled = true;
-            wallpaper = WallpaperPolicy.normalize({enabled:true,color:"#18232f"});
+            theme = "material";
+            wallpaper = WallpaperPolicy.normalize({enabled:true,mode:"builtin",preset:"auto",color:"#111c30"});
         }
         const text = file.text();
         if (text.trim()) {

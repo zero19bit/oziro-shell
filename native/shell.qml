@@ -5,6 +5,7 @@ import Quickshell.Services.Pipewire
 import "EnergyPolicy.js" as EnergyPolicy
 import "WidgetRegistry.js" as WidgetRegistry
 import "WallpaperPolicy.js" as WallpaperPolicy
+import "ThemeIdentity.js" as Identity
 
 ShellRoot {
     id: shell
@@ -40,12 +41,22 @@ ShellRoot {
     property alias dockEnabled: settings.dockEnabled
     property alias pinnedApps: settings.pinnedApps
     readonly property var wallpaper: settings.wallpaper
-    readonly property string wallpaperUrl: wallpaper.mode === "image" ? WallpaperPolicy.fileUrl(wallpaper.path) : ""
+    readonly property var identity: Identity.palette(theme)
+    readonly property var themeCatalog: Identity.themes
+    function themeWallpaper(id) { return Qt.resolvedUrl("wallpaper-"+Identity.palette(id).file+".svg"); }
+    function packWallpaper(id) { return Qt.resolvedUrl("wallpaper-"+Identity.wallpaperId(theme,id)+".svg"); }
+    readonly property string wallpaperUrl: wallpaper.mode === "image" ? WallpaperPolicy.fileUrl(wallpaper.path) : wallpaper.mode === "builtin" ? packWallpaper(wallpaper.preset) : ""
+    function useThemePack(id) {
+        if (!themeCatalog.some(x=>x.id===id)) return;
+        theme=id; customAccent="";
+        const w=wallpaper;
+        settings.setWallpaper({enabled:true,mode:"builtin",preset:"auto",color:identity.bg,path:w.path,fit:"cover",layer:w.layer});
+    }
     function wallpaperPathValid(path) { return WallpaperPolicy.fileUrl(path) !== ""; }
-    function wallpaperSelfTest() { return WallpaperPolicy.selfTest(); }
+    function wallpaperSelfTest() { const a=WallpaperPolicy.selfTest(), b=Identity.selfTest(); return {total:a.total+b.total,passed:a.passed+b.passed}; }
     function updateWallpaper(key,value) {
-        const next = {enabled:wallpaper.enabled,mode:wallpaper.mode,color:wallpaper.color,path:wallpaper.path,fit:wallpaper.fit,layer:wallpaper.layer};
-        if (!["enabled","mode","color","path","fit","layer"].includes(key)) return;
+        const next = {enabled:wallpaper.enabled,mode:wallpaper.mode,color:wallpaper.color,path:wallpaper.path,fit:wallpaper.fit,layer:wallpaper.layer,preset:wallpaper.preset};
+        if (!["enabled","mode","color","path","fit","layer","preset"].includes(key)) return;
         next[key] = value;
         settings.setWallpaper(next);
     }
@@ -100,17 +111,18 @@ ShellRoot {
     readonly property bool nestedPreview: Quickshell.env("OZIRO_NESTED_PREVIEW") === "1"
     readonly property bool panelOnly: Quickshell.env("OZIRO_PANEL_ONLY") === "1"
     readonly property bool eco: energyPolicy.eco
-    readonly property color surfaceColor: theme === "light" ? "#f3f5f9" : theme === "material" ? "#25243a" : theme === "cyber" ? "#141127" : theme === "glass" ? (eco ? "#24262b" : "#ee24262b") : "#1a202b"
+    readonly property color baseSurface: identity.surface
+    readonly property color surfaceColor: eco || theme==="light" ? baseSurface : Qt.rgba(baseSurface.r,baseSurface.g,baseSurface.b,0.94)
     // Opaque content surfaces keep text legible over busy applications.
     readonly property color popupColor: Qt.rgba(surfaceColor.r,surfaceColor.g,surfaceColor.b,1)
-    readonly property color cardColor: Qt.tint(popupColor, theme === "light" ? "#08000000" : "#0dffffff")
+    readonly property color cardColor: identity.card
     readonly property color hoverColor: Qt.tint(popupColor, theme === "light" ? "#10000000" : "#18ffffff")
-    readonly property color foreground: theme === "light" ? "#202939" : "#edf2fa"
-    readonly property color accent: customAccent !== "" ? customAccent : theme === "light" ? "#285b9b" : theme === "material" ? "#bcb0ff" : theme === "cyber" ? "#7df9ff" : theme === "glass" ? "#83aaff" : "#93d9e9"
+    readonly property color foreground: identity.fg
+    readonly property color accent: customAccent !== "" ? customAccent : identity.accent
     readonly property real accentLuminance: 0.2126 * linearChannel(accent.r) + 0.7152 * linearChannel(accent.g) + 0.0722 * linearChannel(accent.b)
     readonly property color selectedText: accentLuminance > 0.179 ? "#000000" : "#ffffff"
-    readonly property color muted: theme === "light" ? "#536173" : "#a8b4c4"
-    readonly property color outline: theme === "light" ? "#cbd5e1" : theme === "glass" ? "#45474d" : "#364253"
+    readonly property color muted: identity.muted
+    readonly property color outline: identity.outline
     readonly property bool notificationRequested: Quickshell.env("OZIRO_NOTIFICATIONS") === "1" && !panelOnly
     property bool quietNotifications: false
     readonly property var notificationBackend: notificationLoader.item

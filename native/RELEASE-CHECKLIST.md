@@ -22,3 +22,5 @@
 - 0.9.14 user reports Settings works; only Lock works in Power, test context not confirmed. 0.9.15 compact system menu and neutral glass styling; verify source disabled state and installed login capability probe, cancellation, logout, restart and shutdown separately. Challenge/denied is not bypassed. Visual acceptance pending.
 
 - 0.9.15 user confirms power works; precise action coverage not specified. User rejects visual change as insufficient. 0.9.16 new top-bar layout, icon dock and actual Settings window: verify QML load, window close/reopen, all links, settings persistence, panel/dock sizing, multimonitor and visual acceptance. No performance claim.
+
+- 0.9.17 user requests stronger top bar, logos, coordinated themes and wallpapers. Verify nested startup, artwork decoding, theme previews and switching, local image regression, menu access and both monitor widths. No actual visual acceptance or memory measurement yet.

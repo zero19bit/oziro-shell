@@ -82,11 +82,11 @@ PanelWindow {
                     Flow {
                         Layout.fillWidth: true; spacing: 7
                         Repeater {
-                            model: ["glass","material","minimal","cyber","light"]
+                            model: win.prefs.themeCatalog
                             Chip {
-                                required property string modelData
-                                prefs: win.prefs; label: modelData; selected: win.prefs.theme === modelData
-                                onActivated: win.prefs.theme = modelData
+                                required property var modelData
+                                prefs: win.prefs; label: modelData.name; selected: win.prefs.theme === modelData.id
+                                onActivated: win.prefs.useThemePack(modelData.id)
                             }
                         }
                     }

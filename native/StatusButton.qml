@@ -26,10 +26,14 @@ AbstractButton {
             onInkChanged: requestPaint()
             Connections { target: btn; function onGlyphChanged() { icon.requestPaint(); } }
             onPaint: {
-                var c=getContext("2d"); c.reset(); c.strokeStyle=ink; c.fillStyle=ink; c.lineWidth=1.35; c.lineCap="round"; c.lineJoin="round";
+                var c=getContext("2d"); c.clearRect(0,0,width,height); c.strokeStyle=ink; c.fillStyle=ink; c.lineWidth=1.35; c.lineCap="round"; c.lineJoin="round";
                 function line(x1,y1,x2,y2) { c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke(); }
                 function dot(x,y,r) { c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.fill(); }
-                if (btn.glyph==="controls") {
+                if (btn.glyph==="brand") {
+                    c.lineWidth=2.4; c.beginPath(); c.arc(9,9,6.6,0,Math.PI*1.5); c.stroke(); line(10,2.4,15.5,2.4);line(15.5,2.4,15.5,8);line(15,3,8,10);
+                } else if (btn.glyph==="network") {
+                    for(var r=4;r<=12;r+=4){c.beginPath();c.arc(9,14,r,-2.34,-0.80);c.stroke();} dot(9,14,1);
+                } else if (btn.glyph==="controls") {
                     line(2,5,16,5); line(2,13,16,13); dot(6,5,2.5); dot(12,13,2.5);
                 } else if (btn.glyph==="widgets" || btn.glyph==="apps") {
                     for(var x=3;x<=11;x+=8) for(var y=3;y<=11;y+=8) c.strokeRect(x,y,4,4);

@@ -35,13 +35,13 @@ PanelWindow {
         Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 1; color: bar.prefs.outline; visible: bar.prefs.layoutMode !== "floating" }
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: 10; anchors.rightMargin: 10; anchors.topMargin: 2; anchors.bottomMargin: 2; spacing: 3
-            PanelChip { prefs: bar.prefs; label: "Oziro"; kind: "brand"; enabled: !bar.prefs.panelOnly; onActivated: bar.openPower() }
-            PanelChip { prefs: bar.prefs; label: "Apps"; enabled: !bar.prefs.panelOnly; onActivated: bar.openLauncher() }
-            PanelChip { prefs: bar.prefs; label: "Settings"; visible: bar.width >= 640; enabled: !bar.prefs.panelOnly; onActivated: bar.openSettings() }
+            StatusButton { prefs: bar.prefs; glyph: "brand"; label: "Oziro menu"; enabled: !bar.prefs.panelOnly; onActivated: bar.openPower() }
+            StatusButton { prefs: bar.prefs; glyph: "apps"; label: "Applications"; enabled: !bar.prefs.panelOnly; onActivated: bar.openLauncher() }
+            
             Text {
-                visible: bar.width >= 1000 && bar.focusedWindow !== null && bar.focusedWindow !== undefined
+                visible: bar.width >= 700
                 Layout.maximumWidth: 180; elide: Text.ElideRight
-                text: visible ? (bar.focusedWindow.title || bar.focusedWindow.app_id || "") : ""
+                text: bar.focusedWindow ? (bar.focusedWindow.title || bar.focusedWindow.app_id || "Desktop") : "Desktop"
                 textFormat: Text.PlainText; color: bar.prefs.muted; font.pixelSize: 12
             }
             Item { Layout.fillWidth: true }
@@ -70,7 +70,8 @@ PanelWindow {
                 }
             }
             Item { Layout.fillWidth: true }
-            StatusButton { prefs: bar.prefs; glyph: "widgets"; label: "Widgets"; visible: bar.width >= 820; enabled: !bar.prefs.panelOnly; onActivated: bar.openWidgets() }
+            
+            StatusButton { prefs: bar.prefs; glyph: "network"; label: "Network settings"; visible: bar.width >= 620; enabled: !bar.prefs.panelOnly; onActivated: bar.openControls() }
             StatusButton { prefs: bar.prefs; glyph: "bell"; label: "Notifications (" + bar.prefs.notificationCount + ")"; visible: bar.width >= 540; enabled: !bar.prefs.panelOnly; onActivated: bar.openNotifications() }
             StatusButton {
                 prefs: bar.prefs; glyph: bar.audioReady && !bar.sink.audio.muted ? "sound" : "mute"
@@ -87,7 +88,7 @@ PanelWindow {
                 Text { text: bar.prefs.batteryPercent+"%"; color: bar.prefs.foreground; font.pixelSize: 12; visible: bar.width>=650 }
             }
             StatusButton { prefs: bar.prefs; glyph: "controls"; label: "Control Center"; enabled: !bar.prefs.panelOnly; onActivated: bar.openControls() }
-            Text { text: bar.clockText; textFormat: Text.PlainText; color: bar.prefs.foreground; font.pixelSize: 12; font.weight: Font.Medium; visible: bar.width >= 520 }
+            PanelChip { prefs: bar.prefs; label: bar.clockText; visible: bar.width >= 520; enabled: !bar.prefs.panelOnly; onActivated: bar.openWidgets() }
         }
     }
 }
