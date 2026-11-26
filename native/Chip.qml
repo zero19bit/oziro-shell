@@ -3,25 +3,29 @@ import QtQuick.Controls
 
 AbstractButton {
     id: chip
+    required property var prefs
     property string label: ""
     property bool selected: false
     signal activated()
     onClicked: activated()
-    implicitWidth: Math.max(30, caption.implicitWidth + 18)
-    implicitHeight: 30
+    implicitWidth: Math.max(32, caption.implicitWidth + 20)
+    implicitHeight: 32
     Accessible.name: label
     background: Rectangle {
-        radius: 9
-        color: chip.selected ? "#a9dbfa" : chip.hovered ? "#354355" : "#222b39"
-        Behavior on color { ColorAnimation { duration: 130 } }
+        radius: chip.prefs.theme === "minimal" ? 4 : 10
+        color: chip.selected ? chip.prefs.accent : chip.hovered || chip.activeFocus ? chip.prefs.outline : "transparent"
+        border.color: chip.selected ? chip.prefs.accent : chip.prefs.outline
+        border.width: 1
+        Behavior on color { enabled: !chip.prefs.eco; ColorAnimation { duration: 120 } }
     }
     contentItem: Text {
         id: caption
         text: chip.label
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        color: !chip.enabled ? "#8290a2" : chip.selected ? "#122433" : "#dce7f2"
+        color: !chip.enabled ? chip.prefs.muted : chip.selected ? chip.prefs.selectedText : chip.prefs.foreground
         font.pixelSize: 12
         font.weight: Font.Medium
+        opacity: chip.enabled ? 1 : 0.65
     }
 }

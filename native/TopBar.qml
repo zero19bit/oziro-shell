@@ -3,78 +3,73 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
+import Quickshell.Services.UPower
 
 PanelWindow {
     id: bar
+    required property var prefs
     required property string clockText
+    signal openLauncher()
+    signal openControls()
     readonly property var monitor: screen ? Hyprland.monitorFor(screen) : null
     readonly property var sink: Pipewire.defaultAudioSink
-    anchors { top: true; left: true; right: true }
-    margins { top: 8; left: 12; right: 12 }
-    implicitHeight: 46
+    readonly property var battery: UPower.displayDevice
+    readonly property bool batteryReady: battery !== null && battery.ready && battery.isLaptopBattery
+    anchors { top: bar.prefs.layoutMode !== "bottom"; bottom: bar.prefs.layoutMode === "bottom"; left: true; right: true }
+    margins { top: bar.prefs.layoutMode === "floating" ? 8 : 0; left: bar.prefs.layoutMode === "floating" ? 12 : 0; right: left }
+    implicitHeight: 48
     color: "transparent"
-
     Rectangle {
         anchors.fill: parent
-        radius: 15
-        color: "#ee141923"
-        border.color: "#34404f"
-        border.width: 1
+        radius: bar.prefs.layoutMode === "floating" ? 15 : 0
+        color: bar.prefs.surfaceColor
+        border.color: bar.prefs.outline
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            spacing: 10
-
-            Text {
-                text: "O Z I R O"
-                color: "#b6e4ff"
-                font.pixelSize: 13
-                font.bold: true
-            }
-            Rectangle { Layout.preferredWidth: 1; Layout.preferredHeight: 20; color: "#34404f" }
-            RowLayout {
-                spacing: 4
-                Repeater {
-                    model: Hyprland.workspaces
-                    delegate: Chip {
-                        required property var modelData
-                        visible: bar.monitor !== null && modelData.monitor === bar.monitor
-                        label: modelData.name
-                        selected: modelData.active
-                        onActivated: modelData.activate()
+            anchors.margins: 8
+            spacing: 8
+            Chip { prefs: bar.prefs; label: "OZIRO"; selected: true; onActivated: bar.openLauncher() }
+            Flickable {
+                Layout.fillWidth: true
+                Layout.maximumWidth: Math.max(40, bar.width * 0.38)
+                Layout.fillHeight: true
+                contentWidth: workspaceRow.implicitWidth
+                contentHeight: height
+                clip: true
+                Row {
+                    id: workspaceRow
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 4
+                    Repeater {
+                        model: Hyprland.workspaces
+                        Chip {
+                            required property var modelData
+                            prefs: bar.prefs
+                            visible: bar.monitor !== null && modelData.monitor === bar.monitor
+                            label: modelData.name
+                            selected: modelData.active
+                            onActivated: modelData.activate()
+                        }
                     }
-                }
-                Text {
-                    visible: bar.monitor === null
-                    text: "Hyprland unavailable"
-                    color: "#a8b4c3"
-                    font.pixelSize: 12
+                    Text { visible: bar.monitor === null; text: "No Hyprland"; color: bar.prefs.muted }
                 }
             }
+            Item { Layout.fillWidth: true }
+            Text { text: bar.clockText; color: bar.prefs.foreground; font.pixelSize: 13; visible: bar.width >= 650 }
             Item { Layout.fillWidth: true }
             Text {
-                text: bar.clockText
-                color: "#eef3fa"
-                font.pixelSize: 13
-                font.weight: Font.Medium
+                visible: bar.batteryReady && bar.width >= 480
+                text: bar.batteryReady ? (UPower.onBattery ? "" : "AC ") + Math.round(bar.battery.percentage * 100) + "%" : ""
+                color: bar.prefs.foreground
+                font.pixelSize: 12
             }
-            Item { Layout.fillWidth: true }
             Chip {
+                prefs: bar.prefs
                 enabled: Pipewire.ready && bar.sink !== null && bar.sink.audio !== null
-                label: !enabled ? "Audio unavailable" : bar.sink.audio.muted ? "Muted" : "Vol " + Math.round(bar.sink.audio.volume * 100) + "%"
-                selected: enabled && !bar.sink.audio.muted
-                onActivated: {
-                    if (enabled) bar.sink.audio.muted = !bar.sink.audio.muted
-                }
+                label: !enabled ? "No audio" : bar.sink.audio.muted ? "Muted" : "Vol " + Math.round(bar.sink.audio.volume * 100) + "%"
+                onActivated: { if (enabled) bar.sink.audio.muted = !bar.sink.audio.muted }
             }
-            Text {
-                text: bar.screen ? bar.screen.name : ""
-                color: "#a8b4c3"
-                font.pixelSize: 11
-                elide: Text.ElideRight
-                Layout.maximumWidth: 100
-            }
+            Chip { prefs: bar.prefs; label: bar.prefs.eco ? "Eco · Controls" : "Controls"; onActivated: bar.openControls() }
         }
     }
 }

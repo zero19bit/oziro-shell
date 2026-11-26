@@ -1,25 +1,19 @@
-# Oziro v2 — native feasibility prototype
+# Oziro V2 — Foundation 0.1 (experimental)
+Native Arch / Hyprland shell, independent of the legacy Rust/React host. Not a production release.
 
-Status: experimental, not a release. No changes to the existing Rust/React application or host configuration.
-
-## Run
-Requires an active Hyprland Wayland session and Quickshell 0.3.x with Hyprland and PipeWire integrations. Run from this repository:
+## Test on a real Wayland session
+Install the official Arch package quickshell (target API 0.3.2), plus UPower and PipeWire/WirePlumber where needed. Do not run as root. Existing bars may compete for space; temporarily stop them yourself.
 ```sh
 bash native/doctor.sh
 quickshell -p "$PWD/native"
 ```
-Do not run as root. Stop with Ctrl+C. Existing panels may compete for reserved space; temporarily stop your other panel manually if necessary. No autostart or installer is included.
+Ctrl+C stops the foreground instance. No compositor configuration is rewritten. Click OZIRO to search graphical installed apps (terminal-only desktop entries excluded); Controls opens audio, themes, layouts and shell eco mode. Close popups before testing another monitor. Themes and settings are session-only. Glass is translucent color, not real blur.
 
-## Implemented in source
-- One panel per detected screen, with a live screen model.
-- Monitor-specific workspace buttons and real workspace activation.
-- Live clock, default PipeWire sink volume and mute toggle; unavailable state.
-- Reusable button and a provisional dark/cyan visual direction.
+Optional isolated install: `bash native/install.sh`. It refuses an existing destination and does not install dependencies, change autostart, or replace your current shell.
 
-## Not verified
-The prototype has not been run on a Hyprland session in the authoring environment. Validate with two monitors, hotplug, workspace changes, default audio device changes, and no audio service. No dock, launcher, notifications, lock screen, packaging or performance guarantee yet.
+## Verification
+QML targets documented Quickshell 0.3.2 APIs, but still requires actual Arch/Hyprland runtime verification. No performance numbers or hardware power savings have been established. Report exact logs and test monitor hotplug, popup focus, no audio, AC/battery transitions, all palettes and all layouts. Run `bash native/benchmark.sh PID 60` to sample process PSS/RSS and cumulative CPU ticks. Compare same machine, display setup and workload, with old shell stopped. This measures one process, not total session or battery usage.
 
-## Architecture proposal
-Quickshell/QML for Wayland surfaces and native integrations. Keep Rust for features that actually need an independent service. No local HTTP transport is required for this prototype. Any future daemon must use a user-owned Unix socket, validate peer identity and typed operations, and avoid handling login credentials itself. Use an audited session locker/PAM and OS-native authorization for privileged actions. Never save secrets in ordinary configuration. UI and services should report unavailable rather than fake success.
-
-The native approach is a hypothesis to validate before replacing the current implementation. Final theme, target compositors, settings schema, installation and licensing must be decided before shipping.
+## Scope
+Implemented in source: per-screen panel, real workspace activation, clock, default audio mute/volume, battery status, on-demand launcher, control center, five provisional palettes, three panel placements, battery-aware reduced shell effects, user-copy installer and measurement helper. No always-on AI, sync or animated wallpaper.
+Not yet implemented: dock, full notifications, network, tray, power profile integration, persistence, graphical setup, plugin isolation, widgets, lock screen, update mechanism, CI runtime tests or OS image. See VISION.md.
