@@ -5,10 +5,8 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Pipewire
 
-PanelWindow {
+ShellPopup {
     id: win
-    required property var prefs
-    signal dismiss()
     signal openSettings()
     signal openEnergy()
     signal openWidgets()
@@ -18,14 +16,11 @@ PanelWindow {
     SystemControls { id: sys }
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
-    anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
-    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
-    implicitWidth: Math.min(500, screen ? Math.max(1, screen.width - 24) : 500)
-    implicitHeight: Math.min(660, screen ? Math.max(1, screen.height - win.prefs.popupMargin - 36) : 660)
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-    color: "transparent"
+    implicitWidth: Math.min(500, popupParent && popupParent.screen ? Math.max(1, popupParent.screen.width - 24) : 500)
+    implicitHeight: Math.min(660, popupParent && popupParent.screen ? Math.max(1, popupParent.screen.height - win.prefs.popupMargin - 36) : 660)
     Rectangle {
+        focus: true
+        Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
         anchors.fill: parent
         color: win.prefs.popupColor
         border.color: win.prefs.outline

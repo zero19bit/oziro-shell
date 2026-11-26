@@ -22,9 +22,17 @@ FocusScope {
     Accessible.role: Accessible.Button
     Accessible.name: title
     Accessible.onPressAction: { if (enabled) activated(); }
-    ToolTip.visible: mouse.containsMouse
-    ToolTip.delay: 450
-    ToolTip.text: title
+    property bool tipReady: false
+    readonly property bool wantsTip: mouse.containsMouse && enabled && icon.prefs.openMenuCount === 0
+    onWantsTipChanged: {
+        tipReady = false;
+        if (wantsTip) tipDelay.restart(); else tipDelay.stop();
+    }
+    Timer { id: tipDelay; interval: 450; repeat: false; onTriggered: icon.tipReady = icon.wantsTip }
+    Loader {
+        active: icon.tipReady && icon.wantsTip
+        sourceComponent: OziroTooltip { prefs: icon.prefs; targetItem: icon; label: icon.title; above: !icon.inverted }
+    }
     Rectangle {
         anchors.fill: parent; radius: 10
         color: icon.activeFocus ? icon.prefs.hoverColor : "transparent"

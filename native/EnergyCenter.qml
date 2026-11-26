@@ -5,10 +5,8 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 
-PanelWindow {
+ShellPopup {
     id: win
-    required property var prefs
-    signal dismiss()
     property string report: ""
     property string testResult: ""
     function refresh() {
@@ -17,13 +15,8 @@ PanelWindow {
         report = "";
         probe.running = true;
     }
-    anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
-    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
-    implicitWidth: Math.min(500, screen ? Math.max(1,screen.width-24) : 500)
-    implicitHeight: Math.min(650, screen ? Math.max(1,screen.height-160) : 650)
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-    color: "transparent"
+    implicitWidth: Math.min(500, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 500)
+    implicitHeight: Math.min(650, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-160) : 650)
     Process {
         id: probe
         command: ["bash", Quickshell.shellPath("energy-status.sh")]
@@ -32,6 +25,8 @@ PanelWindow {
     }
     Component.onCompleted: refresh()
     Rectangle {
+        focus: true
+        Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
         anchors.fill: parent
         radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {

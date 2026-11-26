@@ -4,19 +4,14 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 
-PanelWindow {
+ShellPopup {
     id: win
-    required property var prefs
-    signal dismiss()
     readonly property var backend: prefs.notificationBackend
-    anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
-    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
-    implicitWidth: Math.min(430, screen ? Math.max(1,screen.width-24) : 430)
-    implicitHeight: Math.min(550, screen ? Math.max(1,screen.height-140) : 550)
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-    color: "transparent"
+    implicitWidth: Math.min(430, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 430)
+    implicitHeight: Math.min(550, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-140) : 550)
     Rectangle {
+        focus: true
+        Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
         anchors.fill: parent
         radius: 20
         color: win.prefs.popupColor

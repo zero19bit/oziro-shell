@@ -6,20 +6,15 @@ import Quickshell.Wayland
 import Quickshell.Services.SystemTray
 
 // Explicit opening opts into Quickshell's StatusNotifier tracking.
-PanelWindow {
+ShellPopup {
     id: win
-    required property var prefs
-    signal dismiss()
     signal openControls()
     readonly property var entries: SystemTray.items.values
-    anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
-    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
-    implicitWidth: Math.min(480, screen ? Math.max(1,screen.width-24) : 480)
-    implicitHeight: Math.min(560, screen ? Math.max(1,screen.height-win.prefs.popupMargin-36) : 560)
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-    color: "transparent"
+    implicitWidth: Math.min(480, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.width-24) : 480)
+    implicitHeight: Math.min(560, popupParent && popupParent.screen ? Math.max(1,popupParent.screen.height-win.prefs.popupMargin-36) : 560)
     Rectangle {
+        focus: true
+        Keys.onEscapePressed: { if (!win.dismissBlocked) win.dismiss(); }
         anchors.fill: parent; radius: 20; color: win.prefs.popupColor; border.color: win.prefs.outline
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 12

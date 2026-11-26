@@ -10,9 +10,17 @@ AbstractButton {
     onClicked: activated()
     implicitWidth: 29; implicitHeight: 26
     Accessible.name: label
-    ToolTip.visible: hovered
-    ToolTip.text: label
-    ToolTip.delay: 650
+    property bool tipReady: false
+    readonly property bool wantsTip: hovered && enabled && btn.prefs.openMenuCount === 0
+    onWantsTipChanged: {
+        tipReady = false;
+        if (wantsTip) tipDelay.restart(); else tipDelay.stop();
+    }
+    Timer { id: tipDelay; interval: 650; repeat: false; onTriggered: btn.tipReady = btn.wantsTip }
+    Loader {
+        active: btn.tipReady && btn.wantsTip
+        sourceComponent: OziroTooltip { prefs: btn.prefs; targetItem: btn; label: btn.label; above: btn.prefs.layoutMode === "bottom" }
+    }
     background: Rectangle {
         radius: 5
         color: btn.hovered || btn.activeFocus ? btn.prefs.hoverColor : "transparent"

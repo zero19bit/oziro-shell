@@ -130,6 +130,7 @@ ShellRoot {
     readonly property color outline: identity.outline
     readonly property bool notificationRequested: Quickshell.env("OZIRO_NOTIFICATIONS") === "1" && !panelOnly
     property bool quietNotifications: false
+    property int openMenuCount: 0
     readonly property var notificationBackend: notificationLoader.item
     readonly property int notificationCount: notificationBackend ? notificationBackend.count : 0
     Loader {
@@ -146,14 +147,21 @@ ShellRoot {
             id: output
             required property var modelData
             property string popup: ""
+            property int popupEpoch: 0
+            property bool transientOpen: popup !== "" && popup !== "settings"
+            onTransientOpenChanged: shell.openMenuCount = Math.max(0,shell.openMenuCount+(transientOpen ? 1 : -1))
+            Component.onDestruction: { if (transientOpen) shell.openMenuCount = Math.max(0,shell.openMenuCount-1); }
             function toggle(name) {
-                if (shell.panelOnly) return;
+                if (shell.panelOnly || (popupLoader.item && popupLoader.item.dismissBlocked === true)) return;
                 if (popup === name) { closePopup(); return; }
+                popupEpoch++;
                 popup = name;
                 popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
-                                      {screen: output.modelData, prefs: shell});
+                                      name === "settings" ? {screen: output.modelData, prefs: shell} : {popupParent: topBar, prefs: shell});
             }
             function closePopup() {
+                if (popupLoader.item && popupLoader.item.dismissBlocked === true) return;
+                popupEpoch++;
                 popup = "";
                 popupLoader.source = "";
             }
@@ -164,6 +172,7 @@ ShellRoot {
                 }
             }
             TopBar {
+                id: topBar
                 screen: output.modelData
                 prefs: shell
                 niriBackend: niri
@@ -202,7 +211,10 @@ ShellRoot {
             Connections {
                 target: popupLoader.item
                 ignoreUnknownSignals: true
-                function onDismiss() { Qt.callLater(output.closePopup); }
+                function onDismiss() {
+                    const epoch = output.popupEpoch;
+                    Qt.callLater(() => { if (output.popupEpoch === epoch) output.closePopup(); });
+                }
                 function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
                 function onOpenAppearance() { Qt.callLater(() => output.toggle("appearance")); }
                 function onOpenPower() { Qt.callLater(() => output.toggle("power")); }

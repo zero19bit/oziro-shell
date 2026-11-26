@@ -28,3 +28,5 @@ This is a compact historical index; detailed implementation and observed tests l
 0.9.18: pure motion math 11/11; real QML/Wayland validation pending. No production release.
 
 0.9.19: targeted hardening of session, installer, hardware/power helpers, settings and IPC. Pure JS 78/78; runtime pending.
+
+0.9.20: shared native PopupWindow with outside-dismiss and Escape fallback; themed passive tooltips; floating Settings excluded. No global input listener. Niri runtime verification pending; first outside click may be consumed by compositor. Power action process kept alive until completion. See Quickshell 0.3.2 PopupWindow API.
