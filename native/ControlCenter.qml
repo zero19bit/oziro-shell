@@ -11,6 +11,7 @@ PanelWindow {
     signal dismiss()
     signal openSettings()
     signal openEnergy()
+    signal openWidgets()
     SystemControls { id: sys }
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
@@ -130,6 +131,7 @@ PanelWindow {
                         Chip { prefs: win.prefs; label: "Auto on battery"; enabled: win.prefs.energyMode === "adaptive"; selected: win.prefs.autoEco; onActivated: win.prefs.autoEco = !win.prefs.autoEco }
                     }
                     Text { text: (win.prefs.eco ? "Eco rendering · " : "Standard rendering · ") + win.prefs.energyReason; color: win.prefs.muted }
+                    Chip { prefs: win.prefs; label: "Open Widgets"; onActivated: win.openWidgets() }
                     Text { text: "Appearance"; color: win.prefs.accent; font.bold: true }
                     Flow {
                         Layout.fillWidth: true

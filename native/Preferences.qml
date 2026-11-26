@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "WidgetRegistry.js" as Registry
 
 Scope {
     id: prefs
@@ -12,6 +13,16 @@ Scope {
     property bool suspendDockOnBattery: false
     property bool dockEnabled: false
     property var pinnedApps: []
+    property var widgetExtensions: []
+    property var enabledWidgets: ["clock","battery","audio","memory"]
+    property bool updatingWidgets: false
+    function setWidgetConfig(extensions, enabled) {
+        updatingWidgets = true;
+        widgetExtensions = Registry.normalizeExtensions(extensions);
+        enabledWidgets = Registry.normalizeEnabled(enabled, widgetExtensions);
+        updatingWidgets = false;
+        save();
+    }
     property string customAccent: ""
     property int panelHeight: 48
     property int dockIconSize: 46
@@ -54,6 +65,8 @@ Scope {
                 if (typeof data.clock24Hour === "boolean") clock24Hour = data.clock24Hour;
                 if (["adaptive","balanced","eco"].includes(data.energyMode)) energyMode = data.energyMode;
                 if (typeof data.suspendDockOnBattery === "boolean") suspendDockOnBattery = data.suspendDockOnBattery;
+                widgetExtensions = Registry.normalizeExtensions(data.widgetExtensions);
+                enabledWidgets = Registry.normalizeEnabled(data.enabledWidgets, widgetExtensions);
                 status = "Settings loaded";
             } catch (error) {
                 writable = false;
@@ -64,14 +77,15 @@ Scope {
         initialized = true;
     }
     function save() {
-        if (!initialized || !writable || resettingAppearance) return;
+        if (!initialized || !writable || resettingAppearance || updatingWidgets) return;
         file.setText(JSON.stringify({
             version: 1, theme: theme, layoutMode: layoutMode,
             reduceEffects: reduceEffects, autoEco: autoEco,
             energyMode: energyMode, suspendDockOnBattery: suspendDockOnBattery,
             dockEnabled: dockEnabled, pinnedApps: pinnedApps,
             customAccent: customAccent, panelHeight: panelHeight,
-            dockIconSize: dockIconSize, clock24Hour: clock24Hour
+            dockIconSize: dockIconSize, clock24Hour: clock24Hour,
+            widgetExtensions: widgetExtensions, enabledWidgets: enabledWidgets
         }, null, 2) + "\n");
     }
     onThemeChanged: save()

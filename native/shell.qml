@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
 import "EnergyPolicy.js" as EnergyPolicy
+import "WidgetRegistry.js" as WidgetRegistry
 
 ShellRoot {
     id: shell
@@ -37,6 +38,32 @@ ShellRoot {
     }
     property alias dockEnabled: settings.dockEnabled
     property alias pinnedApps: settings.pinnedApps
+    readonly property var widgetExtensions: settings.widgetExtensions
+    readonly property var enabledWidgets: settings.enabledWidgets
+    readonly property var widgetCards: WidgetRegistry.builtinCards().concat(widgetExtensions)
+    readonly property string widgetClock: Qt.formatDateTime(clock.date, clock24Hour ? "HH:mm" : "h:mm AP")
+    readonly property string widgetDate: Qt.formatDateTime(clock.date, "dddd, MMM d")
+    function toggleWidget(id) {
+        if (!widgetCards.some(m => m.id === id)) return;
+        const next = enabledWidgets.includes(id) ? enabledWidgets.filter(x=>x!==id) : enabledWidgets.concat([id]);
+        settings.setWidgetConfig(widgetExtensions,next);
+    }
+    function installWidget(text) {
+        if (typeof text !== "string" || text.length > 512) return "Manifest too long";
+        let m;
+        try { m = WidgetRegistry.validateManifest(JSON.parse(text)); } catch(e) { return "Invalid JSON"; }
+        if (!m) return "Invalid manifest: check version, ID, title and type";
+        if (widgetExtensions.some(x=>x.id===m.id)) return "ID already installed";
+        if (widgetExtensions.length >= 4) return "Maximum four custom cards";
+        settings.setWidgetConfig(widgetExtensions.concat([m]),enabledWidgets.concat([m.id]));
+        return "Installed: " + m.title;
+    }
+    function removeWidget(id) {
+        if (!widgetExtensions.some(m=>m.id===id)) return;
+        settings.setWidgetConfig(widgetExtensions.filter(m=>m.id!==id),enabledWidgets.filter(x=>x!==id));
+    }
+    function resetWidgets() { settings.setWidgetConfig([],WidgetRegistry.builtinCards().map(m=>m.id)); }
+    function widgetSelfTest() { return WidgetRegistry.selfTest(); }
     property alias customAccent: settings.customAccent
     property alias panelHeight: settings.panelHeight
     property alias dockIconSize: settings.dockIconSize
@@ -84,7 +111,7 @@ ShellRoot {
                 if (shell.panelOnly) return;
                 if (popup === name) { closePopup(); return; }
                 popup = name;
-                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -99,6 +126,7 @@ ShellRoot {
                 onOpenLauncher: output.toggle("launcher")
                 onOpenControls: output.toggle("controls")
                 onOpenNotifications: output.toggle("notifications")
+                onOpenWidgets: output.toggle("widgets")
             }
             Loader { id: popupLoader }
             Loader {
@@ -129,6 +157,7 @@ ShellRoot {
                 function onDismiss() { Qt.callLater(output.closePopup); }
                 function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
                 function onOpenEnergy() { Qt.callLater(() => output.toggle("energy")); }
+                function onOpenWidgets() { Qt.callLater(() => output.toggle("widgets")); }
             }
         }
     }

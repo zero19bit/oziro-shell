@@ -1,4 +1,4 @@
-# Oziro V2 — Foundation 0.8.1 (experimental)
+# Oziro V2 — Foundation 0.9 (experimental)
 Native Arch / Hyprland and Niri shell, independent of the legacy Rust/React host. Not a production release.
 
 ## Test on a real Wayland session
@@ -41,3 +41,6 @@ Controls → Energy opens the on-demand policy page. Adaptive (default) retains 
 
 ## Foundation 0.8.1 stabilization
 0.8 had several user-reported unsuccessful checks and inconsistent AC/battery display. Exact individual outcomes not supplied. All surfaces now use a shared source state verified by the read-only UPower D-Bus OnBattery property. A single upower --monitor subprocess triggers debounced reads; a 30-second reconciliation handles missed events or monitor failure; native change signals and Refresh also trigger reads. Unknown is shown explicitly and does not pause the dock. This adds one persistent helper and occasional short probes, so remeasure process-tree memory and CPU. Choosing a policy clears legacy manual override; Adaptive re-enables its battery switch. Reset energy affects shell policy only. The Energy Center exposes a 14-case pure JS self-test (no hardware changes). It passed in the development JS runtime before commit; actual QML, real battery transitions, dock restoration and resource usage still require Arch/Niri verification. No CPU/GPU/system profile writes are performed by the energy engine. Existing explicit system controls are unchanged.
+
+## Foundation 0.9
+Open Widgets on the panel (or Controls > Open Widgets). Four built-in read-only cards: clock, battery/power, audio and system memory (used = total minus available). Memory is a one-shot /proc/meminfo snapshot on dashboard open or explicit refresh; no new resident worker. Manage enables/disables cards; a strict version-1 JSON manifest can add up to four custom cards using only existing read-only types. ID must start user- and use lowercase letters/digits/hyphens; title max 48 chars; no extra keys, arbitrary QML, JS, commands, files or network access. Manifest max 512 chars. Remove deletes just the chosen custom card. Preferences persist widget choices, compatible with prior version-1 data. Run self-test verifies 16 registry cases, passed in JS development runtime; QML runtime pending. Dashboard is on demand and is not a desktop widget host or general plugin sandbox. 0.8.1 user confirmed self-test and charger transitions; power savings and full regression not yet verified. See TEST-0081.md.

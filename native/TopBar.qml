@@ -12,6 +12,7 @@ PanelWindow {
     signal openLauncher()
     signal openControls()
     signal openNotifications()
+    signal openWidgets()
     readonly property var monitor: !niriBackend.enabled && screen ? Hyprland.monitorFor(screen) : null
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var niriWorkspaces: niriBackend.enabled && screen
@@ -97,6 +98,7 @@ PanelWindow {
                 label: bar.prefs.notificationBackend ? "Alerts " + bar.prefs.notificationCount : "Alerts"
                 onActivated: bar.openNotifications()
             }
+            PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; visible: bar.width >= 800; label: "Widgets"; onActivated: bar.openWidgets() }
             PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; label: bar.prefs.eco ? "Eco · Controls" : "Controls"; onActivated: bar.openControls() }
         }
     }
