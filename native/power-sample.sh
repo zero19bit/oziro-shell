@@ -14,7 +14,7 @@ for path in /sys/class/power_supply/*; do
   if [[ -r "$path/present" ]] && [[ $(cat "$path/present") != 1 ]]; then continue; fi
   batteries+=("$path")
 done
-(( #batteries[@]} == 1 )) || { echo "Exactly one system battery required; no estimate produced" >&2; exit 1; }
+(( ${#batteries[@]} == 1 )) || { echo "Exactly one system battery required; no estimate produced" >&2; exit 1; }
 battery="${batteries[0]}"
 read_energy() {
   [[ $(cat "$battery/status") == Discharging ]] || { echo "Battery not discharging; sample invalid" >&2; return 1; }
