@@ -11,7 +11,7 @@ PanelWindow {
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
     margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
     implicitWidth: Math.min(540, screen ? Math.max(1,screen.width-24) : 540)
-    implicitHeight: Math.min(680, screen ? Math.max(1,screen.height-160) : 680)
+    implicitHeight: Math.min(760, screen ? Math.max(1,screen.height-win.prefs.popupMargin-36) : 760)
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     color: "transparent"
@@ -32,7 +32,11 @@ PanelWindow {
                 id: scroll
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                rightPadding: 12
+                clip: true
                 contentWidth: availableWidth
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                ScrollBar.vertical.policy: ScrollBar.AsNeeded
                 ColumnLayout {
                     width: scroll.availableWidth
                     spacing: 12
@@ -152,9 +156,14 @@ PanelWindow {
                         Chip { prefs: win.prefs; label: "Dock"; selected: win.prefs.dockEnabled; onActivated: win.prefs.dockEnabled = !win.prefs.dockEnabled }
                         Chip { prefs: win.prefs; label: "Reduce effects"; selected: win.prefs.eco; onActivated: win.prefs.selectEnergyMode(win.prefs.eco ? "balanced" : "eco") }
                     }
-                    Chip { prefs: win.prefs; label: "Reset appearance"; onActivated: { win.prefs.resetAppearance(); hex.text = ""; panelSize.value = win.prefs.panelHeight; dockSize.value = win.prefs.dockIconSize; } }
-                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.settingsStatus + " · Appearance reset keeps pinned apps and energy preferences."; color: win.prefs.muted; font.pixelSize: 11 }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Appearance reset keeps pinned apps and energy preferences."; color: win.prefs.muted; font.pixelSize: 11 }
                 }
+            }
+            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: win.prefs.outline }
+            RowLayout {
+                Layout.fillWidth: true
+                Text { Layout.fillWidth: true; text: win.prefs.settingsStatus; color: win.prefs.muted; elide: Text.ElideRight; font.pixelSize: 11 }
+                Chip { prefs: win.prefs; label: "Reset appearance"; onActivated: { win.prefs.resetAppearance(); hex.text = ""; panelSize.value = win.prefs.panelHeight; dockSize.value = win.prefs.dockIconSize; } }
             }
         }
     }
