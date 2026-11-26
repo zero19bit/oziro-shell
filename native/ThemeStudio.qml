@@ -137,10 +137,10 @@ PanelWindow {
                         prefs: win.prefs
                         id: panelSize
                         Layout.fillWidth: true
-                        from: 44; to: 68; stepSize: 2
+                        from: 30; to: 68; stepSize: 2
                         value: win.prefs.panelHeight
                         onPressedChanged: { if (!pressed) win.prefs.panelHeight = Math.round(value); }
-                        Keys.onLeftPressed: { win.prefs.panelHeight = Math.max(44, win.prefs.panelHeight-2); }
+                        Keys.onLeftPressed: { win.prefs.panelHeight = Math.max(30, win.prefs.panelHeight-2); }
                         Keys.onRightPressed: { win.prefs.panelHeight = Math.min(68, win.prefs.panelHeight+2); }
                     }
                     Text { text: "Dock size · " + Math.round(dockSize.value) + " px"; color: win.prefs.foreground }

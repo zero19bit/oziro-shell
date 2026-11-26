@@ -8,7 +8,7 @@ FocusScope {
     property string kind: "action" // brand, workspace, action
     signal activated()
     implicitWidth: Math.max(kind === "workspace" ? 30 : 32, caption.implicitWidth + (kind === "workspace" ? 16 : kind === "brand" ? 26 : 20))
-    implicitHeight: 30
+    implicitHeight: 26
     activeFocusOnTab: enabled
     Accessible.role: Accessible.Button
     Accessible.name: label

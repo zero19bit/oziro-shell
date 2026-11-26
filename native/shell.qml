@@ -88,7 +88,7 @@ ShellRoot {
     function setAccent(value) {
         if (value === "" || /^#[0-9a-fA-F]{6}$/.test(value)) customAccent = value.toLowerCase();
     }
-    readonly property int popupMargin: panelHeight + 14
+    readonly property int popupMargin: panelHeight + (layoutMode === "floating" ? 12 : 5)
     function linearChannel(c) { return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
     function togglePin(id) {
         if (typeof id !== "string" || !id.length || id.length > 256) return;
@@ -156,6 +156,7 @@ ShellRoot {
                 onOpenNotifications: output.toggle("notifications")
                 onOpenWidgets: output.toggle("widgets")
                 onOpenPower: output.toggle("power")
+                onOpenSettings: output.toggle("settings")
             }
             Loader { id: popupLoader }
             Loader {
@@ -177,6 +178,7 @@ ShellRoot {
                         prefs: shell
                         niriBackend: niri
                         onOpenLauncher: output.toggle("launcher")
+                        onOpenSettings: output.toggle("settings")
                     }
                 }
             }

@@ -14,125 +14,80 @@ PanelWindow {
     signal openNotifications()
     signal openWidgets()
     signal openPower()
+    signal openSettings()
     readonly property var monitor: !niriBackend.enabled && screen ? Hyprland.monitorFor(screen) : null
     readonly property var sink: Pipewire.defaultAudioSink
+    readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
     readonly property var niriWorkspaces: niriBackend.enabled && screen
-        ? niriBackend.workspaces.filter(w => w.output === screen.name).sort((a,b) => a.idx-b.idx)
-        : []
+        ? niriBackend.workspaces.filter(w => w.output === screen.name).sort((a,b) => a.idx-b.idx) : []
+    readonly property var focusedWindow: niriBackend.enabled && screen
+        ? niriBackend.windows.find(w => w.is_focused && niriWorkspaces.some(ws => ws.id === w.workspace_id)) : null
     anchors { top: bar.prefs.layoutMode !== "bottom"; bottom: bar.prefs.layoutMode === "bottom"; left: true; right: true }
-    readonly property int sideMargin: prefs.layoutMode === "floating" ? 12 : 0
-    margins {
-        top: bar.prefs.layoutMode === "floating" ? 8 : 0
-        left: bar.sideMargin
-        right: bar.sideMargin
-    }
+    margins { top: bar.prefs.layoutMode === "floating" ? 6 : 0; left: bar.prefs.layoutMode === "floating" ? 10 : 0; right: bar.prefs.layoutMode === "floating" ? 10 : 0 }
     implicitHeight: bar.prefs.panelHeight
     color: "transparent"
     Rectangle {
         anchors.fill: parent
-        radius: bar.prefs.layoutMode === "floating" ? 10 : 0
+        radius: bar.prefs.layoutMode === "floating" ? 9 : 0
         color: bar.prefs.surfaceColor
+        border.width: bar.prefs.layoutMode === "floating" ? 1 : 0
         border.color: bar.prefs.outline
+        Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 1; color: bar.prefs.outline; visible: bar.prefs.layoutMode !== "floating" }
         RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            anchors.topMargin: 6
-            anchors.bottomMargin: 6
-            spacing: 5
-            PanelChip { prefs: bar.prefs; label: "Oziro"; kind: "brand"; enabled: !bar.prefs.panelOnly; selected: false; onActivated: bar.openPower() }
+            anchors.fill: parent; anchors.leftMargin: 10; anchors.rightMargin: 10; anchors.topMargin: 2; anchors.bottomMargin: 2; spacing: 3
+            PanelChip { prefs: bar.prefs; label: "Oziro"; kind: "brand"; enabled: !bar.prefs.panelOnly; onActivated: bar.openPower() }
             PanelChip { prefs: bar.prefs; label: "Apps"; enabled: !bar.prefs.panelOnly; onActivated: bar.openLauncher() }
+            PanelChip { prefs: bar.prefs; label: "Settings"; visible: bar.width >= 640; enabled: !bar.prefs.panelOnly; onActivated: bar.openSettings() }
+            Text {
+                visible: bar.width >= 1000 && bar.focusedWindow !== null && bar.focusedWindow !== undefined
+                Layout.maximumWidth: 180; elide: Text.ElideRight
+                text: visible ? (bar.focusedWindow.title || bar.focusedWindow.app_id || "") : ""
+                textFormat: Text.PlainText; color: bar.prefs.muted; font.pixelSize: 12
+            }
+            Item { Layout.fillWidth: true }
             Flickable {
-                Layout.fillWidth: true
-                Layout.maximumWidth: Math.max(40, bar.width * 0.38)
-                Layout.fillHeight: true
-                contentWidth: workspaceRow.implicitWidth
-                contentHeight: height
-                clip: true
+                Layout.preferredWidth: Math.min(workspaceRow.implicitWidth, Math.max(30,bar.width*0.22))
+                Layout.fillHeight: true; contentWidth: workspaceRow.implicitWidth; contentHeight: height; clip: true
                 Row {
-                    id: workspaceRow
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 3
+                    id: workspaceRow; anchors.verticalCenter: parent.verticalCenter; spacing: 1
                     Repeater {
                         model: bar.niriBackend.enabled ? 0 : Hyprland.workspaces
                         PanelChip {
                             required property var modelData
-                            prefs: bar.prefs
-                            visible: bar.monitor !== null && modelData.monitor === bar.monitor
-                            label: modelData.name
-                            kind: "workspace"
-                            selected: modelData.active
-                            onActivated: modelData.activate()
+                            prefs: bar.prefs; visible: bar.monitor !== null && modelData.monitor === bar.monitor
+                            label: modelData.name; kind: "workspace"; selected: modelData.active; onActivated: modelData.activate()
                         }
                     }
                     Repeater {
                         model: bar.niriWorkspaces
                         PanelChip {
                             required property var modelData
-                            prefs: bar.prefs
-                            label: modelData.name || String(modelData.idx)
-                            kind: "workspace"
-                            selected: modelData.is_active
-                            enabled: bar.niriBackend.ready && bar.niriBackend.targetId === null
+                            prefs: bar.prefs; label: modelData.name || String(modelData.idx); kind: "workspace"
+                            selected: modelData.is_active; enabled: bar.niriBackend.ready && bar.niriBackend.targetId === null
                             onActivated: bar.niriBackend.activate(modelData.id)
                         }
                     }
-                    Text {
-                        visible: bar.niriBackend.enabled ? !bar.niriBackend.ready : bar.monitor === null
-                        text: bar.niriBackend.enabled ? "Niri reconnecting" : "No Hyprland"
-                        color: bar.prefs.muted
-                        font.pixelSize: 11
-                        textFormat: Text.PlainText
-                    }
                 }
             }
             Item { Layout.fillWidth: true }
-            Text {
-                text: bar.clockText
-                textFormat: Text.PlainText
-                color: bar.prefs.foreground
-                font.pixelSize: 13
-                font.weight: Font.DemiBold
-                visible: bar.width >= 650
+            StatusButton { prefs: bar.prefs; glyph: "widgets"; label: "Widgets"; visible: bar.width >= 820; enabled: !bar.prefs.panelOnly; onActivated: bar.openWidgets() }
+            StatusButton { prefs: bar.prefs; glyph: "bell"; label: "Notifications (" + bar.prefs.notificationCount + ")"; visible: bar.width >= 540; enabled: !bar.prefs.panelOnly; onActivated: bar.openNotifications() }
+            StatusButton {
+                prefs: bar.prefs; glyph: bar.audioReady && !bar.sink.audio.muted ? "sound" : "mute"
+                label: bar.audioReady ? "Sound " + Math.round(bar.sink.audio.volume*100) + "%" : "Sound unavailable"
+                visible: bar.width >= 460; enabled: !bar.prefs.panelOnly; onActivated: bar.openControls()
             }
-            Item { Layout.fillWidth: true }
             RowLayout {
-                visible: bar.prefs.batteryPercent >= 0 && bar.width >= 480
-                spacing: 5
+                visible: bar.prefs.batteryPercent >= 0 && bar.width >= 480; spacing: 5
                 Rectangle {
-                    width: 20; height: 11; radius: 3
-                    color: "transparent"; border.width: 1; border.color: bar.prefs.muted
-                    Rectangle {
-                        x: 2; y: 2; height: 7
-                        width: 16 * Math.max(0,Math.min(100,bar.prefs.batteryPercent))/100
-                        radius: 1
-                        color: bar.prefs.batteryPercent <= 15 ? "#ef6464" : bar.prefs.accent
-                    }
-                    Rectangle { x: parent.width; anchors.verticalCenter: parent.verticalCenter; width: 2; height: 5; radius: 1; color: bar.prefs.muted }
+                    width: 22; height: 11; radius: 3; color: "transparent"; border.color: bar.prefs.foreground
+                    Rectangle { x: 2; y: 2; height: 7; width: 18*Math.max(0,Math.min(100,bar.prefs.batteryPercent))/100; radius: 1; color: bar.prefs.batteryPercent<=15 ? "#e76c6c" : bar.prefs.foreground }
+                    Rectangle { x: parent.width; anchors.verticalCenter: parent.verticalCenter; width: 2; height: 5; radius: 1; color: bar.prefs.foreground }
                 }
-                Text {
-                    text: (bar.prefs.powerSource === "ac" ? "AC " : bar.prefs.powerSource === "unknown" ? "? " : "") + bar.prefs.batteryPercent + "%"
-                    color: bar.prefs.foreground
-                    font.pixelSize: 12
-                    font.weight: Font.Medium
-                }
+                Text { text: bar.prefs.batteryPercent+"%"; color: bar.prefs.foreground; font.pixelSize: 12; visible: bar.width>=650 }
             }
-            PanelChip {
-                prefs: bar.prefs
-                enabled: !bar.prefs.nestedPreview && Pipewire.ready && bar.sink !== null && bar.sink.audio !== null
-                label: !Pipewire.ready || bar.sink === null || bar.sink.audio === null ? "No audio" : bar.sink.audio.muted ? "Muted" : "Vol " + Math.round(bar.sink.audio.volume * 100) + "%"
-                onActivated: { if (enabled) bar.sink.audio.muted = !bar.sink.audio.muted }
-            }
-            PanelChip {
-                prefs: bar.prefs
-                enabled: !bar.prefs.panelOnly
-                label: bar.prefs.notificationBackend ? "Alerts " + bar.prefs.notificationCount : "Alerts"
-                onActivated: bar.openNotifications()
-            }
-            PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; visible: bar.width >= 800; label: "Widgets"; onActivated: bar.openWidgets() }
-            Rectangle { width: 1; height: 20; color: bar.prefs.outline; visible: bar.width >= 480 }
-            PanelChip { prefs: bar.prefs; enabled: !bar.prefs.panelOnly; label: bar.prefs.eco ? "Eco · Controls" : "Controls"; onActivated: bar.openControls() }
-
+            StatusButton { prefs: bar.prefs; glyph: "controls"; label: "Control Center"; enabled: !bar.prefs.panelOnly; onActivated: bar.openControls() }
+            Text { text: bar.clockText; textFormat: Text.PlainText; color: bar.prefs.foreground; font.pixelSize: 12; font.weight: Font.Medium; visible: bar.width >= 520 }
         }
     }
 }

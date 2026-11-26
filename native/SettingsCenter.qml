@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Wayland
 
-PanelWindow {
+FloatingWindow {
     id: win
     required property var prefs
     signal dismiss()
@@ -17,108 +16,119 @@ PanelWindow {
     signal openLock()
     signal openPower()
     signal openNotifications()
-    property string section: "Personalization"
-    anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom" }
-    margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin }
-    implicitWidth: Math.min(880, screen ? Math.max(1,screen.width-32) : 880)
-    implicitHeight: Math.min(640, screen ? Math.max(1,screen.height-win.prefs.popupMargin-40) : 640)
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-    color: "transparent"
-    Rectangle {
-        anchors.fill: parent; color: win.prefs.popupColor; radius: 12; border.color: win.prefs.outline
-        ColumnLayout {
-            anchors.fill: parent; anchors.margins: 18; spacing: 12
-            RowLayout {
-                ColumnLayout {
-                    Layout.fillWidth: true; spacing: 3
-                    Text { text: "Oziro Settings"; color: win.prefs.foreground; font.pixelSize: 18; font.weight: Font.DemiBold }
-                    
+    property string section: "Appearance"
+    title: "System Settings"
+    implicitWidth: 840
+    implicitHeight: 570
+    minimumSize: Qt.size(580,420)
+    color: win.prefs.popupColor
+    onVisibleChanged: { if (!visible) Qt.callLater(win.dismiss); }
+    RowLayout {
+        anchors.fill: parent; spacing: 0
+        Rectangle {
+            Layout.preferredWidth: 208; Layout.fillHeight: true; color: win.prefs.cardColor
+            ColumnLayout {
+                anchors.fill: parent; anchors.margins: 14; spacing: 5
+                Text { Layout.fillWidth: true; text: "System Settings"; color: win.prefs.foreground; font.pixelSize: 17; font.weight: Font.DemiBold; Layout.bottomMargin: 12 }
+                Text { text: "Desktop"; color: win.prefs.muted; font.pixelSize: 11; Layout.topMargin: 6 }
+                Repeater {
+                    model: ["Appearance","Desktop & Dock","Wallpaper"]
+                    MenuRow { required property string modelData; Layout.fillWidth: true; prefs: win.prefs; label: modelData; selected: win.section===modelData; onActivated: win.section=modelData }
                 }
+                Text { text: "System"; color: win.prefs.muted; font.pixelSize: 11; Layout.topMargin: 12 }
+                Repeater {
+                    model: ["Devices","Power & Security","Apps & Widgets","About"]
+                    MenuRow { required property string modelData; Layout.fillWidth: true; prefs: win.prefs; label: modelData; selected: win.section===modelData; onActivated: win.section=modelData }
+                }
+                Item { Layout.fillHeight: true }
+                Text { text: "Oziro 0.9.16"; color: win.prefs.muted; font.pixelSize: 11 }
+            }
+        }
+        Rectangle { Layout.fillHeight: true; Layout.preferredWidth: 1; color: win.prefs.outline }
+        ColumnLayout {
+            Layout.fillWidth: true; Layout.fillHeight: true; Layout.margins: 22; spacing: 16
+            RowLayout {
+                Text { Layout.fillWidth: true; text: win.section; color: win.prefs.foreground; font.pixelSize: 21; font.weight: Font.DemiBold }
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }
-            RowLayout {
-                Layout.fillWidth: true; Layout.fillHeight: true; spacing: 14
-                Rectangle {
-                    Layout.preferredWidth: win.width < 600 ? 135 : 204
-                    Layout.fillHeight: true; color: win.prefs.cardColor; radius: 12
+            ScrollView {
+                id: scroll; Layout.fillWidth: true; Layout.fillHeight: true; clip: true; contentWidth: availableWidth
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                ColumnLayout {
+                    width: scroll.availableWidth; spacing: 14
                     ColumnLayout {
-                        anchors.fill: parent; anchors.margins: 8; spacing: 6
-                        Repeater {
-                            model: ["Personalization","System","Power & security","Apps & widgets","About"]
-                            MenuRow {
-                                required property string modelData
-                                prefs: win.prefs; Layout.fillWidth: true
-                                label: modelData; selected: win.section === modelData
-                                onActivated: win.section = modelData
+                        visible: win.section==="Appearance"; Layout.fillWidth: true; spacing: 12
+                        Text { text: "Theme"; color: win.prefs.muted; font.pixelSize: 12 }
+                        GridLayout {
+                            Layout.fillWidth: true; columns: width>=420?3:2; columnSpacing: 10; rowSpacing: 10
+                            Repeater {
+                                model: [{id:"glass",name:"Glass",bg:"#25272b",panel:"#41454c"},{id:"light",name:"Light",bg:"#e2e6ea",panel:"#ffffff"},{id:"minimal",name:"Minimal",bg:"#1a202b",panel:"#313b49"},{id:"material",name:"Material",bg:"#25243a",panel:"#4d4768"},{id:"cyber",name:"Cyber",bg:"#141127",panel:"#29404c"}]
+                                AbstractButton {
+                                    id: tile
+                                    required property var modelData
+                                    Layout.fillWidth: true; implicitHeight: 82
+                                    Accessible.name: modelData.name
+                                    onClicked: win.prefs.theme=modelData.id
+                                    background: Rectangle { radius: 7; color: "transparent"; border.width: win.prefs.theme===tile.modelData.id || tile.activeFocus ? 2 : 1; border.color: win.prefs.theme===tile.modelData.id || tile.activeFocus ? win.prefs.accent : win.prefs.outline }
+                                    contentItem: ColumnLayout {
+                                        spacing: 5
+                                        Rectangle {
+                                            Layout.fillWidth: true; Layout.preferredHeight: 43; radius: 4; color: tile.modelData.bg
+                                            Rectangle { anchors.left: parent.left; anchors.right: parent.right; height: 6; color: tile.modelData.panel }
+                                            Rectangle { anchors.centerIn: parent; width: parent.width*0.55; height: 24; radius: 3; color: tile.modelData.panel }
+                                        }
+                                        Text { Layout.alignment: Qt.AlignHCenter; text: tile.modelData.name; color: win.prefs.foreground; font.pixelSize: 12 }
+                                    }
+                                }
                             }
                         }
-                        Item { Layout.fillHeight: true }
+                        Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: win.prefs.outline }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Accent color and advanced appearance"; trailing: "›"; onActivated: win.openAppearance() }
                     }
-                }
-                ScrollView {
-                    id: scroll
-                    Layout.fillWidth: true; Layout.fillHeight: true
-                    rightPadding: 12; clip: true; contentWidth: availableWidth
-                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
                     ColumnLayout {
-                        width: scroll.availableWidth; spacing: 12
-                        Text { Layout.fillWidth: true; text: win.section; color: win.prefs.foreground; font.pixelSize: 19; font.weight: Font.DemiBold; wrapMode: Text.WordWrap }
-                        ColumnLayout {
-                            visible: win.section === "Personalization"; Layout.fillWidth: true; spacing: 10
-                            SectionLabel { prefs: win.prefs; label: "DESIGN" }
-                            Flow {
-                                Layout.fillWidth: true; spacing: 6
-                                Repeater {
-                                    model: ["glass","material","minimal","cyber","light"]
-                                    Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: win.prefs.theme === modelData; onActivated: win.prefs.theme = modelData }
-                                }
-                            }
-                            QuickToggle { Layout.fillWidth: true; prefs: win.prefs; label: "Dock"; detail: win.prefs.dockEnabled ? "Enabled" : "Disabled"; selected: win.prefs.dockEnabled; onActivated: win.prefs.dockEnabled = !win.prefs.dockEnabled }
-                            QuickToggle { Layout.fillWidth: true; prefs: win.prefs; label: "24-hour clock"; detail: win.prefs.clock24Hour ? "24-hour" : "12-hour"; selected: win.prefs.clock24Hour; onActivated: win.prefs.clock24Hour = !win.prefs.clock24Hour }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Theme Studio"; trailing: "›"; onActivated: win.openAppearance() }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Wallpaper"; trailing: "›"; onActivated: win.openWallpaper() }
+                        visible: win.section==="Desktop & Dock"; Layout.fillWidth: true; spacing: 12
+                        RowLayout { Layout.fillWidth: true; Text { Layout.fillWidth: true; text: "Show Dock"; color: win.prefs.foreground } Switch { checked: win.prefs.dockEnabled; onToggled: win.prefs.dockEnabled=checked } }
+                        Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: win.prefs.outline }
+                        RowLayout { Layout.fillWidth: true; Text { Layout.fillWidth: true; text: "24-hour clock"; color: win.prefs.foreground } Switch { checked: win.prefs.clock24Hour; onToggled: win.prefs.clock24Hour=checked } }
+                        Text { text: "Menu bar position"; color: win.prefs.muted; font.pixelSize: 12 }
+                        Flow { Layout.fillWidth: true; spacing: 6; Repeater { model: ["top","floating","bottom"]; Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: win.prefs.layoutMode===modelData; onActivated: win.prefs.layoutMode=modelData } } }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Panel and Dock size"; trailing: "›"; onActivated: win.openAppearance() }
+                    }
+                    ColumnLayout {
+                        visible: win.section==="Wallpaper"; Layout.fillWidth: true; spacing: 12
+                        Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 140; radius: 8; color: win.prefs.wallpaper.color; clip: true
+                            Image { anchors.fill: parent; source: win.prefs.wallpaperUrl; fillMode: Image.PreserveAspectCrop; sourceSize.width: 480; sourceSize.height: 270; asynchronous: true; cache: false }
                         }
-                        ColumnLayout {
-                            visible: win.section === "System"; Layout.fillWidth: true; spacing: 10
-                            SectionLabel { prefs: win.prefs; label: "DEVICE CONTROLS" }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Manage available Wi-Fi, Bluetooth, sound, brightness and system power profiles in Quick Controls."; color: win.prefs.muted }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Open Quick Controls"; trailing: "›"; onActivated: win.openControls() }
-                            SectionLabel { prefs: win.prefs; label: "DISPLAYS & INPUT" }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Connected output: " + (win.screen ? win.screen.name : "Unknown") + (win.screen ? " · " + win.screen.width + " × " + win.screen.height + " logical px" : ""); color: win.prefs.foreground; textFormat: Text.PlainText }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Display arrangement, resolution, keyboard and mouse configuration are not implemented yet."; color: win.prefs.muted }
-                        }
-                        ColumnLayout {
-                            visible: win.section === "Power & security"; Layout.fillWidth: true; spacing: 10
-                            SectionLabel { prefs: win.prefs; label: "ENERGY MODE" }
-                            Flow {
-                                Layout.fillWidth: true; spacing: 6
-                                Repeater {
-                                    model: ["adaptive","balanced","eco"]
-                                    Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: win.prefs.energyMode === modelData; onActivated: win.prefs.selectEnergyMode(modelData) }
-                                }
-                            }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.powerLabel + " · " + win.prefs.energyReason; color: win.prefs.muted }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Energy details"; trailing: "›"; onActivated: win.openEnergy() }
-                            Chip { prefs: win.prefs; label: "Session lock"; enabled: !win.prefs.nestedPreview; onActivated: win.openLock() }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Power menu"; trailing: "›"; onActivated: win.openPower() }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Automatic lock and sleep integration are not ready."; color: win.prefs.muted }
-                        }
-                        ColumnLayout {
-                            visible: win.section === "Apps & widgets"; Layout.fillWidth: true; spacing: 10
-                            SectionLabel { prefs: win.prefs; label: "DESKTOP SERVICES" }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Widget Center"; trailing: "›"; onActivated: win.openWidgets() }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "System Tray"; trailing: "›"; onActivated: win.openTray() }
-                            MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Notifications"; trailing: "›"; onActivated: win.openNotifications() }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Notification ownership and default application management are not complete in the independent session."; color: win.prefs.muted }
-                        }
-                        ColumnLayout {
-                            visible: win.section === "About"; Layout.fillWidth: true; spacing: 10
-                            Text { text: "Oziro"; color: win.prefs.foreground; font.pixelSize: 26; font.weight: Font.DemiBold }
-                            Text { text: "Desktop Environment · 0.9.15"; color: win.prefs.foreground; font.pixelSize: 16 }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.loginSession ? "Independent experimental login" : win.prefs.nestedPreview ? "Windowed development preview" : "Shell running in an existing session"; color: win.prefs.muted }
-                            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Native QML / Quickshell · Wayland · Niri\nExperimental release. Oziro is not yet a standalone Linux distribution."; color: win.prefs.muted }
-                        }
+                        RowLayout { Layout.fillWidth: true; Text { Layout.fillWidth: true; text: "Show wallpaper"; color: win.prefs.foreground } Switch { checked: win.prefs.wallpaper.enabled; onToggled: win.prefs.updateWallpaper("enabled",checked) } }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Choose wallpaper"; trailing: "›"; onActivated: win.openWallpaper() }
+                    }
+                    ColumnLayout {
+                        visible: win.section==="Devices"; Layout.fillWidth: true; spacing: 12
+                        Text { Layout.fillWidth: true; text: "Sound, network and brightness"; color: win.prefs.foreground; font.pixelSize: 15 }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Control Center"; trailing: "›"; onActivated: win.openControls() }
+                        Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Display arrangement and input settings are not available yet."; color: win.prefs.muted }
+                    }
+                    ColumnLayout {
+                        visible: win.section==="Power & Security"; Layout.fillWidth: true; spacing: 12
+                        Text { text: "Energy mode"; color: win.prefs.muted; font.pixelSize: 12 }
+                        Flow { Layout.fillWidth: true; spacing: 6; Repeater { model: ["adaptive","balanced","eco"]; Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: win.prefs.energyMode===modelData; onActivated: win.prefs.selectEnergyMode(modelData) } } }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Battery and energy"; trailing: "›"; onActivated: win.openEnergy() }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Lock Screen"; trailing: "›"; enabled: !win.prefs.nestedPreview; onActivated: win.openLock() }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Power menu"; trailing: "›"; onActivated: win.openPower() }
+                        Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Automatic lock and sleep are not implemented."; color: win.prefs.muted }
+                    }
+                    ColumnLayout {
+                        visible: win.section==="Apps & Widgets"; Layout.fillWidth: true; spacing: 8
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Widgets"; trailing: "›"; onActivated: win.openWidgets() }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "System Tray"; trailing: "›"; onActivated: win.openTray() }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Notifications"; trailing: "›"; onActivated: win.openNotifications() }
+                    }
+                    ColumnLayout {
+                        visible: win.section==="About"; Layout.fillWidth: true; spacing: 10
+                        Text { text: "Oziro"; color: win.prefs.foreground; font.pixelSize: 32; font.weight: Font.DemiBold }
+                        Text { text: "Desktop Environment 0.9.16"; color: win.prefs.foreground; font.pixelSize: 16 }
+                        Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.loginSession ? "Independent experimental login" : win.prefs.nestedPreview ? "Development preview" : "Existing desktop session"; color: win.prefs.muted }
+                        Text { text: "Wayland · Niri · Quickshell"; color: win.prefs.muted }
                     }
                 }
             }

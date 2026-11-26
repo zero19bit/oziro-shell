@@ -20,3 +20,5 @@
 - User reports 0.9.13 login and original tests successful. 0.9.14 addresses power menu and settings hub; validate UI, explicit confirmations, logout, normal authorization and cancellation. Suspend/idle, full display/input settings, cohesive visual identity, portal/polkit and complete independent desktop services remain open.
 
 - 0.9.14 user reports Settings works; only Lock works in Power, test context not confirmed. 0.9.15 compact system menu and neutral glass styling; verify source disabled state and installed login capability probe, cancellation, logout, restart and shutdown separately. Challenge/denied is not bypassed. Visual acceptance pending.
+
+- 0.9.15 user confirms power works; precise action coverage not specified. User rejects visual change as insufficient. 0.9.16 new top-bar layout, icon dock and actual Settings window: verify QML load, window close/reopen, all links, settings persistence, panel/dock sizing, multimonitor and visual acceptance. No performance claim.

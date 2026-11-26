@@ -7,6 +7,7 @@ PanelWindow {
     required property var prefs
     required property var niriBackend
     signal openLauncher()
+    signal openSettings()
     readonly property var pinned: prefs.pinnedApps
     // Windows are scoped to this output, except pinned apps which are shared.
     readonly property var localWindows: niriBackend.enabled && niriBackend.ready && screen
@@ -29,16 +30,16 @@ PanelWindow {
     anchors { top: dock.prefs.layoutMode === "bottom"; bottom: dock.prefs.layoutMode !== "bottom" }
     margins { top: 8; bottom: 8 }
     implicitWidth: Math.min(screen ? Math.max(80,screen.width-32) : 640, items.implicitWidth + 20)
-    implicitHeight: dock.prefs.dockIconSize + 16
+    implicitHeight: dock.prefs.dockIconSize + 14
     color: "transparent"
     Rectangle {
         anchors.fill: parent
-        radius: dock.prefs.theme === "minimal" ? 6 : 15
-        color: dock.prefs.surfaceColor
+        radius: dock.prefs.theme === "minimal" ? 6 : 20
+        color: Qt.rgba(dock.prefs.popupColor.r,dock.prefs.popupColor.g,dock.prefs.popupColor.b,dock.prefs.eco ? 1 : 0.86)
         border.color: dock.prefs.outline
         Flickable {
             anchors.fill: parent
-            anchors.margins: 8
+            anchors.margins: 7
             contentWidth: items.implicitWidth
             contentHeight: height
             clip: true
@@ -46,13 +47,19 @@ PanelWindow {
                 id: items
                 height: parent.height
                 spacing: 6
-                PanelChip {
+                StatusButton {
                     anchors.verticalCenter: parent.verticalCenter
-                    prefs: dock.prefs
-                    label: "Apps"
-                    kind: "brand"
+                    prefs: dock.prefs; glyph: "apps"; label: "Applications"
+                    width: dock.prefs.dockIconSize; height: dock.prefs.dockIconSize
                     onActivated: dock.openLauncher()
                 }
+                StatusButton {
+                    anchors.verticalCenter: parent.verticalCenter
+                    prefs: dock.prefs; glyph: "settings"; label: "System Settings"
+                    width: dock.prefs.dockIconSize; height: dock.prefs.dockIconSize
+                    onActivated: dock.openSettings()
+                }
+                Rectangle { anchors.verticalCenter: parent.verticalCenter; width: 1; height: 26; color: dock.prefs.outline; visible: dock.pinned.length + dock.running.length > 0 }
                 Repeater {
                     model: dock.pinned
                     delegate: DockIcon {

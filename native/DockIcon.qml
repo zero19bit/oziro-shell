@@ -25,8 +25,10 @@ FocusScope {
         Behavior on color { enabled: !icon.prefs.eco; ColorAnimation { duration: 100 } }
     }
     Image {
-        anchors.centerIn: parent
-        width: Math.round(icon.width * 0.65); height: width
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -2
+        width: Math.round(icon.width * 0.82); height: width
         source: Quickshell.iconPath(icon.iconName || "application-x-executable","application-x-executable")
         sourceSize.width: width; sourceSize.height: height
         fillMode: Image.PreserveAspectFit
@@ -36,8 +38,8 @@ FocusScope {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 2
         visible: icon.running
-        width: icon.selected ? 14 : 5
-        height: 3; radius: 2; color: icon.prefs.accent
+        width: 4
+        height: 4; radius: 2; color: icon.selected ? icon.prefs.foreground : icon.prefs.muted
     }
     MouseArea {
         id: mouse
