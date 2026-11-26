@@ -19,6 +19,13 @@ PanelWindow {
         const e = entryFor(w);
         return !e || !pinned.includes(e.id);
     }).sort((a,b) => a.id-b.id)
+    // A primitive key changes only when the ordered membership changes.
+    // Focus and title updates change delegate bindings, not the Repeater model.
+    readonly property string runningKey: running.map(w => String(w.id)).join(",")
+    readonly property var runningIds: runningKey ? runningKey.split(",") : []
+    function windowById(id) {
+        return localWindows.find(w => String(w.id) === id) || null;
+    }
     anchors { top: dock.prefs.layoutMode === "bottom"; bottom: dock.prefs.layoutMode !== "bottom" }
     margins { top: 8; bottom: 8 }
     implicitWidth: Math.min(screen ? Math.max(80,screen.width-32) : 640, items.implicitWidth + 20)
@@ -73,16 +80,17 @@ PanelWindow {
                     width: 1; height: 30; color: dock.prefs.outline
                 }
                 Repeater {
-                    model: dock.running
+                    model: dock.runningIds
                     delegate: DockIcon {
-                        required property var modelData
+                        required property string modelData
                         prefs: dock.prefs
-                        readonly property var entry: dock.entryFor(modelData)
-                        title: modelData.title || modelData.app_id || "Window"
+                        readonly property var windowData: dock.windowById(modelData)
+                        readonly property var entry: windowData ? dock.entryFor(windowData) : null
+                        title: windowData ? windowData.title || windowData.app_id || "Window" : "Window"
                         iconName: entry ? entry.icon : "application-x-executable"
-                        running: true
-                        selected: modelData.is_focused
-                        onActivated: dock.niriBackend.focusWindow(modelData.id)
+                        running: windowData !== null
+                        selected: windowData !== null && windowData.is_focused
+                        onActivated: { if (windowData) dock.niriBackend.focusWindow(windowData.id); }
                     }
                 }
             }

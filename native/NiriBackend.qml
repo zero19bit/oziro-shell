@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "WindowModel.js" as WindowModel
 
 Scope {
     id: backend
@@ -10,8 +11,8 @@ Scope {
     property var workspaces: []
     property var windows: []
     property string actionKind: ""
-    function compactWindow(w) {
-        return {id:w.id, app_id:w.app_id || "", title:w.title || "", workspace_id:w.workspace_id, is_focused:!!w.is_focused};
+    function publishWindows(next) {
+        if (next !== windows) windows = next;
     }
     property string lastError: ""
     property var targetId: null
@@ -20,16 +21,13 @@ Scope {
         try {
             const event = JSON.parse(line);
             if (event.WindowsChanged && Array.isArray(event.WindowsChanged.windows)) {
-                windows = event.WindowsChanged.windows.map(compactWindow);
+                publishWindows(WindowModel.snapshot(windows, event.WindowsChanged.windows));
             } else if (event.WindowOpenedOrChanged && event.WindowOpenedOrChanged.window) {
-                const w = compactWindow(event.WindowOpenedOrChanged.window);
-                let next = windows.filter(old => old.id !== w.id);
-                if (w.is_focused) next = next.map(old => Object.assign({},old,{is_focused:false}));
-                windows = next.concat([w]);
+                publishWindows(WindowModel.update(windows, event.WindowOpenedOrChanged.window));
             } else if (event.WindowClosed) {
-                windows = windows.filter(w => w.id !== event.WindowClosed.id);
+                publishWindows(WindowModel.remove(windows, event.WindowClosed.id));
             } else if (event.WindowFocusChanged) {
-                windows = windows.map(w => Object.assign({},w,{is_focused:w.id === event.WindowFocusChanged.id}));
+                publishWindows(WindowModel.focus(windows, event.WindowFocusChanged.id));
             } else if (event.WorkspacesChanged && Array.isArray(event.WorkspacesChanged.workspaces)) {
                 workspaces = event.WorkspacesChanged.workspaces;
                 ready = true;

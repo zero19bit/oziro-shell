@@ -62,6 +62,7 @@ PanelWindow {
                 clip: true
                 spacing: 4
                 currentIndex: 0
+                cacheBuffer: 0
                 delegate: ItemDelegate {
                     id: app
                     required property var modelData

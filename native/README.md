@@ -1,4 +1,4 @@
-# Oziro V2 — Foundation 0.9.2 (pre-release stabilization)
+# Oziro V2 — Foundation 0.9.3 (performance stabilization)
 Native Arch / Hyprland and Niri shell, independent of the legacy Rust/React host. Not a production release.
 
 ## Test on a real Wayland session
@@ -50,3 +50,6 @@ User-reported QML startup failure in WidgetRegistry.js: nine unsupported object-
 
 ## Foundation 0.9.2 — release preflight
 Run `bash native/preflight.sh` while exactly one source-tree Oziro instance is running. It checks source inventory, Bash syntax, the known object-spread regression pattern, doctor probes and a process-tree PSS snapshot if the Oziro PID is found. It does not check QML syntax generally or prove release readiness. No configuration or services are changed. See RELEASE-CHECKLIST.md. The existing installer still refuses overwrite and does not replace Ryoku. No standalone session installer yet.
+
+## Foundation 0.9.3
+Niri window model ignores identical snapshots, no-op focus and duplicate window events; updates preserve ordered membership. Dock running delegates use stable string IDs instead of rebuilding their model for title/focus changes. Launcher list has no extra cache buffer. These changes target unnecessary delegate/texture churn, not proven causes of warm CPU. The 11-case pure JS window-model test passed in the development runtime; real QML and Niri regression still required. Benchmark CPU now uses elapsed monotonic uptime, verifies PID identity, and retains original PSS columns. Compare same workload with dock on, then open/close all popups, wait 15 seconds and repeat two 60-sample idle runs. Avoid changing terminal title or interacting during measurement. No automatic GC, no hardware changes, no measured savings yet. See TEST-0092.md.

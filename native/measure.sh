@@ -14,7 +14,7 @@ out="$(mktemp)"
 trap 'rm -f -- "$out"' EXIT
 bash "$dir/benchmark.sh" "$pid" "$samples" > "$out"
 awk -F, -v phase="$phase" -v hz="$clock" '
-NR==2 {first=$5; min=$4; max=$4}
-NR>1 {sum+=$4; if($4<min)min=$4; if($4>max)max=$4; last=$5; n++}
-END {if(n<1)exit 1; printf "%s: PSS avg %.1f MiB, min %.1f, max %.1f, samples %d",phase,sum/n/1024,min/1024,max/1024,n; if(n>1)printf ", CPU approx %.2f%% of one core",(last-first)/hz/(n-1)*100; print ""}
+NR==2 {first=$5; t0=$6; min=$4; max=$4}
+NR>1 {sum+=$4; if($4<min)min=$4; if($4>max)max=$4; last=$5; t1=$6; n++}
+END {if(n<1 || last<first)exit 1; printf "%s: PSS avg %.1f MiB, min %.1f, max %.1f, samples %d",phase,sum/n/1024,min/1024,max/1024,n; if(n>1 && t1>t0)printf ", CPU approx %.2f%% of one core, elapsed %.1fs",(last-first)/hz/(t1-t0)*100,t1-t0; print ""}
 ' "$out"
