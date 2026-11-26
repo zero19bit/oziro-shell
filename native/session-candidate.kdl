@@ -1,0 +1,11 @@
+// Draft for a real Oziro session; not installed and not the current Niri configuration.
+// The login-session launcher and its recovery procedure are gated on host diagnostics.
+binds {
+    Mod+Q { close-window; }
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up { focus-workspace-up; }
+    Mod+Down { focus-workspace-down; }
+    Mod+F { maximize-column; }
+    Mod+Shift+E { quit; }
+}
