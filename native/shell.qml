@@ -17,6 +17,7 @@ ShellRoot {
     readonly property color selectedText: theme === "light" ? "#ffffff" : "#111827"
     readonly property color muted: theme === "light" ? "#536173" : "#a8b4c4"
     readonly property color outline: theme === "light" ? "#cbd5e1" : "#364253"
+    NiriBackend { id: niri }
     SystemClock { id: clock; precision: SystemClock.Minutes }
     PwObjectTracker { objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : [] }
     Variants {
@@ -29,6 +30,7 @@ ShellRoot {
             TopBar {
                 screen: output.modelData
                 prefs: shell
+                niriBackend: niri
                 clockText: Qt.formatDateTime(clock.date, "ddd, MMM d  ·  HH:mm")
                 onOpenLauncher: output.toggle("launcher")
                 onOpenControls: output.toggle("controls")

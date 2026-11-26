@@ -8,13 +8,24 @@ import Quickshell.Services.UPower
 PanelWindow {
     id: bar
     required property var prefs
+    required property var niriBackend
     required property string clockText
     signal openLauncher()
     signal openControls()
-    readonly property var monitor: screen ? Hyprland.monitorFor(screen) : null
+    readonly property var monitor: !niriBackend.enabled && screen ? Hyprland.monitorFor(screen) : null
     readonly property var sink: Pipewire.defaultAudioSink
-    readonly property var battery: UPower.displayDevice
-    readonly property bool batteryReady: battery !== null && battery.ready && battery.isLaptopBattery
+    readonly property var battery: {
+        const aggregate = UPower.displayDevice;
+        if (aggregate && aggregate.ready && aggregate.isLaptopBattery && aggregate.isPresent)
+            return aggregate;
+        for (const device of UPower.devices.values)
+            if (device.ready && device.isLaptopBattery && device.isPresent) return device;
+        return null;
+    }
+    readonly property bool batteryReady: battery !== null
+    readonly property var niriWorkspaces: niriBackend.enabled && screen
+        ? niriBackend.workspaces.filter(w => w.output === screen.name).sort((a,b) => a.idx-b.idx)
+        : []
     anchors { top: bar.prefs.layoutMode !== "bottom"; bottom: bar.prefs.layoutMode === "bottom"; left: true; right: true }
     margins { top: bar.prefs.layoutMode === "floating" ? 8 : 0; left: bar.prefs.layoutMode === "floating" ? 12 : 0; right: left }
     implicitHeight: 48
@@ -41,7 +52,7 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 4
                     Repeater {
-                        model: Hyprland.workspaces
+                        model: bar.niriBackend.enabled ? 0 : Hyprland.workspaces
                         Chip {
                             required property var modelData
                             prefs: bar.prefs
@@ -51,7 +62,22 @@ PanelWindow {
                             onActivated: modelData.activate()
                         }
                     }
-                    Text { visible: bar.monitor === null; text: "No Hyprland"; color: bar.prefs.muted }
+                    Repeater {
+                        model: bar.niriWorkspaces
+                        Chip {
+                            required property var modelData
+                            prefs: bar.prefs
+                            label: modelData.name || String(modelData.idx)
+                            selected: modelData.is_active
+                            enabled: bar.niriBackend.ready && bar.niriBackend.targetId === null
+                            onActivated: bar.niriBackend.activate(modelData.id)
+                        }
+                    }
+                    Text {
+                        visible: bar.niriBackend.enabled ? !bar.niriBackend.ready : bar.monitor === null
+                        text: bar.niriBackend.enabled ? "Niri reconnecting" : "No Hyprland"
+                        color: bar.prefs.muted
+                    }
                 }
             }
             Item { Layout.fillWidth: true }
