@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
-import Quickshell.Services.UPower
 
 PanelWindow {
     id: bar
@@ -15,15 +14,6 @@ PanelWindow {
     signal openNotifications()
     readonly property var monitor: !niriBackend.enabled && screen ? Hyprland.monitorFor(screen) : null
     readonly property var sink: Pipewire.defaultAudioSink
-    readonly property var battery: {
-        const aggregate = UPower.displayDevice;
-        if (aggregate && aggregate.ready && aggregate.isLaptopBattery && aggregate.isPresent)
-            return aggregate;
-        for (const device of UPower.devices.values)
-            if (device.ready && device.isLaptopBattery && device.isPresent) return device;
-        return null;
-    }
-    readonly property bool batteryReady: battery !== null
     readonly property var niriWorkspaces: niriBackend.enabled && screen
         ? niriBackend.workspaces.filter(w => w.output === screen.name).sort((a,b) => a.idx-b.idx)
         : []
@@ -90,8 +80,8 @@ PanelWindow {
             Text { text: bar.clockText; color: bar.prefs.foreground; font.pixelSize: 13; visible: bar.width >= 650 }
             Item { Layout.fillWidth: true }
             Text {
-                visible: bar.batteryReady && bar.width >= 480
-                text: bar.batteryReady ? (UPower.onBattery ? "" : "AC ") + Math.round(bar.battery.percentage * 100) + "%" : ""
+                visible: bar.prefs.batteryPercent >= 0 && bar.width >= 480
+                text: (bar.prefs.powerSource === "ac" ? "AC " : bar.prefs.powerSource === "unknown" ? "? " : "") + bar.prefs.batteryPercent + "%"
                 color: bar.prefs.foreground
                 font.pixelSize: 12
             }

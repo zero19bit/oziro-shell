@@ -10,7 +10,9 @@ PanelWindow {
     required property var prefs
     signal dismiss()
     property string report: ""
+    property string testResult: ""
     function refresh() {
+        win.prefs.refreshPower();
         if (probe.running) return;
         report = "";
         probe.running = true;
@@ -43,7 +45,7 @@ PanelWindow {
                 Layout.fillWidth: true; Layout.fillHeight: true; contentWidth: availableWidth
                 ColumnLayout {
                     width: scroll.availableWidth; spacing: 12
-                    Text { text: win.prefs.batteryPercent >= 0 ? win.prefs.batteryPercent + "% · " + (win.prefs.onBattery ? "On battery" : "AC power") : "Battery unavailable"; color: win.prefs.foreground; font.pixelSize: 24; font.bold: true }
+                    Text { text: win.prefs.batteryPercent >= 0 ? win.prefs.batteryPercent + "% · " + win.prefs.powerLabel : "Battery unavailable"; color: win.prefs.foreground; font.pixelSize: 24; font.bold: true }
                     Rectangle {
                         Layout.fillWidth: true; height: 8; radius: 4; color: win.prefs.outline
                         Rectangle { width: parent.width * Math.max(0,win.prefs.batteryPercent)/100; height: parent.height; radius: 4; color: win.prefs.accent }
@@ -56,19 +58,29 @@ PanelWindow {
                             Chip {
                                 required property string modelData
                                 prefs: win.prefs; label: modelData; selected: win.prefs.energyMode === modelData
-                                onActivated: win.prefs.energyMode = modelData
+                                onActivated: win.prefs.selectEnergyMode(modelData)
                             }
                         }
                     }
-                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; text: "Adaptive reduces effects on battery when enabled. Balanced keeps standard effects. Eco reduces effects on AC and battery. Manual override takes priority." }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; text: "Adaptive: automatic on battery. Balanced: standard effects. Eco: reduced effects everywhere. Selecting a mode clears the previous manual override." }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.foreground; text: (win.prefs.eco ? "Eco active · " : "Standard active · ") + win.prefs.energyReason }
                     Flow {
                         Layout.fillWidth: true; spacing: 6
-                        Chip { prefs: win.prefs; label: "Force reduced effects"; selected: win.prefs.reduceEffects; onActivated: win.prefs.reduceEffects = !win.prefs.reduceEffects }
-                        Chip { prefs: win.prefs; label: "Auto on battery"; enabled: win.prefs.energyMode === "adaptive"; selected: win.prefs.autoEco; onActivated: win.prefs.autoEco = !win.prefs.autoEco }
+                        Chip { prefs: win.prefs; label: "Reset energy"; onActivated: win.prefs.resetEnergyPolicy() }
                         Chip { prefs: win.prefs; label: "Pause dock on battery in Eco"; selected: win.prefs.suspendDockOnBattery; onActivated: win.prefs.suspendDockOnBattery = !win.prefs.suspendDockOnBattery }
                     }
-                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; text: win.prefs.dockSuspended ? "Dock temporarily unloaded. Pins preserved. Returns when policy permits." : "Dock pause is optional and never changes saved pins or dock preference." }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.foreground; text: "Dock: " + (!win.prefs.dockEnabled ? "Disabled in settings" : win.prefs.dockSuspended ? "Paused by energy policy" : "Enabled") }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; text: "Power source: " + win.prefs.powerLabel + " · " + (win.prefs.powerChecking ? "Checking…" : win.prefs.powerMonitorRunning ? "Event monitor running" : "Waiting for monitor retry") }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Chip { prefs: win.prefs; label: "Run policy self-test"; onActivated: {
+                            const result = win.prefs.energySelfTest();
+                            win.testResult = result.passed + "/" + result.total + " policy cases passed";
+                            if (result.failures.length) win.testResult += " · failed: " + result.failures.join(", ");
+                        } }
+                        Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.foreground; text: win.testResult }
+                    }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; font.pixelSize: 11; text: "Self-test checks logic, not hardware. Refresh rechecks the real charger state." }
                     RowLayout {
                         Layout.fillWidth: true
                         Text { Layout.fillWidth: true; text: "SYSTEM POWER PROVIDERS"; color: win.prefs.accent; font.bold: true }

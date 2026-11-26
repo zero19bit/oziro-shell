@@ -1,12 +1,14 @@
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.UPower
 
-// Pure reactive policy. No polling, command execution or hardware writes.
+// One verified power-source state for all surfaces. Unknown is not AC.
 Scope {
     id: engine
-    required property var prefs
-    readonly property bool onBattery: UPower.onBattery
+    property string source: "unknown"
+    property string rawSource: "unknown"
+    property bool pending: false
     readonly property var battery: {
         const aggregate = UPower.displayDevice;
         if (aggregate && aggregate.ready && aggregate.isLaptopBattery && aggregate.isPresent) return aggregate;
@@ -15,12 +17,64 @@ Scope {
         return null;
     }
     readonly property int percentage: battery ? Math.round(battery.percentage * 100) : -1
-    readonly property bool eco: prefs.reduceEffects || prefs.energyMode === "eco" ||
-        (prefs.energyMode === "adaptive" && prefs.autoEco && onBattery)
-    readonly property bool dockSuspended: prefs.dockEnabled && prefs.suspendDockOnBattery && onBattery && eco
-    readonly property string reason: prefs.reduceEffects ? "Manual reduce effects" :
-        prefs.energyMode === "eco" ? "Eco selected" :
-        prefs.energyMode === "balanced" ? "Balanced selected" :
-        !prefs.autoEco ? "Adaptive battery reduction disabled" :
-        onBattery ? "Adaptive: battery power" : "Adaptive: AC power"
+    readonly property bool monitorRunning: watcher.running
+    readonly property bool checking: snapshot.running
+    function refresh() {
+        if (snapshot.running) { pending = true; return; }
+        pending = false;
+        rawSource = "unknown";
+        snapshot.running = true;
+    }
+    function schedule() {
+        if (!debounce.running) debounce.start();
+    }
+    Process {
+        id: snapshot
+        command: ["timeout","-k","1s","4s","busctl","--system","get-property","org.freedesktop.UPower","/org/freedesktop/UPower","org.freedesktop.UPower","OnBattery"]
+        stdout: SplitParser {
+            onRead: data => {
+                const value = data.trim();
+                if (value === "b true") engine.rawSource = "battery";
+                else if (value === "b false") engine.rawSource = "ac";
+            }
+        }
+        stderr: StdioCollector {}
+        onExited: (code,status) => {
+            const next = code === 0 ? engine.rawSource : "unknown";
+            if (engine.source !== next) console.info("Oziro power source:", next);
+            engine.source = next;
+            if (engine.pending) engine.schedule();
+        }
+    }
+    Process {
+        id: watcher
+        command: ["stdbuf","-oL","upower","--monitor"]
+        stdout: SplitParser { onRead: data => engine.schedule() }
+        stderr: StdioCollector {}
+        onExited: (code,status) => { engine.schedule(); }
+    }
+    Timer {
+        id: debounce
+        interval: 300
+        repeat: false
+        onTriggered: engine.refresh()
+    }
+    // Slow reconciliation handles missed events, daemon restart or monitor failure.
+    Timer {
+        interval: 30000
+        repeat: true
+        running: true
+        onTriggered: {
+            if (!watcher.running) watcher.running = true;
+            engine.refresh();
+        }
+    }
+    Connections {
+        target: UPower
+        function onOnBatteryChanged() { engine.schedule(); }
+    }
+    Component.onCompleted: {
+        watcher.running = true;
+        refresh();
+    }
 }

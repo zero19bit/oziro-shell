@@ -146,7 +146,7 @@ PanelWindow {
                         Layout.fillWidth: true; spacing: 6
                         Chip { prefs: win.prefs; label: "24-hour clock"; selected: win.prefs.clock24Hour; onActivated: win.prefs.clock24Hour = !win.prefs.clock24Hour }
                         Chip { prefs: win.prefs; label: "Dock"; selected: win.prefs.dockEnabled; onActivated: win.prefs.dockEnabled = !win.prefs.dockEnabled }
-                        Chip { prefs: win.prefs; label: "Reduce effects"; selected: win.prefs.reduceEffects; onActivated: win.prefs.reduceEffects = !win.prefs.reduceEffects }
+                        Chip { prefs: win.prefs; label: "Reduce effects"; selected: win.prefs.eco; onActivated: win.prefs.selectEnergyMode(win.prefs.eco ? "balanced" : "eco") }
                     }
                     Chip { prefs: win.prefs; label: "Reset appearance"; onActivated: { win.prefs.resetAppearance(); hex.text = ""; panelSize.value = win.prefs.panelHeight; dockSize.value = win.prefs.dockIconSize; } }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.settingsStatus + " · Appearance reset keeps pinned apps and energy preferences."; color: win.prefs.muted; font.pixelSize: 11 }

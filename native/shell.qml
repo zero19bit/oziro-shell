@@ -2,7 +2,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
-import Quickshell.Services.UPower
+import "EnergyPolicy.js" as EnergyPolicy
 
 ShellRoot {
     id: shell
@@ -13,11 +13,28 @@ ShellRoot {
     property alias autoEco: settings.autoEco
     property alias energyMode: settings.energyMode
     property alias suspendDockOnBattery: settings.suspendDockOnBattery
-    EnergyEngine { id: energy; prefs: shell }
-    readonly property bool dockSuspended: energy.dockSuspended
-    readonly property bool onBattery: energy.onBattery
+    EnergyEngine { id: energy }
+    readonly property string powerSource: energy.source
+    readonly property bool onBattery: powerSource === "battery"
+    readonly property string powerLabel: powerSource === "battery" ? "On battery" : powerSource === "ac" ? "AC power" : "Power unknown"
     readonly property int batteryPercent: energy.percentage
-    readonly property string energyReason: energy.reason
+    readonly property var energyPolicy: EnergyPolicy.policy(energyMode, powerSource, reduceEffects, autoEco, dockEnabled, suspendDockOnBattery)
+    readonly property bool dockSuspended: energyPolicy.suspended
+    readonly property string energyReason: energyPolicy.reason
+    readonly property bool powerMonitorRunning: energy.monitorRunning
+    readonly property bool powerChecking: energy.checking
+    function refreshPower() { energy.refresh(); }
+    function energySelfTest() { return EnergyPolicy.selfTest(); }
+    function selectEnergyMode(mode) {
+        if (!["adaptive","balanced","eco"].includes(mode)) return;
+        reduceEffects = false;
+        if (mode === "adaptive") autoEco = true;
+        energyMode = mode;
+    }
+    function resetEnergyPolicy() {
+        selectEnergyMode("adaptive");
+        suspendDockOnBattery = false;
+    }
     property alias dockEnabled: settings.dockEnabled
     property alias pinnedApps: settings.pinnedApps
     property alias customAccent: settings.customAccent
@@ -37,7 +54,7 @@ ShellRoot {
     }
     readonly property string settingsStatus: settings.status
     readonly property bool panelOnly: Quickshell.env("OZIRO_PANEL_ONLY") === "1"
-    readonly property bool eco: energy.eco
+    readonly property bool eco: energyPolicy.eco
     readonly property color surfaceColor: theme === "light" ? "#f3f5f9" : theme === "material" ? "#25243a" : theme === "cyber" ? "#141127" : theme === "glass" && !eco ? "#e61a202b" : "#1a202b"
     readonly property color foreground: theme === "light" ? "#202939" : "#edf2fa"
     readonly property color accent: customAccent !== "" ? customAccent : theme === "light" ? "#285b9b" : theme === "material" ? "#bcb0ff" : theme === "cyber" ? "#7df9ff" : "#93d9e9"

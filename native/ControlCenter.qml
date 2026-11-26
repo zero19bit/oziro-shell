@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Pipewire
-import Quickshell.Services.UPower
 
 PanelWindow {
     id: win
@@ -13,13 +12,6 @@ PanelWindow {
     signal openSettings()
     signal openEnergy()
     SystemControls { id: sys }
-    readonly property var battery: {
-        const aggregate = UPower.displayDevice;
-        if (aggregate && aggregate.ready && aggregate.isLaptopBattery && aggregate.isPresent) return aggregate;
-        for (const device of UPower.devices.values)
-            if (device.ready && device.isLaptopBattery && device.isPresent) return device;
-        return null;
-    }
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property bool audioReady: Pipewire.ready && sink !== null && sink.audio !== null
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
@@ -53,7 +45,7 @@ PanelWindow {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: "SYSTEM"; color: win.prefs.accent; font.bold: true; Layout.fillWidth: true }
-                        Chip { prefs: win.prefs; label: sys.busy ? "Working…" : "Refresh"; enabled: !sys.busy; onActivated: sys.request("status", "") }
+                        Chip { prefs: win.prefs; label: sys.busy ? "Working…" : "Refresh"; enabled: !sys.busy; onActivated: { win.prefs.refreshPower(); sys.request("status", ""); } }
                     }
                     GridLayout {
                         Layout.fillWidth: true
@@ -108,7 +100,7 @@ PanelWindow {
                     }
                     Text {
                         Layout.fillWidth: true
-                        text: win.battery ? "Battery · " + Math.round(win.battery.percentage * 100) + "% · " + (UPower.onBattery ? "On battery" : "AC power") : "Battery unavailable"
+                        text: win.prefs.batteryPercent >= 0 ? "Battery · " + win.prefs.batteryPercent + "% · " + win.prefs.powerLabel : "Battery unavailable · " + win.prefs.powerLabel
                         color: win.prefs.foreground
                     }
                     Text { text: "System power profile · " + sys.profile; color: win.prefs.accent; font.bold: true }
@@ -134,7 +126,7 @@ PanelWindow {
                         Chip { prefs: win.prefs; label: "Energy"; onActivated: win.openEnergy() }
                     }
                     RowLayout {
-                        Chip { prefs: win.prefs; label: "Reduce effects"; selected: win.prefs.reduceEffects; onActivated: win.prefs.reduceEffects = !win.prefs.reduceEffects }
+                        Chip { prefs: win.prefs; label: "Reduce effects"; selected: win.prefs.eco; onActivated: win.prefs.selectEnergyMode(win.prefs.eco ? "balanced" : "eco") }
                         Chip { prefs: win.prefs; label: "Auto on battery"; enabled: win.prefs.energyMode === "adaptive"; selected: win.prefs.autoEco; onActivated: win.prefs.autoEco = !win.prefs.autoEco }
                     }
                     Text { text: (win.prefs.eco ? "Eco rendering · " : "Standard rendering · ") + win.prefs.energyReason; color: win.prefs.muted }
