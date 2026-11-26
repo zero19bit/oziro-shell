@@ -74,6 +74,14 @@ PanelWindow {
                     contentItem: RowLayout {
                         Image { Layout.preferredWidth: 30; Layout.preferredHeight: 30; source: Quickshell.iconPath(app.modelData.icon, "application-x-executable"); sourceSize.width: 32; sourceSize.height: 32; cache: false }
                         Text { text: app.modelData.name; color: win.prefs.foreground; font.pixelSize: 15; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Chip {
+                            prefs: win.prefs
+                            label: win.prefs.pinnedApps.includes(app.modelData.id) ? "−" : "+"
+                            Accessible.name: (win.prefs.pinnedApps.includes(app.modelData.id) ? "Unpin " : "Pin ") + app.modelData.name
+                            enabled: win.prefs.pinnedApps.includes(app.modelData.id) || win.prefs.pinnedApps.length < 12
+                            selected: win.prefs.pinnedApps.includes(app.modelData.id)
+                            onActivated: win.prefs.togglePin(app.modelData.id)
+                        }
                     }
                 }
             }

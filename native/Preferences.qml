@@ -8,6 +8,8 @@ Scope {
     property string layoutMode: "floating"
     property bool reduceEffects: false
     property bool autoEco: true
+    property bool dockEnabled: false
+    property var pinnedApps: []
     property bool initialized: false
     property bool writable: true
     property string status: "Loading settings"
@@ -22,6 +24,9 @@ Scope {
                 if (["floating","top","bottom"].includes(data.layoutMode)) layoutMode = data.layoutMode;
                 if (typeof data.reduceEffects === "boolean") reduceEffects = data.reduceEffects;
                 if (typeof data.autoEco === "boolean") autoEco = data.autoEco;
+                if (typeof data.dockEnabled === "boolean") dockEnabled = data.dockEnabled;
+                if (Array.isArray(data.pinnedApps)) pinnedApps = [...new Set(data.pinnedApps.filter(id =>
+                    typeof id === "string" && id.length > 0 && id.length <= 256))].slice(0,12);
                 status = "Settings loaded";
             } catch (error) {
                 writable = false;
@@ -35,13 +40,16 @@ Scope {
         if (!initialized || !writable) return;
         file.setText(JSON.stringify({
             version: 1, theme: theme, layoutMode: layoutMode,
-            reduceEffects: reduceEffects, autoEco: autoEco
+            reduceEffects: reduceEffects, autoEco: autoEco,
+            dockEnabled: dockEnabled, pinnedApps: pinnedApps
         }, null, 2) + "\n");
     }
     onThemeChanged: save()
     onLayoutModeChanged: save()
     onReduceEffectsChanged: save()
     onAutoEcoChanged: save()
+    onDockEnabledChanged: save()
+    onPinnedAppsChanged: save()
     FileView {
         id: file
         path: prefs.settingsPath

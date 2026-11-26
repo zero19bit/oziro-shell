@@ -80,6 +80,14 @@ PanelWindow {
                             Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: win.prefs.layoutMode === modelData; onActivated: win.prefs.layoutMode = modelData }
                         }
                     }
+                    Text { text: "Dock"; color: win.prefs.accent; font.bold: true }
+                    Chip {
+                        prefs: win.prefs
+                        label: win.prefs.dockEnabled ? "Dock enabled" : "Enable dock"
+                        selected: win.prefs.dockEnabled
+                        onActivated: win.prefs.dockEnabled = !win.prefs.dockEnabled
+                    }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Pin apps using + in the launcher. Disable the dock to release its UI."; color: win.prefs.muted; font.pixelSize: 11 }
                     Text { Layout.fillWidth: true; text: win.prefs.settingsStatus; color: win.prefs.muted; font.pixelSize: 12 }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Eco changes shell effects, not CPU or hardware power limits."; color: win.prefs.muted; font.pixelSize: 11 }
                 }

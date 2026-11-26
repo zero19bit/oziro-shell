@@ -11,6 +11,13 @@ ShellRoot {
     property alias layoutMode: settings.layoutMode
     property alias reduceEffects: settings.reduceEffects
     property alias autoEco: settings.autoEco
+    property alias dockEnabled: settings.dockEnabled
+    property alias pinnedApps: settings.pinnedApps
+    function togglePin(id) {
+        if (typeof id !== "string" || !id.length || id.length > 256) return;
+        if (pinnedApps.includes(id)) pinnedApps = pinnedApps.filter(value => value !== id);
+        else if (pinnedApps.length < 12) pinnedApps = pinnedApps.concat([id]);
+    }
     readonly property string settingsStatus: settings.status
     readonly property bool panelOnly: Quickshell.env("OZIRO_PANEL_ONLY") === "1"
     readonly property bool eco: reduceEffects || (autoEco && UPower.onBattery)
@@ -49,6 +56,18 @@ ShellRoot {
                 onOpenControls: output.toggle("controls")
             }
             Loader { id: popupLoader }
+            Loader {
+                id: dockLoader
+                active: shell.dockEnabled && !shell.panelOnly
+                sourceComponent: Component {
+                    Dock {
+                        screen: output.modelData
+                        prefs: shell
+                        niriBackend: niri
+                        onOpenLauncher: output.toggle("launcher")
+                    }
+                }
+            }
             Connections {
                 target: popupLoader.item
                 function onDismiss() { Qt.callLater(output.closePopup); }

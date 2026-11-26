@@ -8,13 +8,29 @@ Scope {
     readonly property bool enabled: socketPath.length > 0
     property bool ready: false
     property var workspaces: []
+    property var windows: []
+    property string actionKind: ""
+    function compactWindow(w) {
+        return {id:w.id, app_id:w.app_id || "", title:w.title || "", workspace_id:w.workspace_id, is_focused:!!w.is_focused};
+    }
     property string lastError: ""
     property var targetId: null
 
     function consume(line) {
         try {
             const event = JSON.parse(line);
-            if (event.WorkspacesChanged && Array.isArray(event.WorkspacesChanged.workspaces)) {
+            if (event.WindowsChanged && Array.isArray(event.WindowsChanged.windows)) {
+                windows = event.WindowsChanged.windows.map(compactWindow);
+            } else if (event.WindowOpenedOrChanged && event.WindowOpenedOrChanged.window) {
+                const w = compactWindow(event.WindowOpenedOrChanged.window);
+                let next = windows.filter(old => old.id !== w.id);
+                if (w.is_focused) next = next.map(old => Object.assign({},old,{is_focused:false}));
+                windows = next.concat([w]);
+            } else if (event.WindowClosed) {
+                windows = windows.filter(w => w.id !== event.WindowClosed.id);
+            } else if (event.WindowFocusChanged) {
+                windows = windows.map(w => Object.assign({},w,{is_focused:w.id === event.WindowFocusChanged.id}));
+            } else if (event.WorkspacesChanged && Array.isArray(event.WorkspacesChanged.workspaces)) {
                 workspaces = event.WorkspacesChanged.workspaces;
                 ready = true;
             } else if (event.WorkspaceActivated && ready) {
@@ -32,6 +48,16 @@ Scope {
     function activate(id) {
         if (!ready || targetId !== null || !Number.isSafeInteger(id) ||
                 !workspaces.some(w => w.id === id)) return;
+        actionKind = "workspace";
+        targetId = id;
+        lastError = "";
+        actionSocket.connected = true;
+        actionTimeout.restart();
+    }
+
+    function focusWindow(id) {
+        if (!ready || targetId !== null || !Number.isSafeInteger(id) || !windows.some(w => w.id === id)) return;
+        actionKind = "window";
         targetId = id;
         lastError = "";
         actionSocket.connected = true;
@@ -56,12 +82,14 @@ Scope {
             } else {
                 backend.ready = false;
                 backend.workspaces = [];
+                backend.windows = [];
                 if (backend.enabled) retry.restart();
             }
         }
         onError: {
             backend.ready = false;
             backend.workspaces = [];
+            backend.windows = [];
             connected = false;
             if (backend.enabled) retry.restart();
         }
@@ -80,7 +108,8 @@ Scope {
         path: backend.socketPath
         onConnectedChanged: {
             if (connected && backend.targetId !== null) {
-                write(JSON.stringify({Action:{FocusWorkspace:{reference:{Id:backend.targetId}}}}) + "\n");
+                const action = backend.actionKind === "window" ? {FocusWindow:{id:backend.targetId}} : {FocusWorkspace:{reference:{Id:backend.targetId}}};
+                write(JSON.stringify({Action:action}) + "\n");
                 flush();
             }
         }
