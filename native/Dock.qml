@@ -45,11 +45,12 @@ PanelWindow {
             Row {
                 id: items
                 height: parent.height
-                spacing: 6
+                spacing: 7
                 PanelChip {
                     anchors.verticalCenter: parent.verticalCenter
                     prefs: dock.prefs
                     label: "Apps"
+                    kind: "brand"
                     onActivated: dock.openLauncher()
                 }
                 Repeater {

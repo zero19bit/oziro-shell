@@ -5,9 +5,10 @@ FocusScope {
     required property var prefs
     property string label: ""
     property bool selected: false
+    property string kind: "action" // brand, workspace, action
     signal activated()
-    implicitWidth: Math.max(32, caption.implicitWidth + 20)
-    implicitHeight: 32
+    implicitWidth: Math.max(kind === "workspace" ? 30 : 32, caption.implicitWidth + (kind === "workspace" ? 16 : kind === "brand" ? 26 : 20))
+    implicitHeight: 30
     activeFocusOnTab: enabled
     Accessible.role: Accessible.Button
     Accessible.name: label
@@ -16,19 +17,35 @@ FocusScope {
     Keys.onSpacePressed: { if (enabled) activated(); }
     Rectangle {
         anchors.fill: parent
-        radius: chip.prefs.theme === "minimal" ? 4 : 10
-        color: chip.selected ? chip.prefs.accent : mouse.containsMouse || chip.activeFocus ? chip.prefs.outline : "transparent"
-        border.color: chip.selected ? chip.prefs.accent : chip.prefs.outline
-        Behavior on color { enabled: !chip.prefs.eco; ColorAnimation { duration: 120 } }
+        radius: chip.prefs.theme === "minimal" ? 3 : chip.kind === "workspace" ? 8 : 10
+        color: !chip.enabled ? "transparent" :
+            chip.kind === "brand" ? chip.prefs.accent :
+            chip.kind === "workspace" && chip.selected ? Qt.rgba(chip.prefs.accent.r,chip.prefs.accent.g,chip.prefs.accent.b,0.18) :
+            mouse.pressed || mouse.containsMouse || chip.activeFocus ? chip.prefs.outline : "transparent"
+        border.width: chip.activeFocus ? 2 : chip.kind === "brand" ? 0 : chip.selected || mouse.containsMouse ? 1 : 0
+        border.color: chip.activeFocus || chip.selected ? chip.prefs.accent : chip.prefs.outline
+        Behavior on color { enabled: !chip.prefs.eco; ColorAnimation { duration: 100 } }
     }
     Text {
         id: caption
         anchors.centerIn: parent
         text: chip.label
-        color: !chip.enabled ? chip.prefs.muted : chip.selected ? chip.prefs.selectedText : chip.prefs.foreground
+        textFormat: Text.PlainText
+        color: !chip.enabled ? chip.prefs.muted : chip.kind === "brand" ? chip.prefs.selectedText : chip.selected ? chip.prefs.accent : chip.prefs.foreground
         font.pixelSize: 12
-        font.weight: Font.Medium
+        font.weight: chip.kind === "brand" ? Font.Bold : chip.selected ? Font.DemiBold : Font.Medium
+        font.letterSpacing: chip.kind === "brand" ? 1.1 : 0
         opacity: chip.enabled ? 1 : 0.65
+    }
+    Rectangle {
+        visible: chip.kind === "workspace" && chip.selected
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 2
+        width: 12
+        height: 2
+        radius: 1
+        color: chip.prefs.accent
     }
     MouseArea {
         id: mouse

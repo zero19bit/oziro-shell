@@ -1,4 +1,4 @@
-# Oziro V2 — Foundation 0.9.3 (performance stabilization)
+# Oziro V2 — Foundation 0.9.4 (visual refinement)
 Native Arch / Hyprland and Niri shell, independent of the legacy Rust/React host. Not a production release.
 
 ## Test on a real Wayland session
@@ -53,3 +53,6 @@ Run `bash native/preflight.sh` while exactly one source-tree Oziro instance is r
 
 ## Foundation 0.9.3
 Niri window model ignores identical snapshots, no-op focus and duplicate window events; updates preserve ordered membership. Dock running delegates use stable string IDs instead of rebuilding their model for title/focus changes. Launcher list has no extra cache buffer. These changes target unnecessary delegate/texture churn, not proven causes of warm CPU. The 11-case pure JS window-model test passed in the development runtime; real QML and Niri regression still required. Benchmark CPU now uses elapsed monotonic uptime, verifies PID identity, and retains original PSS columns. Compare same workload with dock on, then open/close all popups, wait 15 seconds and repeat two 60-sample idle runs. Avoid changing terminal title or interacting during measurement. No automatic GC, no hardware changes, no measured savings yet. See TEST-0092.md.
+
+## Foundation 0.9.4 — visual refinement I
+User-reported 0.9.3 settled warm and idle results reached the current main-process targets (TEST-0093.md). The first visual pass refines panel hierarchy, workspace indicators, battery gauge, spacing and keyboard focus feedback for chips and dock icons. No new dependencies, shaders, persistent workers, or preference schema changes. Existing panel/dock placement and theme settings remain supported by the existing bindings. Visual and performance regression checks are pending. This is not the final Oziro design or 1.0 release.

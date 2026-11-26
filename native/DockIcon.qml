@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 
-Item {
+FocusScope {
     id: icon
     required property var prefs
     required property string title
@@ -10,13 +10,18 @@ Item {
     property bool selected: false
     signal activated()
     width: icon.prefs.dockIconSize; height: icon.prefs.dockIconSize
+    activeFocusOnTab: enabled
+    Keys.onReturnPressed: { if (enabled) activated(); }
+    Keys.onSpacePressed: { if (enabled) activated(); }
     Accessible.role: Accessible.Button
     Accessible.name: title
-    Accessible.onPressAction: activated()
+    Accessible.onPressAction: { if (enabled) activated(); }
     Rectangle {
         anchors.fill: parent
         radius: icon.prefs.theme === "minimal" ? 5 : 12
-        color: icon.selected || mouse.containsMouse ? icon.prefs.outline : "transparent"
+        color: icon.selected || mouse.containsMouse || icon.activeFocus ? icon.prefs.outline : "transparent"
+        border.width: icon.activeFocus ? 2 : 0
+        border.color: icon.prefs.accent
         Behavior on color { enabled: !icon.prefs.eco; ColorAnimation { duration: 100 } }
     }
     Image {
@@ -39,6 +44,6 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: icon.activated()
+        onClicked: { if (icon.enabled) icon.activated(); }
     }
 }
