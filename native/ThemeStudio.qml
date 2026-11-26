@@ -8,6 +8,7 @@ PanelWindow {
     id: win
     required property var prefs
     signal dismiss()
+    signal openWallpaper()
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
     margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
     implicitWidth: Math.min(540, screen ? Math.max(1,screen.width-24) : 540)
@@ -74,6 +75,7 @@ PanelWindow {
                             }
                         }
                     }
+                    Chip { prefs: win.prefs; label: "Wallpaper"; onActivated: win.openWallpaper() }
                     SectionLabel { prefs: win.prefs; label: "DESIGN PRESET" }
                     Flow {
                         Layout.fillWidth: true; spacing: 7

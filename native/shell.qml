@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Services.Pipewire
 import "EnergyPolicy.js" as EnergyPolicy
 import "WidgetRegistry.js" as WidgetRegistry
+import "WallpaperPolicy.js" as WallpaperPolicy
 
 ShellRoot {
     id: shell
@@ -38,6 +39,21 @@ ShellRoot {
     }
     property alias dockEnabled: settings.dockEnabled
     property alias pinnedApps: settings.pinnedApps
+    readonly property var wallpaper: settings.wallpaper
+    readonly property string wallpaperUrl: wallpaper.mode === "image" ? WallpaperPolicy.fileUrl(wallpaper.path) : ""
+    function wallpaperPathValid(path) { return WallpaperPolicy.fileUrl(path) !== ""; }
+    function wallpaperSelfTest() { return WallpaperPolicy.selfTest(); }
+    function updateWallpaper(key,value) {
+        const next = {enabled:wallpaper.enabled,mode:wallpaper.mode,color:wallpaper.color,path:wallpaper.path,fit:wallpaper.fit};
+        if (!["enabled","mode","color","path","fit"].includes(key)) return;
+        next[key] = value;
+        settings.setWallpaper(next);
+    }
+    function useWallpaperImage(path) {
+        if (!wallpaperPathValid(path)) return false;
+        settings.setWallpaper({enabled:wallpaper.enabled,mode:"image",color:wallpaper.color,path:path,fit:wallpaper.fit});
+        return true;
+    }
     readonly property var widgetExtensions: settings.widgetExtensions
     readonly property var enabledWidgets: settings.enabledWidgets
     readonly property var widgetCards: WidgetRegistry.builtinCards().concat(widgetExtensions)
@@ -115,12 +131,18 @@ ShellRoot {
                 if (shell.panelOnly) return;
                 if (popup === name) { closePopup(); return; }
                 popup = name;
-                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
                 popup = "";
                 popupLoader.source = "";
+            }
+            Loader {
+                active: shell.wallpaper.enabled && !shell.panelOnly && Quickshell.env("OZIRO_DISABLE_WALLPAPER") !== "1"
+                sourceComponent: Component {
+                    WallpaperSurface { screen: output.modelData; prefs: shell }
+                }
             }
             TopBar {
                 screen: output.modelData
@@ -162,6 +184,7 @@ ShellRoot {
                 function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
                 function onOpenEnergy() { Qt.callLater(() => output.toggle("energy")); }
                 function onOpenWidgets() { Qt.callLater(() => output.toggle("widgets")); }
+                function onOpenWallpaper() { Qt.callLater(() => output.toggle("wallpaper")); }
             }
         }
     }

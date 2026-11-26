@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import "WidgetRegistry.js" as Registry
+import "WallpaperPolicy.js" as WallpaperPolicy
 
 Scope {
     id: prefs
@@ -13,6 +14,8 @@ Scope {
     property bool suspendDockOnBattery: false
     property bool dockEnabled: false
     property var pinnedApps: []
+    property var wallpaper: WallpaperPolicy.normalize(null)
+    function setWallpaper(config) { wallpaper = WallpaperPolicy.normalize(config); save(); }
     property var widgetExtensions: []
     property var enabledWidgets: ["clock","battery","audio","memory"]
     property bool updatingWidgets: false
@@ -67,6 +70,7 @@ Scope {
                 if (typeof data.suspendDockOnBattery === "boolean") suspendDockOnBattery = data.suspendDockOnBattery;
                 widgetExtensions = Registry.normalizeExtensions(data.widgetExtensions);
                 enabledWidgets = Registry.normalizeEnabled(data.enabledWidgets, widgetExtensions);
+                wallpaper = WallpaperPolicy.normalize(data.wallpaper);
                 status = "Settings loaded";
             } catch (error) {
                 writable = false;
@@ -85,7 +89,8 @@ Scope {
             dockEnabled: dockEnabled, pinnedApps: pinnedApps,
             customAccent: customAccent, panelHeight: panelHeight,
             dockIconSize: dockIconSize, clock24Hour: clock24Hour,
-            widgetExtensions: widgetExtensions, enabledWidgets: enabledWidgets
+            widgetExtensions: widgetExtensions, enabledWidgets: enabledWidgets,
+            wallpaper: wallpaper
         }, null, 2) + "\n");
     }
     onThemeChanged: save()
