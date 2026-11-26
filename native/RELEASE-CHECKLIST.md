@@ -14,3 +14,5 @@
 - 0.9.10 user confirms all four manual lock checks on two monitors. Automatic lock, suspend, crash/recovery and broader security tests remain open. 0.9.11 nested development preview: confirm separate window, panel, dock, wallpaper, workspace/launcher, exit and intact host session/settings. Not a real display-manager session.
 
 - 0.9.11 screenshot confirms nested panel, dock, application and widgets; cleanup and settings isolation not independently tested. 0.9.12 read-only host readiness and draft config precede any new login session registration. Confirm active DM, terminal fallback, session lifecycle, no Ryoku service collisions, and rollback before live login.
+
+- 0.9.13: host evidence confirms SDDM wrapper delegates chosen command, Niri service has Ryoku bootstrap drop-in and key Ryoku services are target-bound. Experimental direct-Niri package prepared; installer check, actual login, terminal fallback, exit, original session return, service collisions, and removal still pending. No automatic locking/idle, portal/polkit or security-completeness claim.

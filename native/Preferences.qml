@@ -48,7 +48,7 @@ Scope {
     property bool initialized: false
     property bool writable: true
     property string status: "Loading settings"
-    readonly property string settingsPath: Quickshell.statePath("preferences.json")
+    readonly property string settingsPath: Quickshell.statePath(Quickshell.env("OZIRO_LOGIN_SESSION") === "1" ? "login-preferences.json" : "preferences.json")
     function load() {
         if (Quickshell.env("OZIRO_NESTED_PREVIEW") === "1") {
             dockEnabled = true;
@@ -56,6 +56,10 @@ Scope {
             status = "Temporary preview settings";
             initialized = true;
             return;
+        }
+        if (Quickshell.env("OZIRO_LOGIN_SESSION") === "1") {
+            dockEnabled = true;
+            wallpaper = WallpaperPolicy.normalize({enabled:true,color:"#18232f"});
         }
         const text = file.text();
         if (text.trim()) {

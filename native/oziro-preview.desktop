@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Oziro (Experimental)
+Comment=Independent experimental Oziro desktop on Niri
+Exec=/usr/local/lib/oziro-login-preview/login-session.sh
+TryExec=/usr/local/lib/oziro-login-preview/login-session.sh
+Type=Application
+DesktopNames=Oziro
