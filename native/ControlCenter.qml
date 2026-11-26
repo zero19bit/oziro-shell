@@ -62,7 +62,7 @@ PanelWindow {
                             label: "Wi-Fi"
                             detail: sys.wifi
                             selected: sys.wifi === "enabled"
-                            enabled: !sys.busy && sys.wifi !== "unavailable"
+                            enabled: !win.prefs.nestedPreview && !sys.busy && sys.wifi !== "unavailable"
                             onActivated: sys.request("wifi", sys.wifi === "enabled" ? "off" : "on")
                         }
                         QuickToggle {
@@ -71,7 +71,7 @@ PanelWindow {
                             label: "Bluetooth"
                             detail: sys.bluetooth
                             selected: sys.bluetooth === "enabled"
-                            enabled: !sys.busy && sys.bluetooth !== "unavailable"
+                            enabled: !win.prefs.nestedPreview && !sys.busy && sys.bluetooth !== "unavailable"
                             onActivated: sys.request("bluetooth", sys.bluetooth === "enabled" ? "off" : "on")
                         }
                     }
@@ -95,13 +95,13 @@ PanelWindow {
                             }
                             RowLayout {
                                 Layout.fillWidth: true
-                                Chip { prefs: win.prefs; label: "−10%"; enabled: !sys.busy && sys.brightness > 5; onActivated: sys.request("brightness", String(Math.max(5, sys.brightness - 10))) }
+                                Chip { prefs: win.prefs; label: "−10%"; enabled: !win.prefs.nestedPreview && !sys.busy && sys.brightness > 5; onActivated: sys.request("brightness", String(Math.max(5, sys.brightness - 10))) }
                                 Rectangle {
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 7; radius: 4; color: win.prefs.outline
                                     Rectangle { width: parent.width * Math.max(0,sys.brightness)/100; height: parent.height; radius: 4; color: win.prefs.accent }
                                 }
-                                Chip { prefs: win.prefs; label: "+10%"; enabled: !sys.busy && sys.brightness >= 0 && sys.brightness < 100; onActivated: sys.request("brightness", String(Math.min(100, sys.brightness + 10))) }
+                                Chip { prefs: win.prefs; label: "+10%"; enabled: !win.prefs.nestedPreview && !sys.busy && sys.brightness >= 0 && sys.brightness < 100; onActivated: sys.request("brightness", String(Math.min(100, sys.brightness + 10))) }
                             }
                             RowLayout {
                                 Text { Layout.fillWidth: true; text: "Audio output"; color: win.prefs.foreground; font.weight: Font.Medium }
@@ -112,12 +112,12 @@ PanelWindow {
                                 AccentSlider {
                                     prefs: win.prefs
                                     Layout.fillWidth: true
-                                    enabled: win.audioReady
+                                    enabled: !win.prefs.nestedPreview && win.audioReady
                                     from: 0; to: 1
                                     value: win.audioReady ? Math.min(1, win.sink.audio.volume) : 0
                                     onMoved: { if (win.audioReady) win.sink.audio.volume = value; }
                                 }
-                                Chip { prefs: win.prefs; enabled: win.audioReady; label: enabled && win.sink.audio.muted ? "Unmute" : "Mute"; onActivated: { if (enabled) win.sink.audio.muted = !win.sink.audio.muted; } }
+                                Chip { prefs: win.prefs; enabled: !win.prefs.nestedPreview && win.audioReady; label: enabled && win.sink.audio.muted ? "Unmute" : "Mute"; onActivated: { if (enabled) win.sink.audio.muted = !win.sink.audio.muted; } }
                             }
                         }
                     }
@@ -147,7 +147,7 @@ PanelWindow {
                         Layout.fillWidth: true; spacing: 6
                         Repeater {
                             model: ["power-saver","balanced","performance"]
-                            Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: sys.profile === modelData; enabled: !sys.busy && sys.profiles.includes(modelData); onActivated: sys.request("profile", modelData) }
+                            Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: sys.profile === modelData; enabled: !win.prefs.nestedPreview && !sys.busy && sys.profiles.includes(modelData); onActivated: sys.request("profile", modelData) }
                         }
                     }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "System profiles and Oziro effects are separate."; color: win.prefs.muted; font.pixelSize: 11 }
@@ -167,7 +167,7 @@ PanelWindow {
                 Chip { prefs: win.prefs; label: "Energy"; onActivated: win.openEnergy() }
                 Chip { prefs: win.prefs; label: "Widgets"; onActivated: win.openWidgets() }
                 Chip { prefs: win.prefs; label: "Tray"; onActivated: win.openTray() }
-                Chip { prefs: win.prefs; label: "Lock"; onActivated: win.openLock() }
+                Chip { prefs: win.prefs; label: "Lock"; enabled: !win.prefs.nestedPreview; onActivated: win.openLock() }
             }
         }
     }

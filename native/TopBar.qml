@@ -118,7 +118,7 @@ PanelWindow {
             }
             PanelChip {
                 prefs: bar.prefs
-                enabled: Pipewire.ready && bar.sink !== null && bar.sink.audio !== null
+                enabled: !bar.prefs.nestedPreview && Pipewire.ready && bar.sink !== null && bar.sink.audio !== null
                 label: !enabled ? "No audio" : bar.sink.audio.muted ? "Muted" : "Vol " + Math.round(bar.sink.audio.volume * 100) + "%"
                 onActivated: { if (enabled) bar.sink.audio.muted = !bar.sink.audio.muted }
             }

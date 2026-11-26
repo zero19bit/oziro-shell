@@ -13,6 +13,7 @@ Scope {
     readonly property bool busy: runner.running
     function request(action, value) {
         if (busy) return;
+        if (Quickshell.env("OZIRO_NESTED_PREVIEW") === "1" && action !== "status") { message = "Hardware changes disabled in nested preview"; return; }
         profiles = [];
         message = action === "status" ? "Refreshing…" : "Applying…";
         runner.command = ["bash", Quickshell.shellPath("system-controls.sh"), action, value || ""];

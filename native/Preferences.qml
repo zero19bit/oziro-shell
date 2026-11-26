@@ -50,6 +50,13 @@ Scope {
     property string status: "Loading settings"
     readonly property string settingsPath: Quickshell.statePath("preferences.json")
     function load() {
+        if (Quickshell.env("OZIRO_NESTED_PREVIEW") === "1") {
+            dockEnabled = true;
+            wallpaper = WallpaperPolicy.normalize({enabled:true,color:"#18232f"});
+            status = "Temporary preview settings";
+            initialized = true;
+            return;
+        }
         const text = file.text();
         if (text.trim()) {
             try {
@@ -81,7 +88,7 @@ Scope {
         initialized = true;
     }
     function save() {
-        if (!initialized || !writable || resettingAppearance || updatingWidgets) return;
+        if (!initialized || !writable || resettingAppearance || updatingWidgets || Quickshell.env("OZIRO_NESTED_PREVIEW") === "1") return;
         file.setText(JSON.stringify({
             version: 1, theme: theme, layoutMode: layoutMode,
             reduceEffects: reduceEffects, autoEco: autoEco,
@@ -107,7 +114,7 @@ Scope {
     onClock24HourChanged: save()
     FileView {
         id: file
-        path: prefs.settingsPath
+        path: Quickshell.env("OZIRO_NESTED_PREVIEW") === "1" ? "" : prefs.settingsPath
         blockLoading: true
         atomicWrites: true
         // The document is tiny and writes only follow explicit user actions.

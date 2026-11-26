@@ -96,6 +96,7 @@ ShellRoot {
         else if (pinnedApps.length < 12) pinnedApps = pinnedApps.concat([id]);
     }
     readonly property string settingsStatus: settings.status
+    readonly property bool nestedPreview: Quickshell.env("OZIRO_NESTED_PREVIEW") === "1"
     readonly property bool panelOnly: Quickshell.env("OZIRO_PANEL_ONLY") === "1"
     readonly property bool eco: energyPolicy.eco
     readonly property color surfaceColor: theme === "light" ? "#f3f5f9" : theme === "material" ? "#25243a" : theme === "cyber" ? "#141127" : theme === "glass" && !eco ? "#e61a202b" : "#1a202b"

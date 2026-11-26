@@ -1,0 +1,9 @@
+// Development only: no Ryoku includes, no host autostart or session integration.
+binds {
+    Mod+Q { close-window; }
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Down { focus-workspace-down; }
+    Mod+Up { focus-workspace-up; }
+    Mod+Shift+E { quit; }
+}

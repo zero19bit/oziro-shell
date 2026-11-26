@@ -57,7 +57,7 @@ PanelWindow {
             Chip { prefs: win.prefs; label: probe.running ? "Checking…" : "Check prerequisites"; enabled: !probe.running; onActivated: win.check() }
             Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; textFormat: Text.PlainText; text: win.report || "No checks run."; color: win.prefs.muted; font.pixelSize: 11 }
             Chip {
-                prefs: win.prefs; label: "Lock session now"; enabled: win.checkPassed && !win.attempted && !probe.running
+                prefs: win.prefs; label: "Lock session now"; enabled: !win.prefs.nestedPreview && win.checkPassed && !win.attempted && !probe.running
                 onActivated: {
                     win.attempted = true;
                     Quickshell.execDetached(["bash",Quickshell.shellPath("lock-session.sh"),"--lock"]);

@@ -10,3 +10,5 @@
 - Wallpaper 0.9.8: user confirms Compatibility visibility. Image loading, persistence, both-monitor visual behavior, and resource costs remain open. 0.9.9 tray: verify registration/coexistence and app-provided menu/activation with a real StatusNotifier item; no legacy XEmbed support.
 
 - 0.9.9 screenshot confirms four StatusNotifier items, not menu actions. 0.9.10 manual Hyprlock integration: verify prerequisites, actual lock on all monitors, successful normal password unlock, and coexistence with Ryoku. No automated idle/suspend or production security claim. Preserve system PAM and existing lock mechanisms.
+
+- 0.9.10 user confirms all four manual lock checks on two monitors. Automatic lock, suspend, crash/recovery and broader security tests remain open. 0.9.11 nested development preview: confirm separate window, panel, dock, wallpaper, workspace/launcher, exit and intact host session/settings. Not a real display-manager session.

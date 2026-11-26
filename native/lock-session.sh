@@ -3,6 +3,7 @@
 set -euo pipefail
 dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 fail() { printf "FAIL: %s\n" "$*" >&2; exit 1; }
+[[ "${OZIRO_NESTED_PREVIEW:-}" != 1 ]] || fail "Lock disabled in nested preview"
 [[ $# -eq 1 ]] || fail "Use --check or --lock"
 case "$1" in --check|--lock) ;; *) fail "Unknown action";; esac
 [[ $(id -u) -ne 0 ]] || fail "Run as the desktop user, not root"
