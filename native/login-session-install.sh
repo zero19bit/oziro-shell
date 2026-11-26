@@ -12,8 +12,20 @@ if [[ "$1" == --remove ]]; then
   [[ $(id -u) -eq 0 ]] || fail "Run removal with sudo from the original desktop or TTY, not the Oziro preview"
   [[ -d "$dest" && ! -L "$dest" && -f "$dest/.oziro-preview-install" && ! -L "$dest/.oziro-preview-install" ]] || fail "Owned install marker missing; nothing removed"
   [[ "$(cat "$dest/.oziro-preview-install")" == "oziro-login-preview-v1" ]] || fail "Unexpected install marker"
+  # Check everything before deleting anything, including files left by unknown releases.
+  [[ $(stat -c %u "$dest") == 0 && $(stat -c %u "$dest/.oziro-preview-install") == 0 ]] || fail "Install ownership mismatch"
+  shopt -s dotglob nullglob
+  for installed in "$dest"/*; do
+    name=${installed##*/}
+    [[ -f "$installed" && ! -L "$installed" && $(stat -c %u "$installed") == 0 ]] || fail "Unexpected file type or owner: $name"
+    known=0
+    if [[ "$name" == .oziro-preview-install ]]; then known=1; else
+      for allowed in "${files[@]}"; do [[ "$name" == "$allowed" ]] && { known=1; break; }; done
+    fi
+    (( known )) || fail "Unexpected installed file: $name; nothing removed"
+  done
   if [[ -e "$entry" || -L "$entry" ]]; then
-    [[ -f "$entry" && ! -L "$entry" ]] && cmp -s "$entry" "$dest/oziro-preview.desktop" || fail "Session entry changed; refusing removal"
+    [[ -f "$entry" && ! -L "$entry" && $(stat -c %u "$entry") == 0 ]] && cmp -s "$entry" "$dest/oziro-preview.desktop" || fail "Session entry changed; refusing removal"
     rm -- "$entry"
   fi
   for name in "${files[@]}"; do rm -f -- "$dest/$name"; done
@@ -35,7 +47,8 @@ if [[ "$1" == --check ]]; then
 fi
 [[ $(id -u) -eq 0 ]] || fail "Run --check first, then use sudo for --install"
 umask 022
-install -d -m 755 /usr/local/lib
+[[ ! -L /usr/local/lib ]] || fail "Unexpected symlink: /usr/local/lib"
+if [[ ! -d /usr/local/lib ]]; then mkdir -m 755 /usr/local/lib; fi
 mkdir -m 755 -- "$dest"
 entry_created=0
 cleanup() {

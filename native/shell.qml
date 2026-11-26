@@ -49,12 +49,16 @@ ShellRoot {
     readonly property string wallpaperUrl: wallpaper.mode === "image" ? WallpaperPolicy.fileUrl(wallpaper.path) : wallpaper.mode === "builtin" ? packWallpaper(wallpaper.preset) : ""
     function useThemePack(id) {
         if (!themeCatalog.some(x=>x.id===id)) return;
-        theme=id; customAccent="";
         const w=wallpaper;
-        settings.setWallpaper({enabled:true,mode:"builtin",preset:"auto",color:identity.bg,path:w.path,fit:"cover",layer:w.layer});
+        settings.applyThemePack(id,{enabled:true,mode:"builtin",preset:"auto",color:Identity.palette(id).bg,path:w.path,fit:"cover",layer:w.layer});
     }
     function wallpaperPathValid(path) { return WallpaperPolicy.fileUrl(path) !== ""; }
     function wallpaperSelfTest() { const a=WallpaperPolicy.selfTest(), b=Identity.selfTest(); return {total:a.total+b.total,passed:a.passed+b.passed}; }
+    function selectBuiltinWallpaper(preset) {
+        if (!["auto","midnight","graphite","aurora","porcelain"].includes(preset)) return;
+        const w=wallpaper;
+        settings.setWallpaper({enabled:true,mode:"builtin",preset:preset,color:identity.bg,path:w.path,fit:w.fit,layer:w.layer});
+    }
     function updateWallpaper(key,value) {
         const next = {enabled:wallpaper.enabled,mode:wallpaper.mode,color:wallpaper.color,path:wallpaper.path,fit:wallpaper.fit,layer:wallpaper.layer,preset:wallpaper.preset};
         if (!["enabled","mode","color","path","fit","layer","preset"].includes(key)) return;

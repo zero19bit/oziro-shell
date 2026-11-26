@@ -17,6 +17,14 @@ Scope {
     property var pinnedApps: []
     property var wallpaper: WallpaperPolicy.normalize(null)
     function setWallpaper(config) { wallpaper = WallpaperPolicy.normalize(config); save(); }
+    function applyThemePack(id,config) {
+        resettingAppearance = true;
+        theme = id;
+        customAccent = "";
+        wallpaper = WallpaperPolicy.normalize(config);
+        resettingAppearance = false;
+        save();
+    }
     property var widgetExtensions: []
     property var enabledWidgets: ["clock","battery","audio","memory"]
     property bool updatingWidgets: false
@@ -66,6 +74,12 @@ Scope {
             wallpaper = WallpaperPolicy.normalize({enabled:true,mode:"builtin",preset:"auto",color:"#111c30"});
         }
         const text = file.text();
+        if (text.length > 65536) {
+            writable = false;
+            status = "Oversized settings: read-only session";
+            initialized = true;
+            return;
+        }
         if (text.trim()) {
             try {
                 const data = JSON.parse(text);

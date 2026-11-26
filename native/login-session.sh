@@ -9,8 +9,10 @@ fail() { printf "Oziro session: %s\n" "$*" >&2; exit 2; }
 [[ "$(loginctl show-session "$XDG_SESSION_ID" -p Active --value 2>/dev/null)" == yes ]] || fail "Session is not foreground"
 [[ "$(loginctl show-session "$XDG_SESSION_ID" -p Type --value 2>/dev/null)" == wayland ]] || fail "Expected a Wayland login"
 # Fail closed rather than stopping another desktop or its lock/idle services.
+systemctl --user show-environment >/dev/null 2>&1 || fail "User service manager unavailable"
 for unit in niri.service ryoku-session.target ryoku-shell.service ryoku-idle.service; do
-  if systemctl --user is-active --quiet "$unit"; then fail "$unit is still active; return to login and use the existing Niri session"; fi
+  state="$(systemctl --user show "$unit" -p ActiveState --value 2>/dev/null)" || fail "Cannot check $unit"
+  case "$state" in inactive|failed) ;; *) fail "$unit state: $state; return to the existing session";; esac
 done
 for path in /usr/bin/niri /usr/bin/quickshell /usr/bin/kitty /usr/bin/dbus-run-session; do [[ -x "$path" ]] || fail "Missing $path"; done
 /usr/bin/niri validate --config "$dir/session-candidate.kdl" || fail "Invalid compositor config"

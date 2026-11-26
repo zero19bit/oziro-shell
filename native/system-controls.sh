@@ -30,6 +30,10 @@ action=status; value=
 if (( $# > 2 )); then exit 2; fi
 if (( $# >= 1 )); then action="$1"; fi
 if (( $# >= 2 )); then value="$2"; fi
+if [[ "$action" != status ]]; then
+  [[ "${OZIRO_NESTED_PREVIEW:-}" != 1 ]] || { emit result failed; exit 3; }
+  [[ $(id -u) -ne 0 ]] || { emit result failed; exit 3; }
+fi
 rc=0
 case "$action" in
   status) [[ -z "$value" ]] || exit 2;;

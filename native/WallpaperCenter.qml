@@ -72,13 +72,13 @@ PanelWindow {
                             AbstractButton {
                                 id: pack; required property string modelData; Layout.fillWidth: true; implicitHeight: 92
                                 Accessible.name: modelData
-                                onClicked: { win.prefs.updateWallpaper("preset",modelData); win.prefs.updateWallpaper("mode","builtin"); win.prefs.updateWallpaper("enabled",true); }
+                                onClicked: { win.prefs.selectBuiltinWallpaper(modelData); }
                                 background: Rectangle { radius: 6; color: win.prefs.cardColor; border.color: win.prefs.wallpaper.mode==="builtin" && win.prefs.wallpaper.preset===pack.modelData ? win.prefs.accent : win.prefs.outline }
                                 contentItem: ColumnLayout { Image { Layout.fillWidth: true; Layout.preferredHeight: 62; source: win.prefs.packWallpaper(pack.modelData); sourceSize.width: 320; sourceSize.height: 180; fillMode: Image.PreserveAspectCrop; asynchronous: true } Text { Layout.alignment: Qt.AlignHCenter; text: pack.modelData.charAt(0).toUpperCase()+pack.modelData.slice(1); color: win.prefs.foreground; font.pixelSize: 12 } }
                             }
                         }
                     }
-                    Chip { prefs: win.prefs; label: "Match current theme"; onActivated: { win.prefs.updateWallpaper("preset","auto"); win.prefs.updateWallpaper("mode","builtin"); win.prefs.updateWallpaper("enabled",true); } }
+                    Chip { prefs: win.prefs; label: "Match current theme"; onActivated: { win.prefs.selectBuiltinWallpaper("auto"); } }
                     SectionLabel { prefs: win.prefs; label: "BACKGROUND STYLE" }
                     Flow {
                         Layout.fillWidth: true; spacing: 6

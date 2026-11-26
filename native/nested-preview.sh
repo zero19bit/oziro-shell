@@ -10,7 +10,7 @@ for c in niri quickshell dbus-run-session; do command -v "$c" >/dev/null || { ec
 niri validate --config "$dir/nested-preview.kdl"
 echo "Starting windowed Oziro preview. Close the outer Niri window to exit."
 echo "No Ryoku configuration is modified. Preview preferences are temporary."
-export OZIRO_NESTED_PREVIEW=1 OZIRO_NOTIFICATIONS=0 OZIRO_PANEL_ONLY=0 OZIRO_DISABLE_WALLPAPER=0
+export OZIRO_LOGIN_SESSION=0 OZIRO_NESTED_PREVIEW=1 OZIRO_NOTIFICATIONS=0 OZIRO_PANEL_ONLY=0 OZIRO_DISABLE_WALLPAPER=0
 export NIRI_DISABLE_SYSTEM_MANAGER_NOTIFY=1 QT_QPA_PLATFORM=wayland
 # Keep host Wayland display for winit, but remove host IPC target.
 exec env -u NIRI_SOCKET -u HYPRLAND_INSTANCE_SIGNATURE -u NOTIFY_SOCKET dbus-run-session -- niri --config "$dir/nested-preview.kdl" -- quickshell -p "$dir"

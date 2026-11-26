@@ -49,8 +49,8 @@ Scope {
         actionKind = "workspace";
         targetId = id;
         lastError = "";
-        actionSocket.connected = true;
         actionTimeout.restart();
+        actionSocket.connected = true;
     }
 
     function focusWindow(id) {
@@ -58,15 +58,16 @@ Scope {
         actionKind = "window";
         targetId = id;
         lastError = "";
-        actionSocket.connected = true;
         actionTimeout.restart();
+        actionSocket.connected = true;
     }
 
     function finishAction(error) {
+        if (targetId === null) return;
         actionTimeout.stop();
         if (error) { lastError = error; console.warn("Oziro Niri action:", error); }
-        actionSocket.connected = false;
         targetId = null;
+        actionSocket.connected = false;
     }
 
     Socket {
@@ -116,7 +117,7 @@ Scope {
             onRead: data => {
                 try {
                     const response = JSON.parse(data);
-                    backend.finishAction(response.Err ? String(response.Err) : "");
+                    backend.finishAction(response && Object.prototype.hasOwnProperty.call(response,"Ok") ? "" : response && response.Err ? String(response.Err) : "Unexpected IPC reply");
                 } catch (e) { backend.finishAction("Invalid reply"); }
             }
         }
