@@ -4,7 +4,7 @@ set -euo pipefail
 dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 dest=/usr/local/lib/oziro-login-preview
 entry=/usr/share/wayland-sessions/oziro-preview.desktop
-files=(shell.qml Chip.qml PanelChip.qml AccentSlider.qml SectionLabel.qml QuickToggle.qml Preferences.qml NiriBackend.qml WindowModel.js Dock.qml DockIcon.qml TopBar.qml Launcher.qml ControlCenter.qml ThemeStudio.qml WallpaperPolicy.js WallpaperCenter.qml WallpaperSurface.qml EnergyEngine.qml EnergyPolicy.js EnergyCenter.qml WidgetRegistry.js WidgetCenter.qml TrayCenter.qml LockCenter.qml oziro-lock.conf lock-session.sh session-candidate.kdl energy-status.sh power-sample.sh SystemControls.qml system-controls.sh NotificationBackend.qml NotificationCenter.qml NotificationToast.qml login-session.sh oziro-preview.desktop)
+files=(shell.qml Chip.qml PanelChip.qml AccentSlider.qml SectionLabel.qml QuickToggle.qml Preferences.qml NiriBackend.qml WindowModel.js Dock.qml DockIcon.qml TopBar.qml Launcher.qml ControlCenter.qml ThemeStudio.qml WallpaperPolicy.js WallpaperCenter.qml WallpaperSurface.qml EnergyEngine.qml EnergyPolicy.js EnergyCenter.qml WidgetRegistry.js WidgetCenter.qml TrayCenter.qml SettingsCenter.qml PowerCenter.qml power-action.sh LockCenter.qml oziro-lock.conf lock-session.sh session-candidate.kdl energy-status.sh power-sample.sh SystemControls.qml system-controls.sh NotificationBackend.qml NotificationCenter.qml NotificationToast.qml login-session.sh oziro-preview.desktop)
 fail() { printf "FAIL: %s\n" "$*" >&2; exit 1; }
 [[ $# -eq 1 ]] || fail "Use --check, --install or --remove"
 case "$1" in --check|--install|--remove) ;; *) fail "Unknown action";; esac

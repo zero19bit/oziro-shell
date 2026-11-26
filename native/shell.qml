@@ -96,6 +96,7 @@ ShellRoot {
         else if (pinnedApps.length < 12) pinnedApps = pinnedApps.concat([id]);
     }
     readonly property string settingsStatus: settings.status
+    readonly property bool loginSession: Quickshell.env("OZIRO_LOGIN_SESSION") === "1"
     readonly property bool nestedPreview: Quickshell.env("OZIRO_NESTED_PREVIEW") === "1"
     readonly property bool panelOnly: Quickshell.env("OZIRO_PANEL_ONLY") === "1"
     readonly property bool eco: energyPolicy.eco
@@ -132,7 +133,7 @@ ShellRoot {
                 if (shell.panelOnly) return;
                 if (popup === name) { closePopup(); return; }
                 popup = name;
-                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "ThemeStudio.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -154,6 +155,7 @@ ShellRoot {
                 onOpenControls: output.toggle("controls")
                 onOpenNotifications: output.toggle("notifications")
                 onOpenWidgets: output.toggle("widgets")
+                onOpenPower: output.toggle("power")
             }
             Loader { id: popupLoader }
             Loader {
@@ -183,11 +185,14 @@ ShellRoot {
                 ignoreUnknownSignals: true
                 function onDismiss() { Qt.callLater(output.closePopup); }
                 function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
+                function onOpenAppearance() { Qt.callLater(() => output.toggle("appearance")); }
+                function onOpenPower() { Qt.callLater(() => output.toggle("power")); }
                 function onOpenEnergy() { Qt.callLater(() => output.toggle("energy")); }
                 function onOpenWidgets() { Qt.callLater(() => output.toggle("widgets")); }
                 function onOpenWallpaper() { Qt.callLater(() => output.toggle("wallpaper")); }
                 function onOpenTray() { Qt.callLater(() => output.toggle("tray")); }
                 function onOpenLock() { Qt.callLater(() => output.toggle("lock")); }
+                function onOpenNotifications() { Qt.callLater(() => output.toggle("notifications")); }
                 function onOpenControls() { Qt.callLater(() => output.toggle("controls")); }
             }
         }

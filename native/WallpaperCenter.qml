@@ -8,7 +8,7 @@ PanelWindow {
     id: win
     required property var prefs
     signal dismiss()
-    signal openSettings()
+    signal openAppearance()
     property string message: ""
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
     margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
@@ -23,7 +23,7 @@ PanelWindow {
             anchors.fill: parent; anchors.margins: 16; spacing: 10
             RowLayout {
                 Text { Layout.fillWidth: true; text: "Wallpaper"; color: win.prefs.foreground; font.bold: true; font.pixelSize: 20 }
-                Chip { prefs: win.prefs; label: "Back"; onActivated: win.openSettings() }
+                Chip { prefs: win.prefs; label: "Back"; onActivated: win.openAppearance() }
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }
             ScrollView {

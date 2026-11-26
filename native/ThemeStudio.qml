@@ -9,6 +9,7 @@ PanelWindow {
     required property var prefs
     signal dismiss()
     signal openWallpaper()
+    signal openSettings()
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom"; right: true }
     margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin; right: 12 }
     implicitWidth: Math.min(540, screen ? Math.max(1,screen.width-24) : 540)
@@ -27,6 +28,7 @@ PanelWindow {
             spacing: 12
             RowLayout {
                 Text { Layout.fillWidth: true; text: "OZIRO / Theme Studio"; font.pixelSize: 20; font.bold: true; color: win.prefs.foreground }
+                Chip { prefs: win.prefs; label: "Settings"; onActivated: win.openSettings() }
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }
             ScrollView {

@@ -16,3 +16,5 @@
 - 0.9.11 screenshot confirms nested panel, dock, application and widgets; cleanup and settings isolation not independently tested. 0.9.12 read-only host readiness and draft config precede any new login session registration. Confirm active DM, terminal fallback, session lifecycle, no Ryoku service collisions, and rollback before live login.
 
 - 0.9.13: host evidence confirms SDDM wrapper delegates chosen command, Niri service has Ryoku bootstrap drop-in and key Ryoku services are target-bound. Experimental direct-Niri package prepared; installer check, actual login, terminal fallback, exit, original session return, service collisions, and removal still pending. No automatic locking/idle, portal/polkit or security-completeness claim.
+
+- User reports 0.9.13 login and original tests successful. 0.9.14 addresses power menu and settings hub; validate UI, explicit confirmations, logout, normal authorization and cancellation. Suspend/idle, full display/input settings, cohesive visual identity, portal/polkit and complete independent desktop services remain open.

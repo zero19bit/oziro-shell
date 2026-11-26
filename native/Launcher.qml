@@ -8,6 +8,9 @@ PanelWindow {
     id: win
     required property var prefs
     signal dismiss()
+    signal openSettings()
+    signal openPower()
+    signal openControls()
     anchors { top: win.prefs.layoutMode !== "bottom"; bottom: win.prefs.layoutMode === "bottom" }
     margins { top: win.prefs.popupMargin; bottom: win.prefs.popupMargin }
     implicitWidth: Math.min(620, screen ? screen.width - 24 : 620)
@@ -36,7 +39,11 @@ PanelWindow {
             anchors.margins: 18
             spacing: 12
             RowLayout {
-                Text { text: "Applications"; color: win.prefs.accent; font.bold: true; Layout.fillWidth: true }
+                ColumnLayout {
+                    Layout.fillWidth: true; spacing: 2
+                    Text { text: "OZIRO"; color: win.prefs.accent; font.bold: true; font.pixelSize: 22 }
+                    Text { text: "Applications & system"; color: win.prefs.muted; font.pixelSize: 12 }
+                }
                 Chip { prefs: win.prefs; label: "Close"; onActivated: win.dismiss() }
             }
             TextField {
@@ -90,6 +97,13 @@ PanelWindow {
                 }
             }
             Text { text: win.entries.length ? win.entries.length + " applications · Enter to launch" : "No matching graphical applications"; color: win.prefs.muted; font.pixelSize: 12 }
+            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: win.prefs.outline }
+            Flow {
+                Layout.fillWidth: true; spacing: 6
+                Chip { prefs: win.prefs; label: "System settings"; onActivated: win.openSettings() }
+                Chip { prefs: win.prefs; label: "Quick controls"; onActivated: win.openControls() }
+                Chip { prefs: win.prefs; label: "Power"; onActivated: win.openPower() }
+            }
         }
     }
 }
