@@ -31,4 +31,7 @@ if command -v wpctl >/dev/null 2>&1 && wpctl status >/dev/null 2>&1; then
 else
   echo 'OPTIONAL: audio service unavailable or wpctl missing'
 fi
+for tool in nmcli bluetoothctl brightnessctl powerprofilesctl; do
+  if command -v "$tool" >/dev/null 2>&1; then echo "OK: optional $tool"; else echo "OPTIONAL: $tool missing"; fi
+done
 exit "$failed"

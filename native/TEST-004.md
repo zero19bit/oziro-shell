@@ -1,0 +1,3 @@
+# Foundation 0.4 — user-reported Niri test
+2026-11-26, Arch/Ryoku, Niri. Ten of ten reported checks passed: dock shown, pin, unpin, launch, running windows, focus, theme, disable, persistent settings and existing functions. Margin hotfix 25f4fc7 preceded report. This confirms reported functional scope, not performance, multi-output, Hyprland, or long-run reliability. No dock-specific PSS sample yet.
+0.5 acceptance: verify all old features, open controls, refresh, audio, battery, brightness down/up, supported radio actions (only if safe), optional power profiles and restoring original state; unavailable services remain disabled, no errors on exit. Sample idle with dock disabled and enabled under same workload.
