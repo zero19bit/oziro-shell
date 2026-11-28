@@ -23,7 +23,7 @@ FocusScope {
     Accessible.name: title
     Accessible.onPressAction: { if (enabled) activated(); }
     property bool tipReady: false
-    readonly property bool wantsTip: mouse.containsMouse && enabled && icon.prefs.openMenuCount === 0
+    readonly property bool wantsTip: hover.hovered && enabled && icon.prefs.openMenuCount === 0
     onWantsTipChanged: {
         tipReady = false;
         if (wantsTip) tipDelay.restart(); else tipDelay.stop();
@@ -62,9 +62,16 @@ FocusScope {
         color: icon.selected ? icon.prefs.foreground : icon.prefs.muted
         Behavior on width { enabled: icon.animated; NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
     }
-    MouseArea {
-        id: mouse; anchors.fill: parent; hoverEnabled: true
+    HoverHandler {
+        id: hover
+        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad | PointerDevice.Stylus
+        blocking: false
         cursorShape: Qt.PointingHandCursor
-        onClicked: { if (icon.enabled) icon.activated(); }
+    }
+    TapHandler {
+        enabled: icon.enabled
+        gesturePolicy: TapHandler.DragThreshold
+        acceptedButtons: Qt.LeftButton
+        onTapped: icon.activated()
     }
 }

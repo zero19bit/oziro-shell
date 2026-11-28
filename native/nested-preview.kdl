@@ -1,5 +1,17 @@
 // Development only: no Ryoku includes, no host autostart or session integration.
+input {
+    touchpad {
+        tap
+        natural-scroll
+        dwt
+        tap-button-map "left-right-middle"
+    }
+}
 binds {
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+    Mod+Shift+S { screenshot; }
     Mod+Q { close-window; }
     Mod+Left { focus-column-left; }
     Mod+Right { focus-column-right; }

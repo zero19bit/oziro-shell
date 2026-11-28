@@ -16,8 +16,8 @@ PanelWindow {
     readonly property real pitch: prefs.dockIconSize + 8
     readonly property int shelfHeight: prefs.dockIconSize + 16
     readonly property int headroom: motionEnabled ? 44 : 28
-    readonly property bool waveActive: motionEnabled && pointer.hovered && !viewport.moving
-    readonly property real pointerX: pointer.point.position.x + viewport.contentX
+    readonly property bool waveActive: motionEnabled && pointer.hovered && !viewport.dragging
+    readonly property real pointerX: pointer.point.position.x + viewport.contentX - items.x
     function wave(center) { return Motion.factor(center-pointerX,pitch,waveActive); }
     // Windows are scoped to this output, except pinned apps which are shared.
     readonly property var localWindows: niriBackend.enabled && niriBackend.ready && screen
@@ -68,7 +68,42 @@ PanelWindow {
         boundsBehavior: Flickable.StopAtBounds
         interactive: contentWidth > width
         clip: true
-        HoverHandler { id: pointer }
+        HoverHandler {
+            id: pointer
+            parent: viewport
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad | PointerDevice.Stylus
+            blocking: false
+        }
+        // Do not depend on Flickable's kinetic state for wheel/trackpad input.
+        function scrollBy(delta) {
+            if (delta === 0) return;
+            cancelFlick();
+            contentX = Motion.scrollOffset(contentX, delta, contentWidth, width);
+        }
+        WheelHandler {
+            parent: viewport
+            target: null
+            orientation: Qt.Horizontal
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            enabled: viewport.interactive
+            onWheel: event => {
+                viewport.scrollBy(event.pixelDelta.x !== 0 ? event.pixelDelta.x : event.angleDelta.x / 120 * dock.pitch);
+                event.accepted = true;
+            }
+        }
+        WheelHandler {
+            parent: viewport
+            target: null
+            orientation: Qt.Vertical
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            enabled: viewport.interactive
+            onWheel: event => {
+                // A diagonal event is handled by the horizontal handler only.
+                if (event.pixelDelta.x !== 0 || event.angleDelta.x !== 0) { event.accepted = false; return; }
+                viewport.scrollBy(event.pixelDelta.y !== 0 ? event.pixelDelta.y : event.angleDelta.y / 120 * dock.pitch);
+                event.accepted = true;
+            }
+        }
         Row {
             id: items
             y: dock.topDock ? 8 : dock.headroom+8

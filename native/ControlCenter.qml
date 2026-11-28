@@ -56,6 +56,7 @@ ShellPopup {
                             Layout.fillWidth: true
                             prefs: win.prefs
                             label: "Wi-Fi"
+                            glyph: "wifi"
                             detail: sys.wifi
                             selected: sys.wifi === "enabled"
                             enabled: !win.prefs.nestedPreview && !sys.busy && sys.wifi !== "unavailable"
@@ -65,6 +66,7 @@ ShellPopup {
                             Layout.fillWidth: true
                             prefs: win.prefs
                             label: "Bluetooth"
+                            glyph: "bluetooth"
                             detail: sys.bluetooth
                             selected: sys.bluetooth === "enabled"
                             enabled: !win.prefs.nestedPreview && !sys.busy && sys.bluetooth !== "unavailable"

@@ -1,4 +1,4 @@
-# Feature status — 0.9.21
+# Feature status — 0.9.22
 
 Status labels: **Confirmed** = user reported or screenshot supports the stated behavior; **Partial** = implemented, some evidence or important gaps; **Implemented** = code exists, runtime unverified; **Planned** = not delivered. Historical evidence is not a guarantee for current HEAD.
 
@@ -30,3 +30,6 @@ Known platform: development host uses Niri, not Hyprland. Hyprland compatibility
 2026-11-28: user-reported 0.9.21 acceptance, 15/15 PASS. Intended runtime baseline: `88d29bb9fa2aac9b4c741763f7d7722eedf1c82b`. Local Git SHA, raw logs, exact display scales and command output were not supplied, so this is user-reported evidence, not independently reproduced or SHA-attested. No current independent SDDM login, destructive power action, suspend, security certification or performance claim follows from this report.
 
 Layer Shell outside-click/Escape, Control Center, passive tooltips, focus/non-interference, overlay cleanup and two-monitor behavior reported PASS. See [test record](TEST-00921.md). Earlier reported tooltip/dismissal failures were observed while the local runtime was reportedly still 0.9.18 before DNS recovery; they do not establish a 0.9.20 or 0.9.21 failure.
+
+## 0.9.22 implementation (runtime pending)
+0.9.22: input and control usability pass. Dock hover uses explicit viewport coordinates and non-blocking handlers; taps use DragThreshold rather than a competing MouseArea; overflow accepts horizontal touchpad scrolling and vertical wheel fallback with bounded offsets. Wave remains intentionally paused by Eco; Settings exposes the reason and a Balanced action. Oziro-owned Niri configs enable tap, natural scroll and disable-while-typing; add native screenshot bindings. Wi-Fi/Bluetooth tiles get drawn symbols and switch-style state. No change to Ryoku, PAM, host services or secrets. Native Wi-Fi selection/authentication, Bluetooth discovery/pairing and editable shortcuts remain pending. Runtime unverified.

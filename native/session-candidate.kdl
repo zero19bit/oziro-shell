@@ -1,5 +1,17 @@
 // Experimental independent login session. No Ryoku includes or autostart.
+input {
+    touchpad {
+        tap
+        natural-scroll
+        dwt
+        tap-button-map "left-right-middle"
+    }
+}
 binds {
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+    Mod+Shift+S { screenshot; }
     Mod+Return { spawn "/usr/bin/kitty"; }
     Mod+Q { close-window; }
     Mod+Left { focus-column-left; }
