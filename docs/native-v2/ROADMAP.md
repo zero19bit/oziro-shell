@@ -34,3 +34,6 @@ Order is proposed, not a delivery-date promise. Security and data integrity outr
 2. Native NetworkManager connection UI with secure secret agent; BlueZ discovery/pairing/connection with consent and cancellation.
 3. Editable, conflict-checked Oziro-only shortcuts with validated configuration and rollback; input settings and gesture regression.
 4. Replace text-heavy control layouts with icons, switches, sliders and meaningful grouping, preserving approved themes. Resume independent-session stabilization after regression.
+
+## Next priority after 0.9.22 user acceptance
+Wi-Fi and Bluetooth connection workflows, then editable shortcuts and icon-led interface. Keep long-duration Dock regression and remaining screenshot shortcuts open.
