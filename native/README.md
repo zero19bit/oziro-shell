@@ -115,3 +115,6 @@ See [test record](../docs/native-v2/TEST-00922.md).
 
 ## Foundation 0.9.23 — cold-start icons and screenshot keys
 0.9.23: Dock cold-start icon recovery and keyboard-independent screenshot bindings. Observe DesktopEntries.applications.values for pinned/running entry resolution instead of untracked lookup alone. Check theme icon paths before loading, show a bundled local fallback if absent/loading/error, and preserve fixed hit targets and existing wave behavior. No new polling, theme dependencies, or host configuration changes. Add Super+Shift+3 (focused screen) and Super+Shift+4 (focused window), retain Super+Shift+S and Print bindings. Actual cold-login and new screenshot tests pending; original cause not conclusively established.
+
+2026-11-28: user-reported 0.9.23 native regression acceptance: 11 PASS, 0 FAIL, 0 NOT TESTED. Intended runtime baseline `b5f096ffbd841c04fb4f9f7da038e6fbc92e5f90`. Correct dock icons at login and without pin edits, three login/logout cycles, new app icons, pin/unpin, wave, tooltip, all three no-Print screenshot shortcuts and two monitors reported PASS. Installed SHA and raw logs not independently supplied; no independent reproduction, long-duration reliability, screenshot storage/clipboard or security certification implied.
+See [test record](../docs/native-v2/TEST-00923.md).

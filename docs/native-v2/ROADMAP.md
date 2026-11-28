@@ -30,7 +30,7 @@ See [test record](TEST-00921.md). Remaining visual/performance regression cases 
 Order is proposed, not a delivery-date promise. Security and data integrity outrank cosmetic additions.
 
 ## Immediate priority — user-reported daily UX gaps
-1. Stabilize Dock pointer/touchpad behavior and screenshot defaults (0.9.22 implemented, test pending).
+1. Stabilize Dock pointer/touchpad behavior and screenshot defaults (0.9.22/0.9.23 user acceptance recorded; long-duration regression remains open).
 2. Native NetworkManager connection UI with secure secret agent; BlueZ discovery/pairing/connection with consent and cancellation.
 3. Editable, conflict-checked Oziro-only shortcuts with validated configuration and rollback; input settings and gesture regression.
 4. Replace text-heavy control layouts with icons, switches, sliders and meaningful grouping, preserving approved themes. Resume independent-session stabilization after regression.
@@ -38,4 +38,7 @@ Order is proposed, not a delivery-date promise. Security and data integrity outr
 ## Next priority after 0.9.22 user acceptance
 Wi-Fi and Bluetooth connection workflows, then editable shortcuts and icon-led interface. Keep long-duration Dock regression and remaining screenshot shortcuts open.
 
-0.9.23 immediate hotfix: cold-login icon recovery and no-Print screenshot keys. Validate before starting native connectivity UI.
+0.9.23 hotfix: cold-login icon recovery and no-Print screenshot keys reported PASS. Next implementation priority is native connectivity UI, with explicit permissions, secret handling and cancellation.
+
+2026-11-28: user-reported 0.9.23 native regression acceptance: 11 PASS, 0 FAIL, 0 NOT TESTED. Intended runtime baseline `b5f096ffbd841c04fb4f9f7da038e6fbc92e5f90`. Correct dock icons at login and without pin edits, three login/logout cycles, new app icons, pin/unpin, wave, tooltip, all three no-Print screenshot shortcuts and two monitors reported PASS. Installed SHA and raw logs not independently supplied; no independent reproduction, long-duration reliability, screenshot storage/clipboard or security certification implied.
+See [test record](TEST-00923.md).
