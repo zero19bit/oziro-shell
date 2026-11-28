@@ -121,6 +121,11 @@ for f in "${files[@]}"; do
 done
 trap - ERR
 echo "Published $changed files. File watchers should reload."
+# Re-notify directory/file watchers after atomic publication. This is best effort;
+# the explicit unprivileged IPC reload is the reliable runtime verification path.
+touch -- "$dest/shell.qml" "$dest/Dock.qml"
+echo "From the Oziro desktop user (not sudo): quickshell -p $dest ipc call oziroDev reload"
+echo "Check runtime: quickshell -p $dest ipc call oziroDev revision"
 echo "No logout, compositor restart, SDDM modification or preference deletion performed."
 echo "Runtime reload is not confirmed; inspect desktop and logs."
 echo "Rollback: sudo bash native/live-update.sh --rollback $backup"

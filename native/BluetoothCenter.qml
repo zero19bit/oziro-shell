@@ -7,9 +7,12 @@ import Quickshell.Bluetooth
 ShellPopup {
     id: win
     signal openControls()
-    readonly property var adapter: Bluetooth.defaultAdapter
+    // The default may be null during initial BlueZ enumeration or adapter removal.
+    readonly property var adapters: Bluetooth.adapters.values
+    readonly property var adapter: Bluetooth.defaultAdapter || (adapters.length ? adapters[0] : null)
     readonly property bool canChange: !prefs.nestedPreview && Quickshell.env("OZIRO_LOGIN_SESSION") === "1"
-    readonly property bool powered: adapter !== null && adapter.enabled
+    readonly property bool powered: !!adapter && adapter.enabled
+    readonly property bool discovering: !!adapter && adapter.discovering
     readonly property var devices: adapter ? adapter.devices.values.slice().sort((a,b) =>
         Number(b.connected)-Number(a.connected) || Number(b.paired)-Number(a.paired) || String(a.name).localeCompare(String(b.name))) : []
     property var scanAdapter: null
@@ -29,7 +32,7 @@ ShellPopup {
         if (a && canChange && a.discovering) a.discovering=false;
     }
     function startScan() {
-        if (!canChange || !powered || working || adapter.discovering) return;
+        if (!canChange || !adapter || !powered || working || discovering) return;
         scanAdapter=adapter;
         adapter.discovering=true;
         scanTimer.restart();
@@ -76,7 +79,11 @@ ShellPopup {
     onPoweredChanged: {
         if (!powered) { stopScan(); if (working) finish("Bluetooth turned off."); }
     }
-    onAdapterChanged: { if (scanAdapter && scanAdapter !== adapter) stopScan(); }
+    onAdapterChanged: {
+        if (scanAdapter && scanAdapter !== adapter) stopScan();
+        if (working && (!adapter || pendingDevice.adapter !== adapter)) finish("Bluetooth adapter changed.");
+        console.info("Oziro Bluetooth: adapter present =", !!adapter, "count =", adapters.length);
+    }
     Timer { id: scanTimer; interval: 12000; repeat: false; onTriggered: { win.stopScan(); win.message="Scan complete."; } }
     Timer {
         id: operationTimer; interval: 35000; repeat: false
@@ -94,6 +101,7 @@ ShellPopup {
         function onConnectedChanged() { win.reconcile(); }
         function onStateChanged() { win.reconcile(); }
     }
+    Component.onCompleted: console.info("Oziro Bluetooth: panel ready, adapter present =", !!adapter, "count =", adapters.length)
     Component.onDestruction: {
         stopScan();
         if (canChange && pendingAction==="pair" && pendingDevice && pendingDevice.pairing) pendingDevice.cancelPair();
@@ -123,7 +131,7 @@ ShellPopup {
                 Chip {
                     prefs: win.prefs; label: win.scanAdapter ? "■" : "↻"
                     Accessible.name: win.scanAdapter ? "Stop scan" : "Scan nearby devices"
-                    enabled: win.canChange && !win.working && (!!win.scanAdapter || !win.adapter.discovering)
+                    enabled: win.canChange && win.powered && !!win.adapter && !win.working && (!!win.scanAdapter || !win.discovering)
                     onActivated: { if (win.scanAdapter) { win.stopScan(); win.message="Scan stopped."; } else win.startScan(); }
                 }
             }

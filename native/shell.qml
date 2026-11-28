@@ -1,6 +1,7 @@
 //@ pragma StateDir $BASE/oziro-shell/v2
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Pipewire
 import "EnergyPolicy.js" as EnergyPolicy
 import "WidgetRegistry.js" as WidgetRegistry
@@ -9,6 +10,13 @@ import "ThemeIdentity.js" as Identity
 
 ShellRoot {
     id: shell
+    // Explicit user-session IPC reload, independent of the filesystem watcher.
+    IpcHandler {
+        target: "oziroDev"
+        function revision(): string { return "0.9.25-hotfix.1"; }
+        function reload(): void { Qt.callLater(() => Quickshell.reload()); }
+    }
+    Component.onCompleted: console.info("Oziro runtime: 0.9.25-hotfix.1")
     Preferences { id: settings }
     property alias theme: settings.theme
     property alias layoutMode: settings.layoutMode
@@ -164,6 +172,7 @@ ShellRoot {
                 popupEpoch++;
                 popup = name;
                 if (name === "wifi") console.info("Oziro Wi-Fi: opening panel");
+                if (name === "bluetooth") console.info("Oziro Bluetooth: opening panel");
                 popupLoader.setSource(Qt.resolvedUrl(name === "bluetooth" ? "BluetoothCenter.qml" : name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
@@ -195,7 +204,7 @@ ShellRoot {
             }
             Loader {
                 id: popupLoader
-                onLoaded: { if (output.popup === "wifi") console.info("Oziro Wi-Fi: panel loaded"); }
+                onLoaded: { if (output.popup === "wifi") console.info("Oziro Wi-Fi: panel loaded"); if (output.popup === "bluetooth") console.info("Oziro Bluetooth: panel loaded"); }
                 onStatusChanged: {
                     if (status === Loader.Error) {
                         console.warn("Oziro menu load failed:", output.popup);
