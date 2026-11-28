@@ -8,6 +8,7 @@ ShellPopup {
     id: win
     signal openEnergy()
     property var sample: null
+    readonly property var curveControls: sample ? sample.controls.filter(c => c.driver === "asus_custom_fan_curve") : []
     property string sensorStatus: "Reading sensors…"
     readonly property bool canChange: !prefs.nestedPreview && Quickshell.env("OZIRO_LOGIN_SESSION")==="1"
     menuWidth: 460
@@ -100,8 +101,30 @@ ShellPopup {
                     }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; text: sys.profiles.length ? sys.message : "No supported power profile provider found." }
                     SectionLabel { prefs: win.prefs; label: "MANUAL SPEED" }
-                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.foreground; text: "Not enabled: hardware-specific RPM/PWM control and thermal fallback have not been validated." }
+                    Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.foreground; text: win.curveControls.length ? "ASUS fan-curve controller detected. Numerical curve editing requires provider validation. Fixed RPM is not verified." : "Not enabled: hardware-specific RPM/PWM control and thermal fallback have not been validated." }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; text: win.sample ? "Detected control attributes: "+win.sample.controls.length+" · asusctl: "+(win.sample.asusctl?"installed":"not found") : "Checking control capabilities…" }
+                    Repeater {
+                        model: [1,2]
+                        ColumnLayout {
+                            id: curve
+                            required property int modelData
+                            readonly property var points: win.curveControls.filter(c => c.attribute.indexOf("pwm"+modelData+"_auto_point")===0 && c.attribute.endsWith("_temp"))
+                            Layout.fillWidth: true; spacing: 3
+                            visible: points.length>0
+                            SectionLabel { prefs: win.prefs; label: "ASUS CURVE "+curve.modelData+" · READ ONLY" }
+                            Repeater {
+                                model: curve.points.slice().sort((a,b) => a.attribute.localeCompare(b.attribute))
+                                RowLayout {
+                                    id: point
+                                    required property var modelData
+                                    readonly property var duty: win.curveControls.find(c => c.attribute===modelData.attribute.replace("_temp","_pwm"))
+                                    Layout.fillWidth: true
+                                    Text { Layout.fillWidth: true; text: point.modelData.value===null ? "Unavailable" : point.modelData.value+" °C"; color: win.prefs.foreground; font.pixelSize: 12 }
+                                    Text { text: point.duty && point.duty.value!==null ? "Raw PWM "+point.duty.value : "Unavailable"; color: win.prefs.muted; font.pixelSize: 12 }
+                                }
+                            }
+                        }
+                    }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: win.prefs.muted; font.pixelSize: 11; text: "Sensor refresh runs only while this panel is open. No EC, PWM, or fan curve writes are performed." }
                     RowLayout {
                         Layout.fillWidth: true
