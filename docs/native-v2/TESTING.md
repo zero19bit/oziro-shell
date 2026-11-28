@@ -43,3 +43,8 @@ See [15-check record](TEST-00921.md). Earlier reported tooltip/dismissal failure
 ## 0.9.22 independent session evidence
 2026-11-28: user reports independent Oziro 0.9.22 session acceptance: 16 PASS, 0 FAIL, 3 NOT TESTED (19 total). Intended runtime baseline b81a6c825d218d05f24d24ccb15dd33654f1385f; installed SHA and raw logs not independently supplied. Dock and touchpad checks all passed in the reported session; intermittent-wave long-duration regression remains open. Super+Shift+S passed; Print, Ctrl+Print and Alt+Print not tested. Logout/return to Ryoku and two monitors reported PASS. No security, screenshot storage/clipboard, long-run or performance certification implied.
 See [test record](TEST-00922.md).
+
+## 0.9.23 acceptance (pending)
+- Cold login at least three times with existing pinned apps; no pin edits or restart to recover icons. Check built-in, pinned, running and intentionally missing icon behavior. Generic bundled fallback is acceptable only when no actual icon resolves.
+- Open apps after startup and pin/unpin; ensure real icons replace fallback when index becomes available, correct launch/focus, wave, tooltip, two monitors and no QML errors. Record whether bundled Applications/Settings icons were also affected.
+- Test Super+Shift+3 and Super+Shift+4, retain Super+Shift+S, check saved image/clipboard and focused output/window. Niri config validation on target required.

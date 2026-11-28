@@ -1,6 +1,6 @@
 # Oziro Native v2 — Project handbook
 
-Updated: 2026-11-28 | Development milestone: 0.9.22
+Updated: 2026-11-28 | Development milestone: 0.9.23
 
 This handbook is the living source of truth for native v2. Older root documents describe the prior React/Rust architecture; do not treat them as current runtime requirements.
 
@@ -23,3 +23,5 @@ Update STATUS, CHANGELOG and TESTING when new evidence arrives; update ROADMAP w
 Current acceptance: [0.9.21 user report](TEST-00921.md). Next gate: independent session validation.
 
 0.9.22 is an input/UX stabilization milestone, runtime pending; see CHANGELOG and TESTING.
+
+0.9.23: cold-start icon fix and alternate screenshot keys; runtime acceptance pending.

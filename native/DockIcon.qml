@@ -13,6 +13,9 @@ FocusScope {
     property bool inverted: false
     property real waveFactor: 0
     readonly property bool animated: prefs.dockMagnification && !prefs.eco
+    // Checked lookup returns an empty URL instead of Quickshell's missing texture.
+    readonly property url fallbackSource: Qt.resolvedUrl("dock-apps.svg")
+    readonly property string checkedIcon: iconName ? Quickshell.iconPath(iconName, true) : ""
     signal activated()
     width: prefs.dockIconSize; height: prefs.dockIconSize
     activeFocusOnTab: enabled
@@ -38,16 +41,30 @@ FocusScope {
         color: icon.activeFocus ? icon.prefs.hoverColor : "transparent"
         border.width: icon.activeFocus ? 1 : 0; border.color: icon.prefs.accent
     }
-    Image {
+    Item {
         id: artwork
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: (icon.inverted ? 1 : -1) * (2 + icon.waveFactor * 10)
         width: Math.round(icon.width*0.80); height: width
-        source: String(icon.customSource) !== "" ? icon.customSource : Quickshell.iconPath(icon.iconName || "application-x-executable","application-x-executable")
-        sourceSize.width: Math.ceil(width*1.4); sourceSize.height: sourceSize.width
-        fillMode: Image.PreserveAspectFit
-        smooth: true
+        Image {
+            id: primary
+            anchors.fill: parent
+            source: String(icon.customSource) !== "" ? icon.customSource : icon.checkedIcon
+            sourceSize.width: Math.ceil(width*1.4); sourceSize.height: sourceSize.width
+            fillMode: Image.PreserveAspectFit
+            smooth: true
+            visible: status === Image.Ready
+        }
+        // Local artwork cannot depend on an installed icon theme.
+        Image {
+            anchors.fill: parent
+            source: primary.status === Image.Ready ? "" : icon.fallbackSource
+            sourceSize.width: Math.ceil(width*1.4); sourceSize.height: sourceSize.width
+            fillMode: Image.PreserveAspectFit
+            smooth: true
+            visible: primary.status !== Image.Ready
+        }
         scale: 1 + icon.waveFactor*0.38
         Behavior on scale { enabled: icon.animated; NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
         Behavior on anchors.verticalCenterOffset { enabled: icon.animated; NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }

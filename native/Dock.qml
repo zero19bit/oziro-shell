@@ -11,6 +11,11 @@ PanelWindow {
     signal openLauncher()
     signal openSettings()
     readonly property var pinned: prefs.pinnedApps
+    // Track index changes so a cold-start lookup can recover without changing pins.
+    readonly property var appCatalog: DesktopEntries.applications.values
+    function pinnedEntry(id, catalog) {
+        return catalog.find(e => e.id === id) || null;
+    }
     readonly property bool topDock: prefs.layoutMode === "bottom"
     readonly property bool motionEnabled: prefs.dockMagnification && !prefs.eco
     readonly property real pitch: prefs.dockIconSize + 8
@@ -23,11 +28,11 @@ PanelWindow {
     readonly property var localWindows: niriBackend.enabled && niriBackend.ready && screen
         ? niriBackend.windows.filter(w => niriBackend.workspaces.some(ws => ws.id === w.workspace_id && ws.output === screen.name))
         : []
-    function entryFor(w) {
-        return w.app_id ? DesktopEntries.heuristicLookup(w.app_id) : null;
+    function entryFor(w, catalog) {
+        return w.app_id && catalog.length ? DesktopEntries.heuristicLookup(w.app_id) : null;
     }
     readonly property var running: localWindows.filter(w => {
-        const e = entryFor(w);
+        const e = entryFor(w, appCatalog);
         return !e || !pinned.includes(e.id);
     }).sort((a,b) => a.id-b.id)
     // A primitive key changes only when the ordered membership changes.
@@ -128,9 +133,9 @@ PanelWindow {
                         required property string modelData
                         prefs: dock.prefs
                         waveFactor: dock.wave(x+width/2); inverted: dock.topDock
-                        readonly property var entry: DesktopEntries.byId(modelData)
+                        readonly property var entry: dock.pinnedEntry(modelData, dock.appCatalog)
                         readonly property var matches: dock.localWindows.filter(w => {
-                            const e = dock.entryFor(w);
+                            const e = dock.entryFor(w, dock.appCatalog);
                             return e && e.id === modelData;
                         })
                         title: entry ? entry.name : modelData
@@ -157,7 +162,7 @@ PanelWindow {
                         prefs: dock.prefs
                         waveFactor: dock.wave(x+width/2); inverted: dock.topDock
                         readonly property var windowData: dock.windowById(modelData)
-                        readonly property var entry: windowData ? dock.entryFor(windowData) : null
+                        readonly property var entry: windowData ? dock.entryFor(windowData, dock.appCatalog) : null
                         title: windowData ? windowData.title || windowData.app_id || "Window" : "Window"
                         iconName: entry ? entry.icon : "application-x-executable"
                         running: windowData !== null

@@ -37,3 +37,5 @@ Order is proposed, not a delivery-date promise. Security and data integrity outr
 
 ## Next priority after 0.9.22 user acceptance
 Wi-Fi and Bluetooth connection workflows, then editable shortcuts and icon-led interface. Keep long-duration Dock regression and remaining screenshot shortcuts open.
+
+0.9.23 immediate hotfix: cold-login icon recovery and no-Print screenshot keys. Validate before starting native connectivity UI.

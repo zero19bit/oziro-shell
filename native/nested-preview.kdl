@@ -12,6 +12,8 @@ binds {
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
     Mod+Shift+S { screenshot; }
+    Mod+Shift+3 { screenshot-screen; }
+    Mod+Shift+4 { screenshot-window; }
     Mod+Q { close-window; }
     Mod+Left { focus-column-left; }
     Mod+Right { focus-column-right; }
