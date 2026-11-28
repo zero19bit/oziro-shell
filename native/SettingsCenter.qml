@@ -11,6 +11,7 @@ FloatingWindow {
     signal openWallpaper()
     signal openEnergy()
     signal openControls()
+    signal openWifi()
     signal openWidgets()
     signal openTray()
     signal openLock()
@@ -41,7 +42,7 @@ FloatingWindow {
                     MenuRow { required property string modelData; Layout.fillWidth: true; prefs: win.prefs; label: modelData; selected: win.section===modelData; onActivated: win.section=modelData }
                 }
                 Item { Layout.fillHeight: true }
-                Text { text: "Oziro 0.9.23"; color: win.prefs.muted; font.pixelSize: 11 }
+                Text { text: "Oziro 0.9.24"; color: win.prefs.muted; font.pixelSize: 11 }
             }
         }
         Rectangle { Layout.fillHeight: true; Layout.preferredWidth: 1; color: win.prefs.outline }
@@ -110,6 +111,7 @@ FloatingWindow {
                         visible: win.section==="Devices"; Layout.fillWidth: true; spacing: 12
                         Text { Layout.fillWidth: true; text: "Sound, network and brightness"; color: win.prefs.foreground; font.pixelSize: 15 }
                         MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Control Center"; trailing: "›"; onActivated: win.openControls() }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Wi-Fi networks"; trailing: "›"; onActivated: win.openWifi() }
                         Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Oziro login: tap to click, two-finger right click and natural scrolling. Host desktop input settings remain unchanged."; color: win.prefs.muted }
                         Text { Layout.fillWidth: true; text: "Screenshot shortcuts (Oziro login)"; color: win.prefs.foreground; font.weight: Font.Medium }
                         Text { Layout.fillWidth: true; text: "Print / Super+Shift+S  ·  Select area\nCtrl+Print / Super+Shift+3  ·  Focused screen\nAlt+Print / Super+Shift+4  ·  Focused window"; color: win.prefs.muted; wrapMode: Text.WordWrap }
@@ -133,7 +135,7 @@ FloatingWindow {
                     ColumnLayout {
                         visible: win.section==="About"; Layout.fillWidth: true; spacing: 10
                         Text { text: "Oziro"; color: win.prefs.foreground; font.pixelSize: 32; font.weight: Font.DemiBold }
-                        Text { text: "Desktop Environment 0.9.23"; color: win.prefs.foreground; font.pixelSize: 16 }
+                        Text { text: "Desktop Environment 0.9.24"; color: win.prefs.foreground; font.pixelSize: 16 }
                         Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: win.prefs.loginSession ? "Independent experimental login" : win.prefs.nestedPreview ? "Development preview" : "Existing desktop session"; color: win.prefs.muted }
                         Text { text: "Wayland · Niri · Quickshell"; color: win.prefs.muted }
                     }

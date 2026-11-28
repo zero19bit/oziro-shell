@@ -51,3 +51,8 @@ See [test record](TEST-00922.md).
 
 2026-11-28: user-reported 0.9.23 native regression acceptance: 11 PASS, 0 FAIL, 0 NOT TESTED. Intended runtime baseline `b5f096ffbd841c04fb4f9f7da038e6fbc92e5f90`. Correct dock icons at login and without pin edits, three login/logout cycles, new app icons, pin/unpin, wave, tooltip, all three no-Print screenshot shortcuts and two monitors reported PASS. Installed SHA and raw logs not independently supplied; no independent reproduction, long-duration reliability, screenshot storage/clipboard or security certification implied.
 See [test record](TEST-00923.md).
+
+## 0.9.24 Wi-Fi acceptance (pending)
+- From Control Center or Settings > Devices > Wi-Fi networks: cached list, scan, signal and security, active connection, saved and unsupported states; missing adapter/helper and radio off. Preview must reject all mutations.
+- On disposable trusted hotspot: wrong password, cancel before connect, successful temporary WPA2/WPA3/open join, saved profile reuse, remember option and reconnect, disconnect confirmation. Verify normal NM authorization, no secret in argv/logs/Oziro state. Test switching away from a network only when safe; no claimed internet reachability from Wi-Fi activation.
+- Confirm keyboard navigation, Escape, both outputs, long list, no QML errors, no lingering helper. Audit includes pure helper tests and preview denial. Actual runtime pending.

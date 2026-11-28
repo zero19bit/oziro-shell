@@ -8,6 +8,7 @@ import Quickshell.Services.Pipewire
 ShellPopup {
     id: win
     signal openSettings()
+    signal openWifi()
     signal openEnergy()
     signal openWidgets()
     signal openTray()
@@ -73,6 +74,7 @@ ShellPopup {
                             onActivated: sys.request("bluetooth", sys.bluetooth === "enabled" ? "off" : "on")
                         }
                     }
+                    MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Wi-Fi networks"; trailing: "›"; onActivated: win.openWifi() }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: sys.message; color: win.prefs.muted; font.pixelSize: 11 }
                     SectionLabel { prefs: win.prefs; label: "DISPLAY & SOUND" }
                     Rectangle {

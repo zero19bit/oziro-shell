@@ -34,4 +34,5 @@ fi
 for tool in nmcli bluetoothctl brightnessctl powerprofilesctl; do
   if command -v "$tool" >/dev/null 2>&1; then echo "OK: optional $tool"; else echo "OPTIONAL: $tool missing"; fi
 done
+if /usr/bin/python -I -c "from gi.repository import Gio" >/dev/null 2>&1; then echo "OK: optional Wi-Fi D-Bus helper"; else echo "OPTIONAL: python-gobject missing (Wi-Fi Manager)"; fi
 exit "$failed"

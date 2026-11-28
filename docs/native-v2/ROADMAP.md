@@ -42,3 +42,5 @@ Wi-Fi and Bluetooth connection workflows, then editable shortcuts and icon-led i
 
 2026-11-28: user-reported 0.9.23 native regression acceptance: 11 PASS, 0 FAIL, 0 NOT TESTED. Intended runtime baseline `b5f096ffbd841c04fb4f9f7da038e6fbc92e5f90`. Correct dock icons at login and without pin edits, three login/logout cycles, new app icons, pin/unpin, wave, tooltip, all three no-Print screenshot shortcuts and two monitors reported PASS. Installed SHA and raw logs not independently supplied; no independent reproduction, long-duration reliability, screenshot storage/clipboard or security certification implied.
 See [test record](TEST-00923.md).
+
+0.9.24 Wi-Fi Manager implemented, pending target verification. Next: Bluetooth discovery/pairing, then shortcut manager and broader control redesign.

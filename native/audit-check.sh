@@ -23,4 +23,15 @@ grep -qx "Logout: no" <<<"$out"
 grep -qx "Restart: no" <<<"$out"
 grep -qx "Shutdown: no" <<<"$out"
 echo "PASS: preview power capability denial"
+if command -v python >/dev/null 2>&1; then
+  python -I "$dir/wifi-manager.py" --self-test
+  for action in scan join disconnect; do
+    if printf '{"action":"%s"}\n' "$action" | env OZIRO_NESTED_PREVIEW=1 python -I "$dir/wifi-manager.py" >/dev/null; then
+      echo "FAIL: Wi-Fi preview mutation not denied"; exit 1
+    fi
+  done
+  echo "PASS: Wi-Fi preview mutation guard"
+else
+  echo "SKIP: Python Wi-Fi helper tests"
+fi
 echo "Static/preview guard checks only; not a security certification or Wayland test."

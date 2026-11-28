@@ -1,4 +1,4 @@
-# Feature status — 0.9.23
+# Feature status — 0.9.24
 
 Status labels: **Confirmed** = user reported or screenshot supports the stated behavior; **Partial** = implemented, some evidence or important gaps; **Implemented** = code exists, runtime unverified; **Planned** = not delivered. Historical evidence is not a guarantee for current HEAD.
 
@@ -43,3 +43,6 @@ See [test record](TEST-00922.md).
 
 2026-11-28: user-reported 0.9.23 native regression acceptance: 11 PASS, 0 FAIL, 0 NOT TESTED. Intended runtime baseline `b5f096ffbd841c04fb4f9f7da038e6fbc92e5f90`. Correct dock icons at login and without pin edits, three login/logout cycles, new app icons, pin/unpin, wave, tooltip, all three no-Print screenshot shortcuts and two monitors reported PASS. Installed SHA and raw logs not independently supplied; no independent reproduction, long-duration reliability, screenshot storage/clipboard or security certification implied.
 See [test record](TEST-00923.md).
+
+## 0.9.24 (runtime pending)
+0.9.24: on-demand native Wi-Fi Manager via NetworkManager system D-Bus and optional Python/GIO helper. Cached list, explicit scan, signal strength, saved profile reuse, open/WPA2/WPA3 personal join, optional save after activation, disconnect confirmation. Secrets via private stdin, never CLI or Oziro preferences; normal NM authorization; no host config changes or resident daemon. Preview read-only. Unsupported enterprise/WEP/OWE/hidden networks and multiple matching saved profiles are not silently connected. New password for existing profile is temporary; no profile editing/deletion. Real runtime and save behavior pending.
