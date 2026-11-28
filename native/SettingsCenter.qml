@@ -125,7 +125,7 @@ FloatingWindow {
                         Text { text: "Energy mode"; color: win.prefs.muted; font.pixelSize: 12 }
                         Flow { Layout.fillWidth: true; spacing: 6; Repeater { model: ["adaptive","balanced","eco"]; Chip { required property string modelData; prefs: win.prefs; label: modelData; selected: win.prefs.energyMode===modelData; onActivated: win.prefs.selectEnergyMode(modelData) } } }
                         MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Battery and energy"; trailing: "›"; onActivated: win.openEnergy() }
-                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Fan Manager"; trailing: "›"; onActivated: win.openFans() }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Command Center"; trailing: "›"; onActivated: win.openFans() }
                         MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Lock Screen"; trailing: "›"; enabled: !win.prefs.nestedPreview; onActivated: win.openLock() }
                         MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Power menu"; trailing: "›"; onActivated: win.openPower() }
                         Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: "Automatic lock and sleep are not implemented."; color: win.prefs.muted }

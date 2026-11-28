@@ -13,10 +13,32 @@ ShellRoot {
     // Explicit user-session IPC reload, independent of the filesystem watcher.
     IpcHandler {
         target: "oziroDev"
-        function revision(): string { return "0.9.25-fan-preview.2"; }
+        function revision(): string { return "0.9.25-command.1"; }
         function reload(): void { Qt.callLater(() => Quickshell.reload(false)); }
     }
-    Component.onCompleted: console.info("Oziro runtime: 0.9.25-fan-preview.2")
+    Component.onCompleted: console.info("Oziro runtime: 0.9.25-command.1")
+    property bool commandOpen: false
+    function openCommandCenter() {
+        if (panelOnly) return;
+        commandOpen=true;
+    }
+    Loader {
+        id: commandLoader
+        active: shell.commandOpen && !shell.panelOnly
+        sourceComponent: Component {
+            FanCenter {
+                prefs: shell
+                onDismiss: Qt.callLater(() => { shell.commandOpen=false; })
+            }
+        }
+        onStatusChanged: {
+            if (status === Loader.Error) {
+                console.warn("Oziro Command Center: load failed");
+                Qt.callLater(() => { shell.commandOpen=false; });
+            }
+        }
+        onLoaded: console.info("Oziro Command Center: window loaded")
+    }
     Preferences { id: settings }
     property alias theme: settings.theme
     property alias layoutMode: settings.layoutMode
@@ -173,8 +195,7 @@ ShellRoot {
                 popup = name;
                 if (name === "wifi") console.info("Oziro Wi-Fi: opening panel");
                 if (name === "bluetooth") console.info("Oziro Bluetooth: opening panel");
-                if (name === "fans") console.info("Oziro Fans: opening panel");
-                popupLoader.setSource(Qt.resolvedUrl(name === "fans" ? "FanCenter.qml" : name === "bluetooth" ? "BluetoothCenter.qml" : name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "bluetooth" ? "BluetoothCenter.qml" : name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -205,7 +226,7 @@ ShellRoot {
             }
             Loader {
                 id: popupLoader
-                onLoaded: { if (output.popup === "wifi") console.info("Oziro Wi-Fi: panel loaded"); if (output.popup === "bluetooth") console.info("Oziro Bluetooth: panel loaded"); if (output.popup === "fans") console.info("Oziro Fans: panel loaded"); }
+                onLoaded: { if (output.popup === "wifi") console.info("Oziro Wi-Fi: panel loaded"); if (output.popup === "bluetooth") console.info("Oziro Bluetooth: panel loaded"); }
                 onStatusChanged: {
                     if (status === Loader.Error) {
                         console.warn("Oziro menu load failed:", output.popup);
@@ -244,7 +265,7 @@ ShellRoot {
                 function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
                 function onOpenAppearance() { Qt.callLater(() => output.toggle("appearance")); }
                 function onOpenPower() { Qt.callLater(() => output.toggle("power")); }
-                function onOpenFans() { const epoch = output.popupEpoch; Qt.callLater(() => { if (output.popupEpoch === epoch) output.toggle("fans"); }); }
+                function onOpenFans() { const epoch=output.popupEpoch; Qt.callLater(() => { if (output.popupEpoch !== epoch) return; output.closePopup(); if (output.popup === "") shell.openCommandCenter(); }); }
                 function onOpenEnergy() { Qt.callLater(() => output.toggle("energy")); }
                 function onOpenWidgets() { Qt.callLater(() => output.toggle("widgets")); }
                 function onOpenWallpaper() { Qt.callLater(() => output.toggle("wallpaper")); }

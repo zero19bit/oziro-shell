@@ -21,6 +21,25 @@ def integer(path, low, high):
     n = int(value)
     return n if low <= n <= high else None
 
+def asus_curves(controls):
+    result = []
+    for channel, fan in ((1, "CPU"), (2, "GPU")):
+        rows = [c for c in controls if c["driver"] == "asus_custom_fan_curve"]
+        prefix = "pwm" + str(channel)
+        def value(attribute):
+            matches = [c["value"] for c in rows if c["attribute"] == attribute]
+            return matches[0] if len(matches) == 1 else None
+        points = []
+        for i in range(1, 9):
+            base = prefix + "_auto_point" + str(i)
+            t, p = value(base+"_temp"), value(base+"_pwm")
+            if t is None or p is None or not (0 <= t <= 100 and 0 <= p <= 255):
+                break
+            points.append(dict(temp=t,pwm=p))
+        if len(points)==8 and all(a["temp"] < b["temp"] for a,b in zip(points,points[1:])):
+            result.append(dict(fan=fan,mode=value(prefix+"_enable"),points=points))
+    return result
+
 def snapshot(root=Path("/sys")):
     fans, temps, controls = [], [], []
     for hw in sorted((root / "class/hwmon").glob("hwmon*"))[:128]:
@@ -49,7 +68,7 @@ def snapshot(root=Path("/sys")):
     dmi = root / "class/dmi/id"
     acpi = root / "firmware/acpi"
     return dict(vendor=read(dmi/"sys_vendor"), model=read(dmi/"product_name"),
-                fans=fans, temperatures=temps, controls=controls,
+                fans=fans, temperatures=temps, controls=controls, curves=asus_curves(controls),
                 platformProfile=read(acpi/"platform_profile"),
                 platformChoices=read(acpi/"platform_profile_choices").split(),
                 asusctl=Path("/usr/bin/asusctl").is_file(),
@@ -72,6 +91,14 @@ def self_test():
                 len(s["controls"])==3,not s["manualSupported"],
                 all((h/k).read_text()==v for k,v in fixture.items()),
                 not snapshot(root/"missing")["fans"]]
+        rows=[]
+        for i in range(1,9):
+            for attr,v in (("temp",30+i*5),("pwm",i*20)):
+                rows.append(dict(driver="asus_custom_fan_curve",attribute="pwm1_auto_point"+str(i)+"_"+attr,value=v))
+        curves=asus_curves(rows)
+        checks.extend([not s["curves"], len(curves)==1, curves[0]["fan"]=="CPU",
+                       len(curves[0]["points"])==8, curves[0]["points"][0]==dict(temp=35,pwm=20),
+                       not asus_curves(rows[:-1]), not asus_curves(rows+rows[:1])])
         print(json.dumps(dict(passed=sum(checks),total=len(checks))))
         return 0 if all(checks) else 1
 

@@ -46,7 +46,7 @@ ShellPopup {
                         Layout.fillWidth: true; height: 8; radius: 4; color: win.prefs.outline
                         Rectangle { width: parent.width * Math.max(0,win.prefs.batteryPercent)/100; height: parent.height; radius: 4; color: win.prefs.accent }
                     }
-                    MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Fan Manager"; trailing: "›"; onActivated: win.openFans() }
+                    MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Command Center"; trailing: "›"; onActivated: win.openFans() }
                     Text { text: "SHELL POLICY"; color: win.prefs.accent; font.bold: true }
                     Flow {
                         Layout.fillWidth: true; spacing: 6
