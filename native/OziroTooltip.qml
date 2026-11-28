@@ -13,13 +13,14 @@ PanelWindow {
     property bool above: false
     property int hostEdgeMargin: 0
     readonly property real centerX: {
-        if (!hostWindow || !screen) return 0;
+        if (!hostWindow || !hostWindow.screen) return 0;
         const transform = hostWindow.windowTransform;
         const p=hostWindow.mapFromItem(targetItem,targetItem.width/2,0);
-        return (screen.width-hostWindow.width)/2+p.x;
+        return (hostWindow.screen.width-hostWindow.width)/2+p.x;
     }
     screen: hostWindow ? hostWindow.screen : null
-    visible: hostWindow !== null && hostWindow !== undefined && screen !== null
+    // Loader controls lifetime; the target screen is resolved from the host, not our own visibility-dependent screen.
+    visible: hostWindow !== null && hostWindow !== undefined && !!hostWindow.screen
     anchors { top: !tip.above; bottom: tip.above; left: true }
     margins {
         left: Math.round(Math.max(4, Math.min(tip.centerX-tip.implicitWidth/2, (tip.screen ? tip.screen.width : 300)-tip.implicitWidth-4)))

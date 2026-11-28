@@ -163,6 +163,7 @@ ShellRoot {
                 if (name !== "settings") shell.activeMenuOutput = output;
                 popupEpoch++;
                 popup = name;
+                if (name === "wifi") console.info("Oziro Wi-Fi: opening panel");
                 popupLoader.setSource(Qt.resolvedUrl(name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
@@ -194,6 +195,7 @@ ShellRoot {
             }
             Loader {
                 id: popupLoader
+                onLoaded: { if (output.popup === "wifi") console.info("Oziro Wi-Fi: panel loaded"); }
                 onStatusChanged: {
                     if (status === Loader.Error) {
                         console.warn("Oziro menu load failed:", output.popup);
@@ -242,7 +244,7 @@ ShellRoot {
                 function onOpenLock() { Qt.callLater(() => output.toggle("lock")); }
                 function onOpenNotifications() { Qt.callLater(() => output.toggle("notifications")); }
                 function onOpenControls() { Qt.callLater(() => output.toggle("controls")); }
-                function onOpenWifi() { Qt.callLater(() => output.toggle("wifi")); }
+                function onOpenWifi() { const epoch = output.popupEpoch; Qt.callLater(() => { if (output.popupEpoch === epoch) output.toggle("wifi"); }); }
             }
         }
     }

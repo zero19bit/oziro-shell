@@ -51,7 +51,7 @@ FocusScope {
             id: primary
             anchors.fill: parent
             source: String(icon.customSource) !== "" ? icon.customSource : icon.checkedIcon
-            sourceSize.width: Math.ceil(width*1.4); sourceSize.height: sourceSize.width
+            sourceSize: Qt.size(Math.ceil(artwork.width*1.4), Math.ceil(artwork.width*1.4))
             fillMode: Image.PreserveAspectFit
             smooth: true
             visible: status === Image.Ready
@@ -60,7 +60,7 @@ FocusScope {
         Image {
             anchors.fill: parent
             source: primary.status === Image.Ready ? "" : icon.fallbackSource
-            sourceSize.width: Math.ceil(width*1.4); sourceSize.height: sourceSize.width
+            sourceSize: Qt.size(Math.ceil(artwork.width*1.4), Math.ceil(artwork.width*1.4))
             fillMode: Image.PreserveAspectFit
             smooth: true
             visible: primary.status !== Image.Ready

@@ -9,7 +9,7 @@ ShellPopup {
     signal openControls()
     property var networks: []
     property var chosen: null
-    property bool available: false
+    property bool adapterAvailable: false
     property bool radioEnabled: false
     property string message: "Reading Wi-Fi…"
     property string pendingRequest: ""
@@ -41,13 +41,14 @@ ShellPopup {
         let data;
         try { data=JSON.parse(line); } catch(e) { return; }
         if (data.ready===true) {
+            if (pendingRequest.length === 0) return;
             worker.write(pendingRequest);
             pendingRequest="";
             return;
         }
         responseReceived=true;
         if (Array.isArray(data.networks)) {
-            networks=data.networks; available=data.available===true; radioEnabled=data.enabled===true;
+            networks=data.networks; adapterAvailable=data.available===true; radioEnabled=data.enabled===true;
         }
         message=data.message || (data.ok ? "Select a network" : "Wi-Fi unavailable");
         if (operation==="join" && data.ok) { chosen=null; retryPassword=false; }
@@ -74,7 +75,7 @@ ShellPopup {
             win.message=old;
         }
     }
-    Component.onCompleted: request("list",null,"",false,false)
+    Component.onCompleted: Qt.callLater(() => win.request("list",null,"",false,false))
 
     Rectangle {
         focus: true
@@ -95,12 +96,12 @@ ShellPopup {
             }
             Text {
                 Layout.fillWidth: true; textFormat: Text.PlainText; wrapMode: Text.WordWrap
-                text: win.prefs.nestedPreview ? "Preview · read-only" : !win.available ? "Wi-Fi adapter unavailable" : !win.radioEnabled ? "Wi-Fi is off. Enable it in Control Center." : win.message
+                text: win.prefs.nestedPreview ? "Preview · read-only" : !win.adapterAvailable ? "Wi-Fi adapter unavailable" : !win.radioEnabled ? "Wi-Fi is off. Enable it in Control Center." : win.message
                 color: win.prefs.muted; font.pixelSize: 12
             }
-            Text { Layout.fillWidth: true; visible: !win.available || !win.radioEnabled; text: win.message; color: win.prefs.muted; wrapMode: Text.WordWrap; textFormat: Text.PlainText }
+            Text { Layout.fillWidth: true; visible: !win.adapterAvailable || !win.radioEnabled; text: win.message; color: win.prefs.muted; wrapMode: Text.WordWrap; textFormat: Text.PlainText }
             ListView {
-                id: list
+                id: networkList
                 Layout.fillWidth: true; Layout.fillHeight: true; clip: true
                 visible: !win.chosen
                 spacing: 4; model: win.networks
@@ -144,7 +145,7 @@ ShellPopup {
                 TextField {
                     id: password
                     Layout.fillWidth: true
-                    visible: win.chosen && !win.chosen.connected && win.chosen.security!=="open" && (!win.chosen.saved || win.retryPassword)
+                    visible: !!win.chosen && !win.chosen.connected && win.chosen.security!=="open" && (!win.chosen.saved || win.retryPassword)
                     enabled: !win.busy
                     echoMode: TextInput.Password; maximumLength: 64
                     inputMethodHints: Qt.ImhHiddenText | Qt.ImhSensitiveData | Qt.ImhNoPredictiveText
@@ -154,12 +155,12 @@ ShellPopup {
                     Keys.onEscapePressed: { if (!win.dismissBlocked) { password.clear(); win.chosen=null; win.retryPassword=false; } }
                 }
                 RowLayout {
-                    visible: win.chosen && !win.chosen.connected && !win.chosen.saved
+                    visible: !!win.chosen && !win.chosen.connected && !win.chosen.saved
                     Text { Layout.fillWidth: true; text: "Remember network"; color: win.prefs.foreground }
                     Switch { id: remember; checked: false; enabled: !win.busy; Accessible.name: "Remember network" }
                 }
                 Chip {
-                    prefs: win.prefs; visible: win.chosen && !win.chosen.connected && !!win.chosen.saved && win.chosen.security!=="open" && !win.retryPassword
+                    prefs: win.prefs; visible: !!win.chosen && !win.chosen.connected && !!win.chosen.saved && win.chosen.security!=="open" && !win.retryPassword
                     label: "Use a different password temporarily"; enabled: !win.busy
                     onActivated: { win.retryPassword=true; password.forceActiveFocus(); }
                 }
