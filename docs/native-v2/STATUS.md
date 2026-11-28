@@ -1,4 +1,4 @@
-# Feature status — 0.9.19
+# Feature status — 0.9.21
 
 Status labels: **Confirmed** = user reported or screenshot supports the stated behavior; **Partial** = implemented, some evidence or important gaps; **Implemented** = code exists, runtime unverified; **Planned** = not delivered. Historical evidence is not a guarantee for current HEAD.
 
@@ -16,8 +16,8 @@ Status labels: **Confirmed** = user reported or screenshot supports the stated b
 | Nested preview | Confirmed | 0.9.11 screenshot; 0.9.17 user visual approval; temporary preview, not security sandbox |
 | SDDM Oziro experimental login | Confirmed historically | 0.9.13 user reports test successful; no complete services or distribution |
 | Power menu | Partial | 0.9.15 user reports works; exact action coverage not recorded; suspend disabled |
-| Settings window | Partial | 0.9.14 user confirms Settings works; 0.9.16 real window and current links need regression |
-| Wave dock | Implemented | 0.9.18 11/11 pure JS math, actual QML hover/mask/animation pending |
+| Settings window | Partial | 0.9.21 user reports open/close PASS; full links and persistence regression pending |
+| Wave dock | Confirmed (user report) | 0.9.18 11/11 pure JS math; 0.9.21 wave and tooltip reported PASS; overflow, scale and performance pending |
 | Full display/input/default apps settings | Planned | no pretend controls |
 | Portals, Polkit, secure idle/suspend, session lifecycle | Planned/partial | highest release blockers |
 | AI, SDK, app/update manager, ISO | Planned | later milestones |
@@ -25,3 +25,8 @@ Status labels: **Confirmed** = user reported or screenshot supports the stated b
 Known platform: development host uses Niri, not Hyprland. Hyprland compatibility is not a current verified target. Main branch remains unchanged; active branch is oziro-v2-native-prototype.
 
 0.9.19 targeted hardening implemented; see [audit](AUDIT-00919.md). Runtime pending.
+
+## Current acceptance
+2026-11-28: user-reported 0.9.21 acceptance, 15/15 PASS. Intended runtime baseline: `88d29bb9fa2aac9b4c741763f7d7722eedf1c82b`. Local Git SHA, raw logs, exact display scales and command output were not supplied, so this is user-reported evidence, not independently reproduced or SHA-attested. No current independent SDDM login, destructive power action, suspend, security certification or performance claim follows from this report.
+
+Layer Shell outside-click/Escape, Control Center, passive tooltips, focus/non-interference, overlay cleanup and two-monitor behavior reported PASS. See [test record](TEST-00921.md). Earlier reported tooltip/dismissal failures were observed while the local runtime was reportedly still 0.9.18 before DNS recovery; they do not establish a 0.9.20 or 0.9.21 failure.

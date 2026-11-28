@@ -101,3 +101,7 @@ User explicitly approves the 0.9.17 visual direction and requests a Mac-inspired
 
 ## Foundation 0.9.19 — targeted hardening
 See [audit record](../docs/native-v2/AUDIT-00919.md). Pure JS 78/78. Runtime checks pending. No appearance change or production security claim.
+
+## Foundation 0.9.21 — layer-shell acceptance
+2026-11-28: user-reported 0.9.21 acceptance, 15/15 PASS. Intended runtime baseline: `88d29bb9fa2aac9b4c741763f7d7722eedf1c82b`. Local Git SHA, raw logs, exact display scales and command output were not supplied, so this is user-reported evidence, not independently reproduced or SHA-attested. No current independent SDDM login, destructive power action, suspend, security certification or performance claim follows from this report.
+See [acceptance record](../docs/native-v2/TEST-00921.md). Earlier reported tooltip/dismissal failures were observed while the local runtime was reportedly still 0.9.18 before DNS recovery; they do not establish a 0.9.20 or 0.9.21 failure.

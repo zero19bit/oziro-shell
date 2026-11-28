@@ -1,12 +1,15 @@
 # Prioritized roadmap
 
-## Now — 0.9.x visual and interaction
+## 0.9.21 acceptance — user-reported 15/15
+See [test record](TEST-00921.md). Remaining visual/performance regression cases below are not release blockers for beginning independent-session validation.
+
+## Remaining visual and interaction regression
 - Validate 0.9.18 dock wave, hit targets, click-through, clipping, tooltips, reduce motion, both orientations, large app lists and memory regression.
 - Refine Control Center and Settings window with the approved Oziro identity; keyboard navigation, contrast, narrow screens and real icons.
 - Keep design iteration in nested Ryoku preview; avoid repeated logout/install.
 - Improve live network/Bluetooth and audio status; do not display fake connected state.
 
-## Next — desktop completeness
+## Now — independent session stabilization and desktop completeness
 - Reliable session lifecycle, recovery terminal, clean logout and installer/upgrade/rollback.
 - Safe automatic lock and lock-before-suspend with verified compositor protocol/PAM, inhibitors and resume testing; no sleep action until ready.
 - Notification ownership, tray coexistence, portal and Polkit integration with least privilege.
