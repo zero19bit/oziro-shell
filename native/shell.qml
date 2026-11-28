@@ -13,10 +13,10 @@ ShellRoot {
     // Explicit user-session IPC reload, independent of the filesystem watcher.
     IpcHandler {
         target: "oziroDev"
-        function revision(): string { return "0.9.25-hotfix.1"; }
+        function revision(): string { return "0.9.25-fan-preview.1"; }
         function reload(): void { Qt.callLater(() => Quickshell.reload()); }
     }
-    Component.onCompleted: console.info("Oziro runtime: 0.9.25-hotfix.1")
+    Component.onCompleted: console.info("Oziro runtime: 0.9.25-fan-preview.1")
     Preferences { id: settings }
     property alias theme: settings.theme
     property alias layoutMode: settings.layoutMode
@@ -173,7 +173,7 @@ ShellRoot {
                 popup = name;
                 if (name === "wifi") console.info("Oziro Wi-Fi: opening panel");
                 if (name === "bluetooth") console.info("Oziro Bluetooth: opening panel");
-                popupLoader.setSource(Qt.resolvedUrl(name === "bluetooth" ? "BluetoothCenter.qml" : name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "fans" ? "FanCenter.qml" : name === "bluetooth" ? "BluetoothCenter.qml" : name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -243,6 +243,7 @@ ShellRoot {
                 function onOpenSettings() { Qt.callLater(() => output.toggle("settings")); }
                 function onOpenAppearance() { Qt.callLater(() => output.toggle("appearance")); }
                 function onOpenPower() { Qt.callLater(() => output.toggle("power")); }
+                function onOpenFans() { const epoch = output.popupEpoch; Qt.callLater(() => { if (output.popupEpoch === epoch) output.toggle("fans"); }); }
                 function onOpenEnergy() { Qt.callLater(() => output.toggle("energy")); }
                 function onOpenWidgets() { Qt.callLater(() => output.toggle("widgets")); }
                 function onOpenWallpaper() { Qt.callLater(() => output.toggle("wallpaper")); }

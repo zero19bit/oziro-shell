@@ -50,3 +50,6 @@ See [test record](TEST-00923.md).
 See [test record](TEST-00924.md).
 
 0.9.25 Bluetooth and notification activation implementation pending target test. Authenticated pairing agent remains open. Next editable shortcuts after connectivity regression.
+
+## 0.9.25 thermal capability preview (runtime pending)
+User reported previous issues OK after DNS recovery; no detailed Bluetooth/notification acceptance matrix or post-hotfix log supplied. Fan Manager added ahead of shortcuts: read-only hwmon RPM/temperature and controller capability probe, optional three-second refresh only while open, existing system power profiles through SystemControls (not direct fan RPM). Manual numerical control is deliberately not implemented until the actual model, driver, supported provider, safe range and automatic thermal fallback are verified. No root/EC/PWM writes, persistent service or automatic fan control changes. Probe: `python -I native/fan-status.py --probe`; self-test: `python -I native/fan-status.py --self-test`. ASUS support varies by model; see https://asus-linux.org/faq/asusctl/custom-fan-curves/. Test real sensors, profile changes and reopen/close; manual acceptance remains pending.

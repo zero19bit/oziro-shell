@@ -11,6 +11,7 @@ ShellPopup {
     signal openWifi()
     signal openBluetooth()
     signal openEnergy()
+    signal openFans()
     signal openWidgets()
     signal openTray()
     signal openLock()
@@ -167,6 +168,7 @@ ShellPopup {
                 Layout.fillWidth: true; spacing: 6
                 Chip { prefs: win.prefs; label: "Settings"; onActivated: win.openSettings() }
                 Chip { prefs: win.prefs; label: "Energy"; onActivated: win.openEnergy() }
+                Chip { prefs: win.prefs; label: "Fans"; onActivated: win.openFans() }
                 Chip { prefs: win.prefs; label: "Widgets"; onActivated: win.openWidgets() }
                 Chip { prefs: win.prefs; label: "Tray"; onActivated: win.openTray() }
                 Chip { prefs: win.prefs; label: "Power"; onActivated: win.openPower() }

@@ -25,6 +25,7 @@ grep -qx "Shutdown: no" <<<"$out"
 echo "PASS: preview power capability denial"
 if command -v python >/dev/null 2>&1; then
   python -I "$dir/wifi-manager.py" --self-test
+  python -I "$dir/fan-status.py" --self-test
   for action in scan join disconnect; do
     if printf '{"action":"%s"}\n' "$action" | env OZIRO_NESTED_PREVIEW=1 python -I "$dir/wifi-manager.py" >/dev/null; then
       echo "FAIL: Wi-Fi preview mutation not denied"; exit 1
