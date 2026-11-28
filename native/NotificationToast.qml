@@ -1,15 +1,18 @@
 import QtQuick
 import Quickshell
+import Quickshell.Wayland
 
 PanelWindow {
     id: toast
-    property var prefs: null
-    property var backend: null
+    required property var prefs
+    required property var backend
     readonly property var notice: backend ? backend.latest : null
-    visible: notice !== null && prefs !== null && !prefs.quietNotifications
     anchors { top: !toast.prefs || toast.prefs.layoutMode !== "bottom"; bottom: toast.prefs && toast.prefs.layoutMode === "bottom"; right: true }
     margins { top: toast.prefs ? toast.prefs.popupMargin + 2 : 64; bottom: toast.prefs ? toast.prefs.popupMargin + 2 : 64; right: 12 }
     exclusionMode: ExclusionMode.Ignore
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    WlrLayershell.namespace: "oziro-notification-toast"
     implicitWidth: Math.min(360, screen ? Math.max(1,screen.width-24) : 360)
     implicitHeight: 116
     color: "transparent"

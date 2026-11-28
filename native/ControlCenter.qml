@@ -9,6 +9,7 @@ ShellPopup {
     id: win
     signal openSettings()
     signal openWifi()
+    signal openBluetooth()
     signal openEnergy()
     signal openWidgets()
     signal openTray()
@@ -75,6 +76,7 @@ ShellPopup {
                         }
                     }
                     MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Wi-Fi networks"; trailing: "›"; onActivated: win.openWifi() }
+                        MenuRow { Layout.fillWidth: true; prefs: win.prefs; label: "Bluetooth devices"; trailing: "›"; onActivated: win.openBluetooth() }
                     Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: sys.message; color: win.prefs.muted; font.pixelSize: 11 }
                     SectionLabel { prefs: win.prefs; label: "DISPLAY & SOUND" }
                     Rectangle {

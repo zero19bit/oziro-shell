@@ -20,13 +20,14 @@ Scope {
     }
     NotificationServer {
         id: server
-        keepOnReload: false
+        keepOnReload: true
         persistenceSupported: true
         bodySupported: true
         bodyMarkupSupported: false
         actionsSupported: false
         imageSupported: false
         onNotification: n => {
+            if (n.lastGeneration) { if (!n.transient) n.tracked=true; return; }
             backend.hideToast();
             const old = backend.entries.slice();
             while (old.length >= 40) old.shift().expire();

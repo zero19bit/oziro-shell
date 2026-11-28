@@ -43,3 +43,5 @@
 See [test record](../docs/native-v2/TEST-00923.md).
 
 - 0.9.24: Wi-Fi manager acceptance, authorization, profile save/reuse and wrong-password behavior pending. Bluetooth, shortcut manager, full network profile editing remain open.
+
+- 0.9.25: Bluetooth discovery/pairing/connect/disconnect and notification private-bus ownership/toast/history/DND target checks pending; authenticated pairing and host-session-bus integration remain open.

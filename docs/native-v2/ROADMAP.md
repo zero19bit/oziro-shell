@@ -48,3 +48,5 @@ See [test record](TEST-00923.md).
 ## 0.9.24 panel hotfix and live update evidence
 2026-11-28: user reports Wi-Fi Manager working after applying patch `73fe01e34b3dbc4eb5d118fb4e8868217392dc6d` via the in-session development workflow. This resolves the reported panel-opening blocker at user-report level. Earlier terminal evidence: live update published five files; Niri validation, Preflight and Audit passed, Wi-Fi helper self-tests 24/24, preview mutation guard passed, and direct read-only NetworkManager list returned three networks. User separately confirmed updated About version and preserved open windows without logout. No raw post-patch log or installed SHA supplied. Actual scan, authentication, wrong password, saved/volatile profiles, disconnect, multi-output and absence of binding warnings after patch remain unverified; do not infer full Wi-Fi acceptance from the brief report.
 See [test record](TEST-00924.md).
+
+0.9.25 Bluetooth and notification activation implementation pending target test. Authenticated pairing agent remains open. Next editable shortcuts after connectivity regression.

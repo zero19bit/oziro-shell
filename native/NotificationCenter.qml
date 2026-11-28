@@ -28,7 +28,7 @@ ShellPopup {
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
                 color: win.prefs.muted
-                text: !win.backend ? "External / disabled. Oziro does not read another notification daemon's history. Use the isolated notification test to try this feature." :
+                text: !win.backend ? "Notifications unavailable in this session. Oziro does not read another notification daemon's history." :
                     win.backend.count + " stored this session · maximum 40 · no disk history"
             }
             RowLayout {

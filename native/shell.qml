@@ -128,7 +128,7 @@ ShellRoot {
     readonly property color selectedText: accentLuminance > 0.179 ? "#000000" : "#ffffff"
     readonly property color muted: identity.muted
     readonly property color outline: identity.outline
-    readonly property bool notificationRequested: Quickshell.env("OZIRO_NOTIFICATIONS") === "1" && !panelOnly
+    readonly property bool notificationRequested: !panelOnly && (Quickshell.env("OZIRO_NOTIFICATIONS") === "1" || (Quickshell.env("OZIRO_LOGIN_SESSION") === "1" && Quickshell.env("OZIRO_NESTED_PREVIEW") !== "1"))
     property bool quietNotifications: false
     property int openMenuCount: 0
     property var activeMenuOutput: null
@@ -164,7 +164,7 @@ ShellRoot {
                 popupEpoch++;
                 popup = name;
                 if (name === "wifi") console.info("Oziro Wi-Fi: opening panel");
-                popupLoader.setSource(Qt.resolvedUrl(name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
+                popupLoader.setSource(Qt.resolvedUrl(name === "bluetooth" ? "BluetoothCenter.qml" : name === "wifi" ? "WifiCenter.qml" : name === "launcher" ? "Launcher.qml" : name === "notifications" ? "NotificationCenter.qml" : name === "settings" ? "SettingsCenter.qml" : name === "appearance" ? "ThemeStudio.qml" : name === "power" ? "PowerCenter.qml" : name === "energy" ? "EnergyCenter.qml" : name === "widgets" ? "WidgetCenter.qml" : name === "wallpaper" ? "WallpaperCenter.qml" : name === "tray" ? "TrayCenter.qml" : name === "lock" ? "LockCenter.qml" : "ControlCenter.qml"),
                                       {screen: output.modelData, prefs: shell});
             }
             function closePopup() {
@@ -205,13 +205,10 @@ ShellRoot {
                 }
             }
             Loader {
-                active: shell.notificationBackend !== null && !shell.quietNotifications
+                active: shell.notificationBackend !== null && shell.notificationBackend.latest !== null && !shell.quietNotifications
                     && Quickshell.screens[0] === output.modelData
-                source: active ? Qt.resolvedUrl("NotificationToast.qml") : ""
-                onLoaded: {
-                    item.screen = output.modelData;
-                    item.prefs = shell;
-                    item.backend = shell.notificationBackend;
+                sourceComponent: Component {
+                    NotificationToast { screen: output.modelData; prefs: shell; backend: shell.notificationBackend }
                 }
             }
             Loader {
@@ -244,6 +241,7 @@ ShellRoot {
                 function onOpenLock() { Qt.callLater(() => output.toggle("lock")); }
                 function onOpenNotifications() { Qt.callLater(() => output.toggle("notifications")); }
                 function onOpenControls() { Qt.callLater(() => output.toggle("controls")); }
+                function onOpenBluetooth() { const epoch = output.popupEpoch; Qt.callLater(() => { if (output.popupEpoch === epoch) output.toggle("bluetooth"); }); }
                 function onOpenWifi() { const epoch = output.popupEpoch; Qt.callLater(() => { if (output.popupEpoch === epoch) output.toggle("wifi"); }); }
             }
         }
